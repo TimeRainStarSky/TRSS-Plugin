@@ -14,7 +14,7 @@
 </div>
 
 ## 安装教程
-- 推荐使用脚本安装
+- 推荐使用 [TRSS Yunzai 管理脚本](../../../TRSS_Yunzai) 一键安装
 
 [![TRSS Yunzai 管理脚本](https://github-readme-stats.vercel.app/api/pin/?username=TimeRainStarSky&repo=TRSS_Yunzai&show_owner=true)](../../../TRSS_Yunzai)
 
