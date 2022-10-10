@@ -40,6 +40,7 @@ export class GenshinVoice extends plugin {
     if (ret.error) {
       logger.error("原神语音合成错误：" + logger.red(ret.error));
       await this.reply("原神语音合成错误：" + ret.error);
+      await this.reply("请查看安装使用教程：\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin\n并将报错通过联系方式反馈给开发者");
       return false;
     }
 
