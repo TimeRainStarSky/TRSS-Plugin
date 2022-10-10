@@ -35,11 +35,11 @@ export class GenshinVoice extends plugin {
     let cmd = `cd plugins/TRSS-Plugin/genshin-voice && poetry run python main.py output.wav ${speaker} ${data}`;
 
     let ret = await this.execSync(cmd);
-    logger.mark(ret.stdout);
+    logger.mark("[原神语音合成]\n" + ret.stdout);
 
     if (ret.error) {
-      logger.error(`原神语音合成错误：${logger.red(ret.error)}`);
-      await this.reply(`原神语音合成错误：${ret.error}`);
+      logger.error("原神语音合成错误：" + logger.red(ret.error));
+      await this.reply("原神语音合成错误：" + ret.error);
       return false;
     }
 

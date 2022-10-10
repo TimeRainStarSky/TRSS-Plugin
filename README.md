@@ -29,10 +29,8 @@ git clone https://gitee.com/TimeRainStarSky/TRSS-Plugin plugins/TRSS-Plugin
 cd plugins/TRSS-Plugin
 git clone https://gitee.com/TimeRainStarSky/genshin-voice
 cd genshin-voice
+poetry run pip install -r requirements.txt -i https://pypi.mirrors.ustc.edu.cn/simple
 curl -LO http://obs.baimianxiao.cn/share/obs/sankagenkeshi/G_809000.pth
-poetry install
-cd monotonic_align
-poetry run python setup.py build_ext --inplace
 ```
 
 ## 使用教程
