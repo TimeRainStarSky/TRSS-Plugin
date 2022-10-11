@@ -21,15 +21,15 @@ export class GenshinVoice extends plugin {
 
   async execSync(cmd) {
     return new Promise((resolve, reject) => {
-      exec(cmd, { windowsHide: true }, (error, stdout, stderr) => {
+      exec(cmd, (error, stdout, stderr) => {
         resolve({ error, stdout, stderr });
       });
     });
   }
 
   async GenshinVoice(e) {
-    let msg = e.msg.replace(/^原神/, "").split("说");
-    let speaker = msg.shift().trim();
+    let msg = e.msg.split("说");
+    let speaker = msg.shift().replace(/^原神/, "").trim();
     let data = msg.join("说").replace("'", "").trim();
 
     let cmd = `cd plugins/TRSS-Plugin/genshin-voice && poetry run python main.py output.wav '${speaker}' '${data}'`;
@@ -43,7 +43,6 @@ export class GenshinVoice extends plugin {
       await this.reply(
         "请查看安装使用教程：\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin\n并将报错通过联系方式反馈给开发者"
       );
-      return false;
     }
 
     await this.reply(
