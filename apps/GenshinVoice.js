@@ -32,7 +32,7 @@ export class GenshinVoice extends plugin {
     let speaker = msg.shift();
     let data = msg.join("说");
 
-    let cmd = `cd plugins/TRSS-Plugin/genshin-voice && poetry run python main.py output.wav ${speaker} ${data}`;
+    let cmd = `cd plugins/TRSS-Plugin/genshin-voice && poetry run python main.py output.wav '${speaker}' '${data}'`;
 
     let ret = await this.execSync(cmd);
     logger.mark("[原神语音合成]\n" + ret.stdout);
