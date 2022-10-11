@@ -29,8 +29,8 @@ export class GenshinVoice extends plugin {
 
   async GenshinVoice(e) {
     let msg = e.msg.replace(/^原神/, "").split("说");
-    let speaker = msg.shift();
-    let data = msg.join("说");
+    let speaker = msg.shift().trim();
+    let data = msg.join("说").replace("'", "").trim();
 
     let cmd = `cd plugins/TRSS-Plugin/genshin-voice && poetry run python main.py output.wav '${speaker}' '${data}'`;
 
@@ -40,7 +40,9 @@ export class GenshinVoice extends plugin {
     if (ret.error) {
       logger.error("原神语音合成错误：" + logger.red(ret.error));
       await this.reply("原神语音合成错误：" + ret.error);
-      await this.reply("请查看安装使用教程：\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin\n并将报错通过联系方式反馈给开发者");
+      await this.reply(
+        "请查看安装使用教程：\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin\n并将报错通过联系方式反馈给开发者"
+      );
       return false;
     }
 
