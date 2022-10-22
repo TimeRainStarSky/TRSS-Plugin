@@ -103,7 +103,8 @@ export class RealESRGAN extends plugin {
     }
 
     await this.reply(
-      segment.image(path + "results/0_out" + format)
+      segment.image(path + "results/0_out" + format),
+      true
     );
     running = false
   }
