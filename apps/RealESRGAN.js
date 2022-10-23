@@ -19,7 +19,7 @@ export class RealESRGAN extends plugin {
       name: "图片修复",
       dsc: "图片修复",
       event: "message",
-      priority: 1000,
+      priority: 10,
       rule: [
         {
           reg: "^(动漫)?图片修复",
