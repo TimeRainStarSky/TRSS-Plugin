@@ -22,7 +22,7 @@ export class RealESRGAN extends plugin {
       priority: 10,
       rule: [
         {
-          reg: "^(动漫)?图片修复",
+          reg: "^(动漫)?图片修复$",
           fnc: "DetectImage",
         },
       ],
