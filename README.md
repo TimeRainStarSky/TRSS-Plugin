@@ -64,6 +64,16 @@ curl -LO http://obs.baimianxiao.cn/share/obs/sankagenkeshi/G_809000.pth
 
 <details><summary>展开</summary>
 
+- 问：使用 `Git Bash` 执行 `poetry install` 失败
+- 答：改用 `命令提示符` 或 `Windows PowerShell`
+
+- 问：`error: Microsoft Visual C++ 14.0 or greater is required.`
+- 答：下载安装 [Microsoft C++ 生成工具](https://visualstudio.microsoft.com/zh-hans/visual-cpp-build-tools)
+![Microsoft C++ 生成工具](Picture/Microsoft_C++_生成工具.png)
+
+- 问：`'sh' 不是内部或外部命令，也不是可运行的程序或批处理文件` `sh : 无法将“sh”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。`
+- 答：改用 `Git Bash`
+
 - 问：手动安装过程中出现问题
 - 答：建议自行解决，不会就用脚本一键安装
 
