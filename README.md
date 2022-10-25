@@ -64,6 +64,9 @@ curl -LO http://obs.baimianxiao.cn/share/obs/sankagenkeshi/G_809000.pth
 
 <details><summary>展开</summary>
 
+- 问：ModuleNotFoundError: No module named 'torch'
+- 答：未正确执行 `poetry install`
+
 - 问：使用 `Git Bash` 执行 `poetry install` 失败
 - 答：改用 `命令提示符` 或 `Windows PowerShell`
 
