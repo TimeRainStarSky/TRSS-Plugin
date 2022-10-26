@@ -2,6 +2,7 @@ import { segment } from "oicq";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const { exec, execSync } = require("child_process");
+import uploadRecord from '../model/uploadRecord.js';
 
 let path = "plugins/TRSS-Plugin/genshin-voice/"
 let running
@@ -57,7 +58,7 @@ export class GenshinVoice extends plugin {
     }
 
     await this.reply(
-      segment.record(path + "output.wav")
+      await uploadRecord(path + "output.wav", 68714, false)
     );
     running = false
   }
