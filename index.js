@@ -1,32 +1,32 @@
-logger.info("正在加载 TRSS 插件……");
+logger.info("正在加载 TRSS 插件……")
 
-import fs from "node:fs";
+import fs from "node:fs"
 
 const files = fs
   .readdirSync("./plugins/TRSS-Plugin/apps")
-  .filter((file) => file.endsWith(".js"));
+  .filter((file) => file.endsWith(".js"))
 
-let ret = [];
+let ret = []
 
 files.forEach((file) => {
-  ret.push(import(`./apps/${file}`));
-});
+  ret.push(import(`./apps/${file}`))
+})
 
-ret = await Promise.allSettled(ret);
+ret = await Promise.allSettled(ret)
 
-let apps = {};
+let apps = {}
 for (let i in files) {
-  let name = files[i].replace(".js", "");
+  let name = files[i].replace(".js", "")
 
   if (ret[i].status != "fulfilled") {
-    logger.error("载入插件错误：" + logger.red(name));
-    logger.error(ret[i].reason);
-    continue;
+    logger.error("载入插件错误：" + logger.red(name))
+    logger.error(ret[i].reason)
+    continue
   }
 
-  apps[name] = ret[i].value[name];
+  apps[name] = ret[i].value[name]
 }
 
-export { apps };
+export { apps }
 
-logger.info("TRSS 插件加载完成");
+logger.info("TRSS 插件加载完成")
