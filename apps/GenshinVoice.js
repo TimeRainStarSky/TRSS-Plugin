@@ -37,18 +37,17 @@ export class GenshinVoice extends plugin {
     let speaker = msg.shift()
     let data = msg.join("说").replace("'", "").trim()
 
-    let transcoding
+    let transcoding = false
     if (speaker.match("转码")) {
       speaker = speaker.replace("转码", "")
       transcoding = true
-    } else {
-      transcoding = false
     }
 
     if (speaker.match("API")) {
       let speakerid = speakers.indexOf(speaker.replace("API", ""))
       let url = `https://genshin.azurewebsites.net/api/speak?format=mp3&id=${speakerid}&text=${encodeURI(data)}`
       logger.mark("[原神语音合成]发送API语音：" + url)
+
       await this.reply(
         await uploadRecord(url, 68714, transcoding)
       )
