@@ -65,7 +65,7 @@ export class GenshinVoice extends plugin {
 
     logger.mark("[原神语音合成]执行：" + cmd)
     let ret = await this.execSync(cmd)
-    logger.mark("[原神语音合成]\n" + ret.stdout)
+    logger.mark("[原神语音合成]\n" + ret.stdout.trim() + "\n" + logger.red(ret.stderr.trim()))
 
     if (ret.error) {
       logger.error("原神语音合成错误：" + logger.red(ret.error))

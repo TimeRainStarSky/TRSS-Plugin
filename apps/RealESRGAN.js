@@ -92,7 +92,7 @@ export class RealESRGAN extends plugin {
 
     logger.mark("[图片修复]执行：" + cmd)
     let ret = await this.execSync(cmd)
-    logger.mark("[图片修复]\n" + ret.stdout)
+    logger.mark("[图片修复]\n" + ret.stdout.trim() + "\n" + logger.red(ret.stderr.trim()))
 
     if (ret.error) {
       logger.error("图片修复错误：" + logger.red(ret.error))
