@@ -79,7 +79,7 @@ export class SystemInfo extends plugin {
     }
 
     let html = `<p style="white-space: pre-wrap;"><code>${ansi_up.ansi_to_html(ret.stdout.trim())}</code></p>`
-    fs.writeFileSync(htmlFile, html, "utf-8")
+    await fs.writeFileSync(htmlFile, html, "utf-8")
 
     let img = await puppeteer.screenshot("SystemInfo", { tplFile: htmlFile })
     await this.reply(segment.image(img.file), true)

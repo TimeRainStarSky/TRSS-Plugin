@@ -69,7 +69,7 @@ export class RemoteCommand extends plugin {
 
     if (ret.stdout) {
       let html = `<p style="white-space: pre-wrap;"><code>${ansi_up.ansi_to_html(ret.stdout.trim())}</code></p>`
-      fs.writeFileSync(htmlFile, html, "utf-8")
+      await fs.writeFileSync(htmlFile, html, "utf-8")
 
       let img = await puppeteer.screenshot("RemoteCommand", { tplFile: htmlFile })
       await this.reply(segment.image(img.file), true)
@@ -77,7 +77,7 @@ export class RemoteCommand extends plugin {
 
     if (ret.stderr) {
       let html = `<p style="white-space: pre-wrap;"><code>${ansi_up.ansi_to_html(ret.stderr.trim())}</code></p>`
-      fs.writeFileSync(htmlFile, html, "utf-8")
+      await fs.writeFileSync(htmlFile, html, "utf-8")
 
       let img = await puppeteer.screenshot("RemoteCommand", { tplFile: htmlFile })
       await this.reply(["标准错误输出：", segment.image(img.file)], true)
