@@ -8,6 +8,7 @@ import AU from "ansi_up"
 const ansi_up = new AU.default
 
 let htmlFile = "data/html/RemoteCommand.html"
+let htmlHead = "<head><style>body{background-color:#000000;color:#FFFFFF;font-family:monospace;white-space:pre-wrap;}</style></head>"
 
 export class RemoteCommand extends plugin {
   constructor() {
@@ -68,17 +69,14 @@ export class RemoteCommand extends plugin {
     logger.mark(`[远程命令]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
     if (ret.stdout) {
-      let html = `<p style="white-space: pre-wrap;"><code>${ansi_up.ansi_to_html(ret.stdout.trim())}</code></p>`
-      await fs.writeFileSync(htmlFile, html, "utf-8")
+      await fs.writeFileSync(htmlFile, `${htmlHead}${ansi_up.ansi_to_html(ret.stdout.trim())}`, "utf-8")
 
       let img = await puppeteer.screenshot("RemoteCommand", { tplFile: htmlFile })
       await this.reply(segment.image(img.file), true)
     }
 
     if (ret.stderr) {
-      let html = `<p style="white-space: pre-wrap;"><code>${ansi_up.ansi_to_html(ret.stderr.trim())}</code></p>`
-      await fs.writeFileSync(htmlFile, html, "utf-8")
-
+      await fs.writeFileSync(htmlFile, `${htmlHead}${ansi_up.ansi_to_html(ret.stderr.trim())}`, "utf-8")
       let img = await puppeteer.screenshot("RemoteCommand", { tplFile: htmlFile })
       await this.reply(["标准错误输出：", segment.image(img.file)], true)
     }
