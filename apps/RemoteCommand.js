@@ -31,21 +31,21 @@ export class RemoteCommand extends plugin {
     if(!e.isMaster)return false
     let cmd = this.e.msg.replace("rc", "").trim()
 
-    logger.mark("[远程命令]执行：" + cmd)
+    logger.mark(`[远程命令]执行：${logger.blue(cmd)}`)
     let ret = await this.execSync(cmd)
-    logger.mark("[远程命令]\n" + ret.stdout.trim() + "\n" + logger.red(ret.stderr.trim()))
+    logger.mark(`[远程命令]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
     if (ret.stdout) {
       await this.reply(ret.stdout.trim(), true)
     }
 
     if (ret.stderr) {
-      await this.reply("标准错误输出：\n" + ret.stderr.trim(), true)
+      await this.reply(`标准错误输出：\n${ret.stderr.trim()}`, true)
     }
 
     if (ret.error) {
-      logger.error("远程命令错误：" + logger.red(ret.error))
-      await this.reply("远程命令错误：" + ret.error, true)
+      logger.error(`远程命令错误：${logger.red(ret.error)}`)
+      await this.reply(`远程命令错误：${ret.error}`, true)
     }
   }
 }

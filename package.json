@@ -1,0 +1,8 @@
+{
+  "name": "TRSS-Plugin",
+  "type": "module",
+  "author": "TimeRainStarSky",
+  "dependencies": {
+    "ansi_up": "^5.1.0"
+  }
+}

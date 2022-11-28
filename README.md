@@ -26,6 +26,7 @@
 
 ```
 git clone --depth=1 https://gitee.com/TimeRainStarSky/TRSS-Plugin plugins/TRSS-Plugin
+pnpm install
 ```
 
 3. 安装 [Python 3.10](https://python.org) 和 [Poetry](https://python-poetry.org)，并在插件目录执行以下操作
@@ -63,7 +64,7 @@ xz -dv G_809000.pth.xz
 
 ### 系统信息
 
-- 系统信息
+- 系统信息 / 系统信息图片
 
 ### 远程命令
 

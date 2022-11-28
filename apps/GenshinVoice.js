@@ -46,7 +46,7 @@ export class GenshinVoice extends plugin {
     if (speaker.match("API")) {
       let speakerid = speakers.indexOf(speaker.replace("API", ""))
       let url = `https://genshin.azurewebsites.net/api/speak?format=mp3&id=${speakerid}&text=${encodeURI(data)}`
-      logger.mark("[原神语音合成]发送API语音：" + url)
+      logger.mark(`[原神语音合成]发送API语音：${url}`)
 
       await this.reply(
         await uploadRecord(url, 68714, transcoding)
@@ -63,20 +63,20 @@ export class GenshinVoice extends plugin {
 
     let cmd = `sh ${path}main.sh output.wav '${speaker}' '${data}'`
 
-    logger.mark("[原神语音合成]执行：" + cmd)
+    logger.mark(`[原神语音合成]执行：${logger.blue(cmd)}`)
     let ret = await this.execSync(cmd)
-    logger.mark("[原神语音合成]\n" + ret.stdout.trim() + "\n" + logger.red(ret.stderr.trim()))
+    logger.mark(`[原神语音合成]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
     if (ret.error) {
-      logger.error("原神语音合成错误：" + logger.red(ret.error))
-      await this.reply("原神语音合成错误：" + ret.error, true)
+      logger.error(`原神语音合成错误：${logger.red(ret.error)}`)
+      await this.reply(`原神语音合成错误：${ret.error}`, true)
       await this.reply(
         "请查看安装使用教程：\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin\n并将报错通过联系方式反馈给开发者"
       )
     }
 
     await this.reply(
-      await uploadRecord(path + "output.wav", 68714, transcoding)
+      await uploadRecord(`${path}output.wav`, 68714, transcoding)
     )
     running = false
   }
