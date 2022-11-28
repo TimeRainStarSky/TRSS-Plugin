@@ -46,7 +46,7 @@ git clone --depth=1 https://gitee.com/TimeRainStarSky/genshin-voice
 cd genshin-voice
 poetry install
 poetry run pip install monotonic-align
-curl -LO https://github.com/TimeRainStarSky/Genshin-Voice-Model/raw/main/G_809000.pth.xz
+curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest/G_809000.pth.xz
 xz -dv G_809000.pth.xz
 ```
 
