@@ -3,13 +3,13 @@ logger.info("正在加载 TRSS 插件……")
 import fs from "node:fs"
 
 const files = fs
-  .readdirSync("./plugins/TRSS-Plugin/apps")
+  .readdirSync("plugins/TRSS-Plugin/Apps")
   .filter((file) => file.endsWith(".js"))
 
 let ret = []
 
 files.forEach((file) => {
-  ret.push(import(`./apps/${file}`))
+  ret.push(import(`./Apps/${file}`))
 })
 
 ret = await Promise.allSettled(ret)
