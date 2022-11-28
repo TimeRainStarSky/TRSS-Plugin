@@ -72,13 +72,13 @@ export class RemoteCommand extends plugin {
       await fs.writeFileSync(htmlFile, `${htmlHead}${ansi_up.ansi_to_html(ret.stdout.trim())}`, "utf-8")
 
       let img = await puppeteer.screenshot("RemoteCommand", { tplFile: htmlFile })
-      await this.reply(segment.image(img.file), true)
+      await this.reply(img, true)
     }
 
     if (ret.stderr) {
       await fs.writeFileSync(htmlFile, `${htmlHead}${ansi_up.ansi_to_html(ret.stderr.trim())}`, "utf-8")
       let img = await puppeteer.screenshot("RemoteCommand", { tplFile: htmlFile })
-      await this.reply(["标准错误输出：", segment.image(img.file)], true)
+      await this.reply(["标准错误输出：", img], true)
     }
 
     if (ret.error) {
