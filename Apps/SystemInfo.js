@@ -9,10 +9,9 @@ const ansi_up = new AU.default
 
 let htmlDir = "data/html/"
 let htmlHead = "<head><style>body{background-color:#000000;color:#FFFFFF;font-family:monospace;white-space:pre-wrap;}</style></head>"
+
 let cmd
 let cmdArgv = "--stdout"
-let benchcmd = "bash <(curl -L bench.sh)"
-let running
 
 try {
   execSync("type fastfetch")
@@ -21,7 +20,17 @@ try {
     cmdArgv = "--pipe"
   }
 } catch {
-  cmd = "bash <(curl -L nf.hydev.org)"
+  cmd = "bash <(curl -L https://gitee.com/TimeRainStarSky/neofetch/raw/master/neofetch)"
+  if (process.platform == "win32") {
+    cmd = `bash -c "${cmd}"`
+  }
+}
+
+let benchcmd = "bash <(curl -L bench.sh)"
+let running
+
+if (process.platform == "win32") {
+  cmd = `bash -c "${benchcmd}"`
 }
 
 export class SystemInfo extends plugin {
