@@ -82,7 +82,7 @@ xz -dv G_809000.pth.xz
 
 </details>
 
-### 远程命令
+### 远程命令（权限：主人）
 
 <details><summary>展开</summary>
 
@@ -90,7 +90,7 @@ xz -dv G_809000.pth.xz
 
 </details>
 
-### 阿里云盘
+### 阿里云盘（权限：主人）
 
 <details><summary>展开</summary>
 
@@ -121,7 +121,7 @@ xz -dv G_809000.pth.xz
 
 </details>
 
-### 百度网盘
+### 百度网盘（权限：主人）
 
 <details><summary>展开</summary>
 
