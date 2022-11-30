@@ -109,14 +109,13 @@ export class AliyunPan extends plugin {
       fileUrl = await this.e.friend.getFileUrl(this.e.file.fid)
     }
     this.e = es
-    await this.e.reply(`文件链接：${fileUrl}\n保存路径：${filePath}`, true)
 
     if (Running) {
       await this.e.reply("有正在执行的阿里云盘任务，请稍等……", true)
       return false
     }
     Running = true
-    await this.e.reply("开始下载文件，请稍等……", true)
+    await this.e.reply(`开始下载文件，请稍等……\n文件链接：${fileUrl}\n保存路径：${filePath}`, true)
 
     let ret = await common.downFile(fileUrl, filePath)
     if (!ret) {
@@ -168,7 +167,6 @@ export class AliyunPan extends plugin {
       return true
     }
 
-    await this.e.reply(`开始发送文件：${filePath}`, true)
     let res
     if (this.e.isGroup) {
       res = await this.e.group.fs.upload(filePath).catch((err) => {
