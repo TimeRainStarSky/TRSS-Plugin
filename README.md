@@ -16,7 +16,7 @@
 
 ## 安装教程
 
-- 推荐使用 [TRSS Yunzai 管理脚本](../../../TRSS_Yunzai) 一键安装
+- 推荐使用 [TRSS Yunzai 管理脚本](../../../TRSS_Yunzai) 安装
 
 [![TRSS Yunzai 管理脚本](https://github-readme-stats.vercel.app/api/pin/?username=TimeRainStarSky&repo=TRSS_Yunzai&show_owner=true)](../../../TRSS_Yunzai)
 
@@ -51,30 +51,51 @@ curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest
 xz -dv G_809000.pth.xz
 ```
 
-- 阿里云盘 / 百度网盘：使用脚本安装后，启动 CLI，输入 `login -h`，按提示登录
+- 阿里云盘 / 百度网盘：
+
+使用脚本安装后，启动 CLI，输入 `login -h`，按提示登录
 
 ## 使用教程
 
 ### 图片修复
 
+<details><summary>展开</summary>
+
 - 图片修复 / 动漫图片修复 + `图片`
 
+</details>
+
 ### 原神语音合成
+
+<details><summary>展开</summary>
 
 - `角色名` + (API)?(转码)?说 + `中文`
 - 支持角色：派蒙、凯亚、安柏、丽莎、琴、香菱、枫原万叶、迪卢克、温迪、可莉、早柚、托马、芭芭拉、优菈、云堇、钟离、魈、凝光、雷电将军、北斗、甘雨、七七、刻晴、神里绫华、戴因斯雷布、雷泽、神里绫人、罗莎莉亚、阿贝多、八重神子、宵宫、荒泷一斗、九条裟罗、夜兰、珊瑚宫心海、五郎、散兵、女士、达达利亚、莫娜、班尼特、申鹤、行秋、烟绯、久岐忍、辛焱、砂糖、胡桃、重云、菲谢尔、诺艾尔、迪奥娜、鹿野院平藏
 
+</details>
+
 ### 系统信息
+
+<details><summary>展开</summary>
 
 - 系统信息 / 系统信息图片 / 系统测试
 
+</details>
+
 ### 远程命令
+
+<details><summary>展开</summary>
 
 - rc / rcp + `命令`
 
+</details>
+
 ### 阿里云盘
 
+<details><summary>展开</summary>
+
 阿里云盘 +
+
 - 帮助
 - 上传
 - 下载
@@ -98,9 +119,14 @@ xz -dv G_809000.pth.xz
 - 切换账号
 - 当前账号
 
+</details>
+
 ### 百度网盘
 
+<details><summary>展开</summary>
+
 百度网盘 +
+
 - 帮助
 - 复制
 - 下载
@@ -123,6 +149,8 @@ xz -dv G_809000.pth.xz
 - 退出账号
 - 切换账号
 - 当前账号
+
+</details>
 
 ## 常见问题
 
