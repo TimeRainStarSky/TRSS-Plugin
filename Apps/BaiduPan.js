@@ -129,6 +129,7 @@ export class BaiduPan extends plugin {
     let cmd = `"${cmdPath}" upload "${filePath}" "${remotePath}"`
 
     await this.execTask(es, cmd)
+    await fs.unlinkSync(filePath)
     Running = false
   }
 
@@ -190,6 +191,7 @@ export class BaiduPan extends plugin {
       await this.e.reply(`文件发送完成：${fileUrl}`, true)
     }
 
+    await fs.unlinkSync(filePath)
     Running = false
   }
 
