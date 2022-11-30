@@ -10,7 +10,7 @@ let Commands = {
   "帮助":     "help",
   "复制":     "cp",
   "下载":     "download",
-  "下载链接": "locale",
+  "下载链接": "locate",
   "查看":     "ls",
   "元信息":    "meta",
   "创建目录": "mkdir",
