@@ -11,7 +11,8 @@ const { exec, execSync } = require("child_process")
 let path = "plugins/TRSS-Plugin/Real-ESRGAN/"
 let model
 let format = ".jpg"
-let running
+let Running
+let errorTips = "请查看安装使用教程：\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin\n并将报错通过联系方式反馈给开发者"
 
 export class RealESRGAN extends plugin {
   constructor() {
@@ -64,24 +65,24 @@ export class RealESRGAN extends plugin {
 
     if (!this.e.img) {
       this.setContext('RealESRGAN')
-      await this.reply("请发送图片", true)
+      await this.e.reply("请发送图片", true)
     } else {
       this.RealESRGAN()
     }
   }
 
-  async RealESRGAN() {
+  async RealESRGAN(e) {
     if (!this.e.img) {
       return false
     }
 
-    if (running) {
-      await this.reply("正在生成，请稍等……", true)
+    this.finish('RealESRGAN')
+    if (Running) {
+      await this.e.reply("正在生成，请稍等……", true)
       return false
     }
-    running = true
-    this.finish('RealESRGAN')
-    await this.reply("开始生成，请稍等……", true)
+    Running = true
+    await this.e.reply("开始生成，请稍等……", true)
 
     const response = await fetch(this.e.img[0])
     const streamPipeline = promisify(pipeline)
@@ -96,16 +97,14 @@ export class RealESRGAN extends plugin {
 
     if (ret.error) {
       logger.error(`图片修复错误：${logger.red(ret.error)}`)
-      await this.reply(`图片修复错误：${ret.error}`, true)
-      await this.reply(
-        "请查看安装使用教程：\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin\n并将报错通过联系方式反馈给开发者"
-      )
+      await this.e.reply(`图片修复错误：${ret.error}`, true)
+      await this.e.reply(errorTips)
     }
 
-    await this.reply(
+    await this.e.reply(
       segment.image(`${path}results/0_out${format}`),
       true
     )
-    running = false
+    Running = false
   }
 }

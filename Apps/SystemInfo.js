@@ -9,6 +9,7 @@ const ansi_up = new AU.default
 
 let htmlDir = "data/html/"
 let htmlHead = "<head><style>body{background-color:#000000;color:#FFFFFF;font-family:monospace;white-space:pre-wrap;}</style></head>"
+let errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://gitee.com/TimeRainStarSky/TRSS_Yunzai"
 
 let cmd
 let cmdArgv = "--stdout"
@@ -27,7 +28,7 @@ try {
 }
 
 let benchcmd = "bash <(curl -L bench.sh)"
-let running
+let Running
 
 if (process.platform == "win32") {
   cmd = `bash -c "${benchcmd}"`
@@ -72,13 +73,11 @@ export class SystemInfo extends plugin {
 
     if (ret.error) {
       logger.error(`系统信息错误：${logger.red(ret.error)}`)
-      await this.reply(`系统信息错误：${ret.error}`, true)
-      await this.reply(
-        "未使用脚本安装，此功能出错属于正常情况\nhttps://gitee.com/TimeRainStarSky/TRSS_Yunzai"
-      )
+      await this.e.reply(`系统信息错误：${ret.error}`, true)
+      await this.e.reply(errorTips)
     }
 
-    await this.reply(ret.stdout.trim(), true)
+    await this.e.reply(ret.stdout.trim(), true)
   }
 
   async SystemInfoPic(e) {
@@ -88,24 +87,22 @@ export class SystemInfo extends plugin {
 
     if (ret.error) {
       logger.error(`系统信息错误：${logger.red(ret.error)}`)
-      await this.reply(`系统信息错误：${ret.error}`, true)
-      await this.reply(
-        "未使用脚本安装，此功能出错属于正常情况\nhttps://gitee.com/TimeRainStarSky/TRSS_Yunzai"
-      )
+      await this.e.reply(`系统信息错误：${ret.error}`, true)
+      await this.e.reply(errorTips)
     }
 
     await fs.writeFileSync(`${htmlDir}SystemInfo.html`, `${htmlHead}${ansi_up.ansi_to_html(ret.stdout.trim())}`, "utf-8")
     let img = await puppeteer.screenshot("SystemInfo", { tplFile: `${htmlDir}SystemInfo.html` })
-    await this.reply(img, true)
+    await this.e.reply(img, true)
   }
 
   async SystemBench(e) {
-    if (running) {
-      await this.reply("正在测试，请稍等……", true)
+    if (Running) {
+      await this.e.reply("正在测试，请稍等……", true)
       return false
     }
-    running = true
-    await this.reply("开始测试，请稍等……", true)
+    Running = true
+    await this.e.reply("开始测试，请稍等……", true)
 
     logger.mark(`[系统测试]执行：${logger.blue(benchcmd)}`)
     let ret = await this.execSync(`${benchcmd}`)
@@ -113,15 +110,13 @@ export class SystemInfo extends plugin {
 
     if (ret.error) {
       logger.error(`系统测试错误：${logger.red(ret.error)}`)
-      await this.reply(`系统测试错误：${ret.error}`, true)
-      await this.reply(
-        "请查看安装使用教程：\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin\n并将报错通过联系方式反馈给开发者"
-      )
+      await this.e.reply(`系统测试错误：${ret.error}`, true)
+      await this.e.reply(errorTips)
     }
 
     await fs.writeFileSync(`${htmlDir}SystemBench.html`, `${htmlHead}${ansi_up.ansi_to_html(ret.stdout.trim())}`, "utf-8")
     let img = await puppeteer.screenshot("SystemBench", { tplFile: `${htmlDir}SystemBench.html` })
-    await this.reply(img, true)
-    running = false
+    await this.e.reply(img, true)
+    Running = false
   }
 }
