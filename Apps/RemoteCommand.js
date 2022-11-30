@@ -1,8 +1,6 @@
 import fs from "fs"
 import { segment } from "oicq"
-import { createRequire } from "module"
-const require = createRequire(import.meta.url)
-const { exec, execSync } = require("child_process")
+import { exec } from "child_process"
 import puppeteer from "../../../lib/puppeteer/puppeteer.js"
 import AU from "ansi_up"
 const ansi_up = new AU.default

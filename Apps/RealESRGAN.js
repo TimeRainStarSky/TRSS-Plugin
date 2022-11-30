@@ -1,12 +1,7 @@
-import { segment } from "oicq"
 import fs from "fs"
-import fetch from 'node-fetch'
-import { pipeline } from "stream"
-import { promisify } from "util"
-
-import { createRequire } from "module"
-const require = createRequire(import.meta.url)
-const { exec, execSync } = require("child_process")
+import { segment } from "oicq"
+import { exec } from "child_process"
+import common from '../../../lib/common/common.js'
 
 let path = "plugins/TRSS-Plugin/Real-ESRGAN/"
 let model
@@ -84,9 +79,14 @@ export class RealESRGAN extends plugin {
     Running = true
     await this.e.reply("开始生成，请稍等……", true)
 
-    const response = await fetch(this.e.img[0])
-    const streamPipeline = promisify(pipeline)
-    await streamPipeline(response.body, fs.createWriteStream(path + "0" + format))
+    let ret = await common.downFile(this.e.img[0], `${path}0${format}`)
+    if (!ret) {
+      await this.e.reply("下载图片错误", true)
+      await this.e.reply(errorTips)
+      Running = false
+      return true
+    }
+
     logger.mark(`[图片修复]图片保存成功：${this.e.img[0]}`)
 
     let cmd = `sh ${path}main.sh --fp32 --tile 100 -n ${model} -i 0${format}`

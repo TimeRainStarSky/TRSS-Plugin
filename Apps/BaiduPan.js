@@ -1,9 +1,7 @@
 import fs from "fs"
 import { segment } from "oicq"
+import { exec } from "child_process"
 import common from '../../../lib/common/common.js'
-import { createRequire } from "module"
-const require = createRequire(import.meta.url)
-const { exec, execSync } = require("child_process")
 
 let Commands = {
   "":         "help",
@@ -119,7 +117,7 @@ export class BaiduPan extends plugin {
 
     let ret = await common.downFile(fileUrl, filePath)
     if (!ret) {
-      this.e.reply("下载文件错误", true)
+      await this.e.reply("下载文件错误", true)
       Running = false
       return true
     }
