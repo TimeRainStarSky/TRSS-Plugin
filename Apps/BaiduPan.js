@@ -10,7 +10,7 @@ let Commands = {
   "帮助":     "help",
   "复制":     "cp",
   "下载":     "download",
-  "下载链接": "locate",
+  "链接":     "locate",
   "查看":     "ls",
   "元信息":    "meta",
   "创建目录": "mkdir",
@@ -30,6 +30,7 @@ let Commands = {
   "切换账号": "su",
   "当前账号": "who"
 }
+
 let path = `${process.env.HOME}/BaiduPCS-Go/`
 let cmdPath = `${path}BaiduPCS-Go`
 let Running
