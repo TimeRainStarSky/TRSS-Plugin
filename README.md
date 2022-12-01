@@ -90,6 +90,14 @@ xz -dv G_809000.pth.xz
 
 </details>
 
+### 文件操作（权限：主人）
+
+<details><summary>展开</summary>
+
+- 文件查看 / 文件上传 / 文件下载 + `路径`
+
+</details>
+
 ### 阿里云盘（权限：主人）
 
 <details><summary>展开</summary>

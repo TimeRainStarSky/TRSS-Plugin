@@ -1,6 +1,6 @@
 import fs from "fs"
 import { segment } from "oicq"
-import { exec } from "child_process"
+import { exec, execSync } from "child_process"
 import puppeteer from "../../../lib/puppeteer/puppeteer.js"
 import AU from "ansi_up"
 const ansi_up = new AU.default

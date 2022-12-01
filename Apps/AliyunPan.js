@@ -45,11 +45,11 @@ export class AliyunPan extends plugin {
       rule: [
         {
           reg: "^阿里云盘上传",
-          fnc: "AliyunPanUploadDetect",
+          fnc: "UploadDetect",
         },
         {
           reg: "^阿里云盘下载",
-          fnc: "AliyunPanDownload",
+          fnc: "Download",
         },
         {
           reg: "^阿里云盘",
@@ -85,20 +85,19 @@ export class AliyunPan extends plugin {
       await this.e.reply(`阿里云盘错误：${ret.error}`, true)
       await this.e.reply(errorTips)
     }
-
   }
 
-  async AliyunPanUploadDetect(e) {
+  async UploadDetect(e) {
     es = this.e
-    this.setContext('AliyunPanUpload')
+    this.setContext('Upload')
     await this.e.reply("请发送文件", true)
   }
 
-  async AliyunPanUpload(e) {
+  async Upload(e) {
     if(!this.e.isMaster)return false
     if(!this.e.file)return false
 
-    this.finish('AliyunPanUpload')
+    this.finish('Upload')
     let filePath = `${path}${this.e.file.name}`
     let fileUrl
     if (this.e.isGroup) {
@@ -117,12 +116,12 @@ export class AliyunPan extends plugin {
 
     let ret = await common.downFile(fileUrl, filePath)
     if (!ret) {
-      await this.e.reply("下载文件错误", true)
+      await this.e.reply("文件下载错误", true)
       Running = false
       return true
     }
 
-    let remotePath = es.msg.replace("阿里云盘上传", "").trim()
+    let remotePath = this.e.msg.replace("阿里云盘上传", "").trim()
     await this.e.reply(`文件下载完成，开始上传到：${remotePath}`, true)
     let cmd = `"${cmdPath}" upload "${filePath}" "${remotePath}"`
 
@@ -131,17 +130,17 @@ export class AliyunPan extends plugin {
     Running = false
   }
 
-  async AliyunPanDownload(e) {
+  async Download(e) {
     if(!this.e.isMaster)return false
     if (Running) {
       await this.e.reply("有正在执行的阿里云盘任务，请稍等……", true)
       return false
     }
 
-    this.finish('AliyunPanDownload')
+    this.finish('Download')
     let remotePath = this.e.msg.replace("阿里云盘下载", "").trim()
     if (!remotePath) {
-      this.setContext('AliyunPanDownload')
+      this.setContext('Download')
       await this.e.reply("请发送文件路径", true)
       return true
     }
@@ -155,7 +154,7 @@ export class AliyunPan extends plugin {
 
     let filePath = `${path}${remotePath}`
     if (!fs.existsSync(filePath)) {
-      await this.e.reply("下载文件失败", true)
+      await this.e.reply("文件下载错误", true)
       Running = false
       return true
     }
@@ -168,13 +167,13 @@ export class AliyunPan extends plugin {
     let res
     if (this.e.isGroup) {
       res = await this.e.group.fs.upload(filePath).catch((err) => {
-        this.e.reply(`发送文件失败：${JSON.stringify(err)}`)
-        logger.error(`发送文件失败：${logger.red(JSON.stringify(err))}`)
+        this.e.reply(`文件发送错误：${JSON.stringify(err)}`)
+        logger.error(`文件发送错误：${logger.red(JSON.stringify(err))}`)
       })
     } else {
       res = await this.e.friend.sendFile(filePath).catch((err) => {
-        this.e.reply(`发送文件失败：${JSON.stringify(err)}`)
-        logger.error(`发送文件失败：${logger.red(JSON.stringify(err))}`)
+        this.e.reply(`文件发送错误：${JSON.stringify(err)}`)
+        logger.error(`文件发送错误：${logger.red(JSON.stringify(err))}`)
       })
     }
 
@@ -200,7 +199,6 @@ export class AliyunPan extends plugin {
     }
     msg = msg.join(" ")
     let cmd = `"${cmdPath}" ${msg}`
-
     await this.execTask(e, cmd)
   }
 }
