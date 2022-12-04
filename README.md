@@ -6,6 +6,7 @@
 
 云崽机器人插件
 
+[![访问量](https://visitor-badge.glitch.me/badge?page_id=TimeRainStarSky.TRSS-Plugin&right_color=red&left_text=访%20问%20量)](https://github.com/TimeRainStarSky/TRSS-Plugin)
 [![Stars](https://img.shields.io/github/stars/TimeRainStarSky/TRSS-Plugin?color=yellow&label=收藏)](../../stargazers)
 [![Downloads](https://img.shields.io/github/downloads/TimeRainStarSky/TRSS-Plugin/total?color=blue&label=下载)](Install.sh)
 [![Releases](https://img.shields.io/github/v/release/TimeRainStarSky/TRSS-Plugin?color=green&label=发行版)](../../releases/latest)
