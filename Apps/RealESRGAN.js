@@ -3,7 +3,7 @@ import { segment } from "oicq"
 import { exec } from "child_process"
 import common from '../../../lib/common/common.js'
 
-let path = "plugins/TRSS-Plugin/Real-ESRGAN/"
+let path = `${process.cwd()}/plugins/TRSS-Plugin/Real-ESRGAN/`
 let model
 let format = ".jpg"
 let Running

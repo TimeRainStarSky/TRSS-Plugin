@@ -116,7 +116,7 @@ export class File extends plugin {
     if(!this.e.file)return false
 
     this.finish('Download')
-    let filePath = `${es.msg.replace("文件下载", "").trim()||"."}/${this.e.file.name}`
+    let filePath = `${es.msg.replace("文件下载", "").trim()||process.cwd()}/${this.e.file.name}`
     let fileUrl
     if (this.e.isGroup) {
       fileUrl = await this.e.group.getFileUrl(this.e.file.fid)
