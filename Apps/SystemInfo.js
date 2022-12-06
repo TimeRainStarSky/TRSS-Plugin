@@ -1,4 +1,3 @@
-import fs from "fs"
 import { segment } from "oicq"
 import { exec, execSync } from "child_process"
 import puppeteer from "../../../lib/puppeteer/puppeteer.js"

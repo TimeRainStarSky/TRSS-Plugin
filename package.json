@@ -3,6 +3,8 @@
   "type": "module",
   "author": "TimeRainStarSky",
   "dependencies": {
-    "ansi_up": "^5.1.0"
+    "ansi_up": "^5.1.0",
+    "chatgpt": "^1.4.0",
+    "markdown-it": "^13.0.1"
   }
 }

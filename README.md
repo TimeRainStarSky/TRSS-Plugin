@@ -27,7 +27,7 @@
 
 ```
 git clone --depth=1 https://gitee.com/TimeRainStarSky/TRSS-Plugin plugins/TRSS-Plugin
-pnpm install
+pnpm i
 ```
 
 3. 安装 [Python 3.10](https://python.org) 和 [Poetry](https://python-poetry.org)，并在插件目录执行以下操作
@@ -56,6 +56,10 @@ xz -dv G_809000.pth.xz
 
 使用脚本安装后，启动 CLI，输入 `login -h`，按提示登录
 
+- OpenAI ChatGPT：
+
+获取 `sessionToken` 填入 `config.yaml`，[获取教程](https://github.com/transitive-bullshit/chatgpt-api#how-it-works)
+
 ## 使用教程
 
 ### 图片修复
@@ -80,6 +84,14 @@ xz -dv G_809000.pth.xz
 <details><summary>展开</summary>
 
 - 系统信息 / 系统信息图片 / 系统测试
+
+</details>
+
+### OpenAI ChatGPT
+
+<details><summary>展开</summary>
+
+- cg / cgp + `文字`
 
 </details>
 
