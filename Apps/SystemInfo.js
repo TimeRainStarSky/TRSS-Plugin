@@ -5,8 +5,7 @@ import puppeteer from "../../../lib/puppeteer/puppeteer.js"
 import AU from "ansi_up"
 const ansi_up = new AU.default
 
-let htmlDir = "data/html/"
-let htmlHead = "<head><style>body{background-color:#000000;color:#FFFFFF;font-family:monospace;white-space:pre-wrap;}</style></head>"
+let tplFile = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/Code.html`
 let errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://gitee.com/TimeRainStarSky/TRSS_Yunzai"
 
 let cmd
@@ -89,8 +88,8 @@ export class SystemInfo extends plugin {
       await this.e.reply(errorTips)
     }
 
-    await fs.writeFileSync(`${htmlDir}SystemInfo.html`, `${htmlHead}${ansi_up.ansi_to_html(ret.stdout.trim())}`, "utf-8")
-    let img = await puppeteer.screenshot("SystemInfo", { tplFile: `${htmlDir}SystemInfo.html` })
+    let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
+    let img = await puppeteer.screenshot("Code", { tplFile, Code })
     await this.e.reply(img, true)
   }
 
@@ -112,8 +111,8 @@ export class SystemInfo extends plugin {
       await this.e.reply(errorTips)
     }
 
-    await fs.writeFileSync(`${htmlDir}SystemBench.html`, `${htmlHead}${ansi_up.ansi_to_html(ret.stdout.trim())}`, "utf-8")
-    let img = await puppeteer.screenshot("SystemBench", { tplFile: `${htmlDir}SystemBench.html` })
+    let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
+    let img = await puppeteer.screenshot("Code", { tplFile, Code })
     await this.e.reply(img, true)
     Running = false
   }

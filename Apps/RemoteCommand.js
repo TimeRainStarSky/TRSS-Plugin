@@ -5,8 +5,7 @@ import puppeteer from "../../../lib/puppeteer/puppeteer.js"
 import AU from "ansi_up"
 const ansi_up = new AU.default
 
-let htmlFile = "data/html/RemoteCommand.html"
-let htmlHead = "<head><style>body{background-color:#000000;color:#FFFFFF;font-family:monospace;white-space:pre-wrap;}</style></head>"
+let tplFile = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/Code.html`
 
 export class RemoteCommand extends plugin {
   constructor() {
@@ -67,14 +66,14 @@ export class RemoteCommand extends plugin {
     logger.mark(`[远程命令]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
     if (ret.stdout) {
-      await fs.writeFileSync(htmlFile, `${htmlHead}${ansi_up.ansi_to_html(ret.stdout.trim())}`, "utf-8")
-      let img = await puppeteer.screenshot("RemoteCommand", { tplFile: htmlFile })
+      let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
+      let img = await puppeteer.screenshot("Code", { tplFile, Code })
       await this.e.reply(img, true)
     }
 
     if (ret.stderr) {
-      await fs.writeFileSync(htmlFile, `${htmlHead}${ansi_up.ansi_to_html(ret.stderr.trim())}`, "utf-8")
-      let img = await puppeteer.screenshot("RemoteCommand", { tplFile: htmlFile })
+      let Code = await ansi_up.ansi_to_html(ret.stderr.trim())
+      let img = await puppeteer.screenshot("Code", { tplFile, Code })
       await this.e.reply(["标准错误输出：", img], true)
     }
 

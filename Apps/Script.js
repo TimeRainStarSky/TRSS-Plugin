@@ -5,9 +5,7 @@ import puppeteer from "../../../lib/puppeteer/puppeteer.js"
 import AU from "ansi_up"
 const ansi_up = new AU.default
 
-let htmlFile = "data/html/Script.html"
-let htmlHead = "<head><style>body{background-color:#000000;color:#FFFFFF;font-family:monospace;white-space:pre-wrap;}</style></head>"
-
+let tplFile = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/Code.html`
 let path = `${process.env.HOME}/../`
 let cmdPath = `${path}Main.sh`
 let errorTips = "请使用脚本安装，再使用此功能\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin\nhttps://gitee.com/TimeRainStarSky/TRSS_Yunzai"
@@ -42,14 +40,14 @@ export class Script extends plugin {
     logger.mark(`[脚本]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
     if (ret.stdout) {
-      await fs.writeFileSync(htmlFile, `${htmlHead}${ansi_up.ansi_to_html(ret.stdout.trim())}`, "utf-8")
-      let img = await puppeteer.screenshot("Script", { tplFile: htmlFile })
+      let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
+      let img = await puppeteer.screenshot("Code", { tplFile, Code })
       await this.e.reply(img, true)
     }
 
     if (ret.stderr) {
-      await fs.writeFileSync(htmlFile, `${htmlHead}${ansi_up.ansi_to_html(ret.stderr.trim())}`, "utf-8")
-      let img = await puppeteer.screenshot("Script", { tplFile: htmlFile })
+      let Code = await ansi_up.ansi_to_html(ret.stderr.trim())
+      let img = await puppeteer.screenshot("Code", { tplFile, Code })
       await this.e.reply(["标准错误输出：", img], true)
     }
 
