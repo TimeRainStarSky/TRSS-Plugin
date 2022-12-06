@@ -36,19 +36,11 @@ export class ChatGPT extends plugin {
     })
   }
 
-  async execSync(cmd) {
-    return new Promise((resolve, reject) => {
-      exec(cmd, (error, stdout, stderr) => {
-        resolve({ error, stdout, stderr })
-      })
-    })
-  }
-
   async ChatGPT(e) {
     let msg = this.e.msg.replace("cg", "").trim()
     logger.mark(`[ChatGPT]消息：${logger.blue(msg)}`)
 
-    let res = await api.sendMessage(msg)
+    let res = await api.sendMessage(msg, { conversationId: e.user_id })
     if (res) {
       await this.e.reply(res, true)
     } else {
@@ -60,7 +52,7 @@ export class ChatGPT extends plugin {
     let msg = this.e.msg.replace("cgp", "").trim()
     logger.mark(`[ChatGPT]消息：${logger.blue(msg)}`)
 
-    let res = await api.sendMessage(msg)
+    let res = await api.sendMessage(msg, { conversationId: e.user_id })
     if (res) {
       let Markdown = md.render(res)
       let img = await puppeteer.screenshot("Markdown", { tplFile, Markdown })
