@@ -8,6 +8,7 @@ const md = new MarkdownIt()
 let tplFile = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Markdown/Markdown.html`
 let errorTips = "ChatGPT 请求失败\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin"
 let api
+let conv = {}
 
 try {
   api = new ChatGPTAPI({ sessionToken: config.ChatGPT.sessionToken })
@@ -40,7 +41,11 @@ export class ChatGPT extends plugin {
     let msg = this.e.msg.replace("cg", "").trim()
     logger.mark(`[ChatGPT]消息：${logger.blue(msg)}`)
 
-    let res = await api.sendMessage(msg)
+    if (!conv[e.user_id]) {
+      conv[e.user_id] = api.getConversation()
+    }
+
+    let res = await conv[e.user_id].sendMessage(msg)
     if (res) {
       await this.e.reply(res, true)
     } else {
@@ -52,7 +57,11 @@ export class ChatGPT extends plugin {
     let msg = this.e.msg.replace("cgp", "").trim()
     logger.mark(`[ChatGPT]消息：${logger.blue(msg)}`)
 
-    let res = await api.sendMessage(msg)
+    if (!conv[e.user_id]) {
+      conv[e.user_id] = api.getConversation()
+    }
+
+    let res = await conv[e.user_id].sendMessage(msg)
     if (res) {
       let Markdown = md.render(res)
       let img = await puppeteer.screenshot("Markdown", { tplFile, Markdown })
