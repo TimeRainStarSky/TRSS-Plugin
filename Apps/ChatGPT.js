@@ -15,7 +15,7 @@ if (config.ChatGPT.sessionToken) {
     api = new ChatGPTAPI({ sessionToken: config.ChatGPT.sessionToken })
     await api.ensureAuth()
   } catch {
-    logger.error("[ChatGPT]验证失败，请输入正确 sessionToken")
+    logger.error("[ChatGPT]验证失败，请确认 sessionToken 正确，并且网络环境正常")
   }
 }
 
