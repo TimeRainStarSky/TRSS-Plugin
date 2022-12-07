@@ -40,7 +40,7 @@ export class ChatGPT extends plugin {
     let msg = this.e.msg.replace("cg", "").trim()
     logger.mark(`[ChatGPT]消息：${logger.blue(msg)}`)
 
-    let res = await api.sendMessage(msg, { conversationId: e.user_id })
+    let res = await api.sendMessage(msg)
     if (res) {
       await this.e.reply(res, true)
     } else {
@@ -52,7 +52,7 @@ export class ChatGPT extends plugin {
     let msg = this.e.msg.replace("cgp", "").trim()
     logger.mark(`[ChatGPT]消息：${logger.blue(msg)}`)
 
-    let res = await api.sendMessage(msg, { conversationId: e.user_id })
+    let res = await api.sendMessage(msg)
     if (res) {
       let Markdown = md.render(res)
       let img = await puppeteer.screenshot("Markdown", { tplFile, Markdown })

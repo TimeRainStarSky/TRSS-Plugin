@@ -58,7 +58,7 @@ xz -dv G_809000.pth.xz
 
 - OpenAI ChatGPT：
 
-获取 `sessionToken` 填入 `config.yaml`，[获取教程](https://github.com/transitive-bullshit/chatgpt-api#how-it-works)
+获取 `sessionToken` 填入 `config.yaml`，[获取教程](https://github.com/transitive-bullshit/chatgpt-api#session-tokens)
 
 ## 使用教程
 
