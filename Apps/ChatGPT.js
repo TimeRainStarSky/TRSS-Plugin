@@ -41,14 +41,14 @@ export class ChatGPT extends plugin {
     let msg = this.e.msg.replace("cg", "").trim()
     logger.mark(`[ChatGPT]消息：${logger.blue(msg)}`)
 
-    if (!conv[e.user_id]) {
-      conv[e.user_id] = api.getConversation()
-    }
+    try {
+      if (!conv[e.user_id]) {
+        conv[e.user_id] = api.getConversation()
+      }
+      let res = await conv[e.user_id].sendMessage(msg)
 
-    let res = await conv[e.user_id].sendMessage(msg)
-    if (res) {
       await this.e.reply(res, true)
-    } else {
+    } catch {
       await this.e.reply(errorTips, true)
     }
   }
@@ -57,16 +57,17 @@ export class ChatGPT extends plugin {
     let msg = this.e.msg.replace("cgp", "").trim()
     logger.mark(`[ChatGPT]消息：${logger.blue(msg)}`)
 
-    if (!conv[e.user_id]) {
-      conv[e.user_id] = api.getConversation()
-    }
+    try {
+      if (!conv[e.user_id]) {
+        conv[e.user_id] = api.getConversation()
+      }
+      let res = await conv[e.user_id].sendMessage(msg)
 
-    let res = await conv[e.user_id].sendMessage(msg)
-    if (res) {
       let Markdown = md.render(res)
       let img = await puppeteer.screenshot("Markdown", { tplFile, Markdown })
+
       await this.e.reply(img, true)
-    } else {
+    } catch {
       await this.e.reply(errorTips, true)
     }
   }
