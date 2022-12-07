@@ -6,15 +6,17 @@ import MarkdownIt from "markdown-it"
 const md = new MarkdownIt()
 
 let tplFile = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Markdown/Markdown.html`
-let errorTips = "ChatGPT 请求失败\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin"
+let errorTips = "ChatGPT 请求失败，请确认 sessionToken 正确，并且网络环境正常\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin"
 let api
 let conv = {}
 
-try {
-  api = new ChatGPTAPI({ sessionToken: config.ChatGPT.sessionToken })
-  await api.ensureAuth()
-} catch {
-  logger.error("[ChatGPT]验证失败，请输入正确 sessionToken，不需要此功能可忽略")
+if (config.ChatGPT.sessionToken) {
+  try {
+    api = new ChatGPTAPI({ sessionToken: config.ChatGPT.sessionToken })
+    await api.ensureAuth()
+  } catch {
+    logger.error("[ChatGPT]验证失败，请输入正确 sessionToken")
+  }
 }
 
 export class ChatGPT extends plugin {
