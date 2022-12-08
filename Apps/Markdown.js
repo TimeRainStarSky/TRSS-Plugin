@@ -25,6 +25,7 @@ export class Markdown extends plugin {
   }
 
   async Markdown(e) {
+    if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     let msg = this.e.msg.replace("md", "").trim()
     logger.mark(`[Markdown]查看：${logger.blue(msg)}`)
 
