@@ -4,7 +4,8 @@ import puppeteer from "../../../lib/puppeteer/puppeteer.js"
 import AU from "ansi_up"
 const ansi_up = new AU.default
 
-let tplFile = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/Code.html`
+let htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
+let tplFile = `${htmlDir}Code.html`
 let errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://gitee.com/TimeRainStarSky/TRSS_Yunzai"
 
 let cmd
@@ -88,7 +89,7 @@ export class SystemInfo extends plugin {
     }
 
     let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
-    let img = await puppeteer.screenshot("Code", { tplFile, Code })
+    let img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
     await this.e.reply(img, true)
   }
 
@@ -111,7 +112,7 @@ export class SystemInfo extends plugin {
     }
 
     let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
-    let img = await puppeteer.screenshot("Code", { tplFile, Code })
+    let img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
     await this.e.reply(img, true)
     Running = false
   }

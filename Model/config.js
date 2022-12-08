@@ -8,6 +8,6 @@ if (!fs.existsSync(configFile)) {
   fs.copyFileSync(`${path}config_demo.yaml`, configFile)
 }
 
-let config = YAML.parse(fs.readFileSync(configFile, 'utf-8'))
+let config = YAML.parse(fs.readFileSync(configFile, "utf-8"))
 
 export default config

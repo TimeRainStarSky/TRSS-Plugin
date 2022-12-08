@@ -4,7 +4,8 @@ import puppeteer from "../../../lib/puppeteer/puppeteer.js"
 import AU from "ansi_up"
 const ansi_up = new AU.default
 
-let tplFile = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/Code.html`
+let htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
+let tplFile = `${htmlDir}Code.html`
 
 export class RemoteCommand extends plugin {
   constructor() {
@@ -66,13 +67,13 @@ export class RemoteCommand extends plugin {
 
     if (ret.stdout) {
       let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
-      let img = await puppeteer.screenshot("Code", { tplFile, Code })
+      let img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
       await this.e.reply(img, true)
     }
 
     if (ret.stderr) {
       let Code = await ansi_up.ansi_to_html(ret.stderr.trim())
-      let img = await puppeteer.screenshot("Code", { tplFile, Code })
+      let img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
       await this.e.reply(["标准错误输出：", img], true)
     }
 

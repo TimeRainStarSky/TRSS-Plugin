@@ -5,7 +5,8 @@ import { ChatGPTAPI } from "chatgpt"
 import MarkdownIt from "markdown-it"
 const md = new MarkdownIt()
 
-let tplFile = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Markdown/Markdown.html`
+let htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Markdown/`
+let tplFile = `${htmlDir}Markdown.html`
 let errorTips = "ChatGPT 请求失败，请确认 sessionToken 正确，并且网络环境正常\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin"
 let api
 let conv = {}
@@ -66,7 +67,7 @@ export class ChatGPT extends plugin {
       let res = await conv[e.user_id].sendMessage(msg)
 
       let Markdown = md.render(res)
-      let img = await puppeteer.screenshot("Markdown", { tplFile, Markdown })
+      let img = await puppeteer.screenshot("Markdown", { tplFile, htmlDir, Markdown })
 
       await this.e.reply(img, true)
     } catch {
