@@ -28,7 +28,7 @@ let benchcmd = "bash <(curl -L bench.sh)"
 let Running
 
 if (process.platform == "win32") {
-  cmd = `bash -c "${benchcmd}"`
+  benchcmd = `bash -c "${benchcmd}"`
 }
 
 export class SystemInfo extends plugin {
