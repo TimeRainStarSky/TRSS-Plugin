@@ -9,25 +9,21 @@ let tplFile = `${htmlDir}Code.html`
 let errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://gitee.com/TimeRainStarSky/TRSS_Yunzai"
 
 let cmd
-let cmdArgv = "--stdout"
-
 try {
   execSync("type fastfetch")
-  cmd = "fastfetch"
-  if (process.platform != "win32") {
-    cmdArgv = "--pipe"
+  if (process.platform == "win32") {
+    cmd = "fastfetch --stdout"
+  } else {
+    cmd = "fastfetch --pipe"
   }
 } catch {
-  cmd = "bash <(curl -L https://gitee.com/TimeRainStarSky/neofetch/raw/master/neofetch)"
-  if (process.platform == "win32") {
-    cmd = `bash -c "${cmd}"`
-  }
+  cmd = "bash <(curl -L https://gitee.com/TimeRainStarSky/neofetch/raw/master/neofetch) --stdout"
 }
-
 let benchcmd = "bash <(curl -L bench.sh)"
 let Running
 
 if (process.platform == "win32") {
+  cmd = `bash -c "${cmd}"`
   benchcmd = `bash -c "${benchcmd}"`
 }
 
@@ -64,8 +60,8 @@ export class SystemInfo extends plugin {
   }
 
   async SystemInfo(e) {
-    logger.mark(`[系统信息]执行：${logger.blue(cmd)} ${cmdArgv}`)
-    let ret = await this.execSync(`${cmd} ${cmdArgv}`)
+    logger.mark(`[系统信息]执行：${logger.blue(cmd)}`)
+    let ret = await this.execSync(cmd)
     logger.mark(`[系统信息]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
     if (ret.error) {
