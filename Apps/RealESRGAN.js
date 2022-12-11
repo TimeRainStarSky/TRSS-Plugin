@@ -87,11 +87,11 @@ export class RealESRGAN extends plugin {
       return true
     }
 
-    logger.mark(`[图片修复]图片保存成功：${this.e.img[0]}`)
+    logger.mark(`[图片修复] 图片保存成功：${this.e.img[0]}`)
 
     let cmd = `sh ${path}main.sh --fp32 --tile 100 -n ${model} -i 0${format}`
 
-    logger.mark(`[图片修复]执行：${logger.blue(cmd)}`)
+    logger.mark(`[图片修复] 执行：${logger.blue(cmd)}`)
     ret = await this.execSync(cmd)
     logger.mark(`[图片修复]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 

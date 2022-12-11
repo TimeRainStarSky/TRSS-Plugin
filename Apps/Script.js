@@ -35,7 +35,7 @@ export class Script extends plugin {
   }
 
   async execTask(e, cmd) {
-    logger.mark(`[脚本]执行：${logger.blue(cmd)}`)
+    logger.mark(`[脚本] 执行：${logger.blue(cmd)}`)
     let ret = await this.execSync(cmd)
     logger.mark(`[脚本]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 

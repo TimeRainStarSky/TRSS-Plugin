@@ -18,7 +18,7 @@ try {
   } else {
     cmds = `${cmd} --pipe`
   }
-} catch {
+} catch (err) {
   cmd = "bash <(curl -L https://gitee.com/TimeRainStarSky/neofetch/raw/master/neofetch)"
   cmds = `${cmd} --stdout`
 }
@@ -64,7 +64,7 @@ export class SystemInfo extends plugin {
   }
 
   async SystemInfo(e) {
-    logger.mark(`[系统信息]执行：${logger.blue(cmds)}`)
+    logger.mark(`[系统信息] 执行：${logger.blue(cmds)}`)
     let ret = await this.execSync(cmds)
     logger.mark(`[系统信息]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
@@ -78,7 +78,7 @@ export class SystemInfo extends plugin {
   }
 
   async SystemInfoPic(e) {
-    logger.mark(`[系统信息]执行：${logger.blue(cmd)}`)
+    logger.mark(`[系统信息] 执行：${logger.blue(cmd)}`)
     let ret = await this.execSync(`${cmd}`)
     logger.mark(`[系统信息]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
@@ -101,7 +101,7 @@ export class SystemInfo extends plugin {
     Running = true
     await this.e.reply("开始测试，请稍等……", true)
 
-    logger.mark(`[系统测试]执行：${logger.blue(benchcmd)}`)
+    logger.mark(`[系统测试] 执行：${logger.blue(benchcmd)}`)
     let ret = await this.execSync(`${benchcmd}`)
     logger.mark(`[系统测试]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 

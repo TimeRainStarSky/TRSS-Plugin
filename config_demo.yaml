@@ -3,4 +3,8 @@
 # 参考：https://gitee.com/TimeRainStarSky/TRSS-Plugin
 
 ChatGPT:
+  api: "" # 私人 API 地址
+  tokenapi: "" # Token API 地址
+  username: "" # OpenAI 账号
+  password: "" # OpenAI 密码
   sessionToken: ""

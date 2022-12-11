@@ -45,7 +45,7 @@ export class GenshinVoice extends plugin {
     if (speaker.match("API")) {
       let speakerid = speakers.indexOf(speaker.replace("API", ""))
       let url = `https://genshin.azurewebsites.net/api/speak?format=mp3&id=${speakerid}&text=${encodeURI(data)}`
-      logger.mark(`[原神语音合成]发送API语音：${url}`)
+      logger.mark(`[原神语音合成] 发送API语音：${url}`)
 
       await this.e.reply(
         await uploadRecord(url, 68714, transcoding)
@@ -62,7 +62,7 @@ export class GenshinVoice extends plugin {
 
     let cmd = `sh ${path}main.sh output.wav '${speaker}' '${data}'`
 
-    logger.mark(`[原神语音合成]执行：${logger.blue(cmd)}`)
+    logger.mark(`[原神语音合成] 执行：${logger.blue(cmd)}`)
     let ret = await this.execSync(cmd)
     logger.mark(`[原神语音合成]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
