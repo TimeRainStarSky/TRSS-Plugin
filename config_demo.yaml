@@ -2,6 +2,9 @@
 # 按 Ctrl+Q Y 保存退出
 # 参考：https://gitee.com/TimeRainStarSky/TRSS-Plugin
 
+RealESRGAN:
+  api: "" # 私人 API 地址
+
 ChatGPT:
   api: "" # 私人 API 地址
   tokenapi: "" # Token API 地址

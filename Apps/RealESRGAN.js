@@ -1,5 +1,6 @@
 import fs from "fs"
 import { segment } from "oicq"
+import config from "../Model/config.js"
 import { exec } from "child_process"
 import common from '../../../lib/common/common.js'
 
@@ -79,29 +80,37 @@ export class RealESRGAN extends plugin {
     Running = true
     await this.e.reply("开始生成，请稍等……", true)
 
-    let ret = await common.downFile(this.e.img[0], `${path}0${format}`)
-    if (!ret) {
-      await this.e.reply("下载图片错误", true)
-      await this.e.reply(errorTips)
-      Running = false
-      return true
+    let url
+    if (config.RealESRGAN.api) {
+      url = `${config.RealESRGAN.api}?fp32=True&tile=100&model_name=${model}&input=${encodeURIComponent(this.e.img[0])}`
+    } else {
+      let ret = await common.downFile(this.e.img[0], `${path}0${format}`)
+      if (!ret) {
+        await this.e.reply("下载图片错误", true)
+        await this.e.reply(errorTips)
+        Running = false
+        return true
+      }
+
+      logger.mark(`[图片修复] 图片保存成功：${this.e.img[0]}`)
+
+      let cmd = `sh ${path}main.sh --fp32 --tile 100 -n ${model} -i 0${format}`
+
+      logger.mark(`[图片修复] 执行：${logger.blue(cmd)}`)
+      ret = await this.execSync(cmd)
+      logger.mark(`[图片修复]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
+
+      if (ret.error) {
+        logger.error(`图片修复错误：${logger.red(ret.error)}`)
+        await this.e.reply(`图片修复错误：${ret.error}`, true)
+        await this.e.reply(errorTips)
+      }
+
+      url = `${path}results/0_out${format}`
     }
 
-    logger.mark(`[图片修复] 图片保存成功：${this.e.img[0]}`)
-
-    let cmd = `sh ${path}main.sh --fp32 --tile 100 -n ${model} -i 0${format}`
-
-    logger.mark(`[图片修复] 执行：${logger.blue(cmd)}`)
-    ret = await this.execSync(cmd)
-    logger.mark(`[图片修复]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
-
-    if (ret.error) {
-      logger.error(`图片修复错误：${logger.red(ret.error)}`)
-      await this.e.reply(`图片修复错误：${ret.error}`, true)
-      await this.e.reply(errorTips)
-    }
-
-    await this.e.reply(segment.image(`${path}results/0_out${format}`), true)
+    logger.mark(`[图片修复] 发送图片：${logger.blue(url)}`)
+    await this.e.reply(segment.image(url), true)
     Running = false
   }
 }

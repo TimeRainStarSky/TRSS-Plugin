@@ -41,6 +41,18 @@ poetry install
 poetry run python setup.py develop
 ```
 
+<details><summary>部署为 API 服务器</summary>
+
+```
+# 安装 Flask
+poetry run pip install flask
+
+# 启动 API 服务器
+poetry run python inference_realesrgan_server.py
+```
+
+</details>
+
 - 原神语音合成：
 
 ```
