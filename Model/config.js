@@ -27,8 +27,12 @@ let config = {
 }
 
 if (fs.existsSync(configFile)) {
-  configData = YAML.parse(fs.readFileSync(configFile, "utf-8"))
-  _.merge(config, configData)
+  try {
+    configData = YAML.parse(fs.readFileSync(configFile, "utf-8"))
+    _.merge(config, configData)
+  } catch (err) {
+    logger.error(`配置文件 读取失败：${logger.red(err)}`)
+  }
 }
 
 if (config != configData) {
