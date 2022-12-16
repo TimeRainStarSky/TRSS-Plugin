@@ -53,7 +53,7 @@ export class GenshinVoice extends plugin {
 
     let url
     if (config.GenshinVoice.api) {
-      url = `${config.GenshinVoice.api}?id=${speakerid}&text=${encodeURIComponent(text)}`
+      url = `${config.GenshinVoice.api}?user_id=${this.e.user_id}&id=${speakerid}&text=${encodeURIComponent(text)}`
     } else {
       let cmd = `sh ${path}main.sh output.wav ${speakerid} '${text}'`
 
