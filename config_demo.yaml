@@ -2,11 +2,14 @@
 # 按 Ctrl+Q Y 保存退出
 # 参考：https://gitee.com/TimeRainStarSky/TRSS-Plugin
 
+GenshinVoice:
+  api: "" # API 地址
+
 RealESRGAN:
-  api: "" # 私人 API 地址
+  api: "" # API 地址
 
 ChatGPT:
-  api: "" # 私人 API 地址
+  api: "" # API 地址
   tokenapi: "" # Token API 地址
   username: "" # OpenAI 账号
   password: "" # OpenAI 密码
