@@ -74,10 +74,6 @@ poetry run python server.py [端口]
 
 使用脚本安装后，启动 CLI，输入 `login -h`，按提示登录
 
-- OpenAI ChatGPT：
-
-获取 `sessionToken` 填入 `config.yaml`，[获取教程](https://github.com/transitive-bullshit/chatgpt-api#session-tokens)
-
 ## 使用教程
 
 ### 图片修复
@@ -102,14 +98,6 @@ poetry run python server.py [端口]
 <details><summary>展开</summary>
 
 - 系统信息 / 系统信息图片 / 系统测试
-
-</details>
-
-### OpenAI ChatGPT
-
-<details><summary>展开</summary>
-
-- cg / cgp + `文字`
 
 </details>
 

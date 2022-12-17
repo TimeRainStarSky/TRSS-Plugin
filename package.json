@@ -4,7 +4,6 @@
   "author": "TimeRainStarSky",
   "dependencies": {
     "ansi_up": "^5.1.0",
-    "chatgpt": "^2.0.6",
     "markdown-it": "^13.0.1"
   }
 }
