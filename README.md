@@ -32,22 +32,21 @@ pnpm i
 
 3. 安装 [Python 3.10](https://python.org) 和 [Poetry](https://python-poetry.org)，并在插件目录执行以下操作
 
+```
+poetry install
+```
+
 - 图片修复：
 
 ```
 git clone --depth=1 https://gitee.com/TimeRainStarSky/Real-ESRGAN
 cd Real-ESRGAN
-poetry install
 poetry run python setup.py develop
 ```
 
 <details><summary>部署为 API 服务器</summary>
 
 ```
-# 安装 Flask
-poetry run pip install flask
-
-# 启动 API 服务器
 poetry run python inference_realesrgan_server.py [端口]
 ```
 
@@ -58,7 +57,6 @@ poetry run python inference_realesrgan_server.py [端口]
 ```
 git clone --depth=1 https://gitee.com/TimeRainStarSky/GenshinVoice
 cd GenshinVoice
-poetry install
 poetry run pip install monotonic-align
 curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest/G_809000.pth.xz
 xz -dv G_809000.pth.xz
@@ -67,10 +65,6 @@ xz -dv G_809000.pth.xz
 <details><summary>部署为 API 服务器</summary>
 
 ```
-# 安装 Flask
-poetry run pip install flask
-
-# 启动 API 服务器
 poetry run python server.py [端口]
 ```
 
