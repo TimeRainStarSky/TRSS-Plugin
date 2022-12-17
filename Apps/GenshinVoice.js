@@ -38,7 +38,6 @@ export class GenshinVoice extends plugin {
       return false
     }
     Running = true
-    await this.e.reply("开始生成，请稍等……", true)
 
     let msg = this.e.msg.split("说")
     let speaker = msg.shift()
