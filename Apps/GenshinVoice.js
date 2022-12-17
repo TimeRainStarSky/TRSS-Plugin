@@ -42,7 +42,6 @@ export class GenshinVoice extends plugin {
 
     let msg = this.e.msg.split("说")
     let speaker = msg.shift()
-    let speakerid = speakers.indexOf(speaker)
     let text = msg.join("说").replace("'", "").trim()
 
     let transcoding = false
@@ -51,6 +50,7 @@ export class GenshinVoice extends plugin {
       transcoding = true
     }
 
+    let speakerid = speakers.indexOf(speaker)
     let url
     if (config.GenshinVoice.api) {
       url = `${config.GenshinVoice.api}?user_id=${this.e.user_id}&id=${speakerid}&text=${encodeURIComponent(text)}`
