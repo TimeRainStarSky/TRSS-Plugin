@@ -82,7 +82,7 @@ export class RealESRGAN extends plugin {
 
     let url
     if (config.RealESRGAN.api) {
-      url = `${config.RealESRGAN.api}?user_id=${this.e.user_id}&fp32=True&tile=100&model_name=${model}&input=${encodeURIComponent(this.e.img[0])}`
+      url = `${config.RealESRGAN.api}?user_id=${this.e.user_id}&bot_id=${Bot.uin}&fp32=True&tile=100&model_name=${model}&input=${encodeURIComponent(this.e.img[0])}`
     } else {
       let ret = await common.downFile(this.e.img[0], `${path}0${format}`)
       if (!ret) {
