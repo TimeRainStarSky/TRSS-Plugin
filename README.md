@@ -101,6 +101,14 @@ poetry run python server.py [端口]
 
 </details>
 
+### 米哈游登录（限制：私聊）
+
+<details><summary>展开</summary>
+
+- 米哈游登录 + `账号`
+
+</details>
+
 ### Markdown（权限：主人）
 
 <details><summary>展开</summary>

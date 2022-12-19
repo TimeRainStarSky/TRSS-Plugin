@@ -2,7 +2,7 @@ import fs from "fs"
 import { segment } from "oicq"
 import config from "../Model/config.js"
 import { exec } from "child_process"
-import common from '../../../lib/common/common.js'
+import common from "../../../lib/common/common.js"
 
 let path = `${process.cwd()}/plugins/TRSS-Plugin/Real-ESRGAN/`
 let model
@@ -20,9 +20,9 @@ export class RealESRGAN extends plugin {
       rule: [
         {
           reg: "^(动漫)?图片修复$",
-          fnc: "DetectImage",
-        },
-      ],
+          fnc: "DetectImage"
+        }
+      ]
     })
   }
 
@@ -60,7 +60,7 @@ export class RealESRGAN extends plugin {
     }
 
     if (!this.e.img) {
-      this.setContext('RealESRGAN')
+      this.setContext("RealESRGAN")
       await this.e.reply("请发送图片", true)
     } else {
       this.RealESRGAN()
@@ -72,7 +72,7 @@ export class RealESRGAN extends plugin {
       return false
     }
 
-    this.finish('RealESRGAN')
+    this.finish("RealESRGAN")
     if (Running) {
       await this.e.reply("正在生成，请稍等……", true)
       return false
@@ -94,7 +94,7 @@ export class RealESRGAN extends plugin {
 
       logger.mark(`[图片修复] 图片保存成功：${logger.blue(this.e.img[0])}`)
 
-      let cmd = `sh ${path}main.sh --fp32 --tile 100 -n ${model} -i 0${format}`
+      let cmd = `bash ${path}main.sh --fp32 --tile 100 -n ${model} -i 0${format}`
 
       logger.mark(`[图片修复] 执行：${logger.blue(cmd)}`)
       ret = await this.execSync(cmd)

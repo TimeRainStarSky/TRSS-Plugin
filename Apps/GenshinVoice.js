@@ -18,9 +18,9 @@ export class GenshinVoice extends plugin {
       rule: [
         {
           reg: `^(${speakers.join("|")})(转码)?说.+`,
-          fnc: "GenshinVoice",
-        },
-      ],
+          fnc: "GenshinVoice"
+        }
+      ]
     })
   }
 
@@ -54,7 +54,7 @@ export class GenshinVoice extends plugin {
     if (config.GenshinVoice.api) {
       url = `${config.GenshinVoice.api}?user_id=${this.e.user_id}&bot_id=${Bot.uin}&id=${speakerid}&text=${encodeURIComponent(text)}`
     } else {
-      let cmd = `sh ${path}main.sh output.wav ${speakerid} '${text}'`
+      let cmd = `bash ${path}main.sh output.wav ${speakerid} '${text}'`
 
       logger.mark(`[原神语音合成] 执行：${logger.blue(cmd)}`)
       let ret = await this.execSync(cmd)

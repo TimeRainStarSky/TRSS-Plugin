@@ -17,13 +17,13 @@ export class RemoteCommand extends plugin {
       rule: [
         {
           reg: "^rcp.+",
-          fnc: "RemoteCommandPic",
+          fnc: "RemoteCommandPic"
         },
         {
           reg: "^rc.+",
-          fnc: "RemoteCommand",
-        },
-      ],
+          fnc: "RemoteCommand"
+        }
+      ]
     })
   }
 

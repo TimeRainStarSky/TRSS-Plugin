@@ -1,6 +1,6 @@
 import fs from "fs"
 import { segment } from "oicq"
-import common from '../../../lib/common/common.js'
+import common from "../../../lib/common/common.js"
 import puppeteer from "../../../lib/puppeteer/puppeteer.js"
 import MarkdownIt from "markdown-it"
 const md = new MarkdownIt()
@@ -18,9 +18,9 @@ export class Markdown extends plugin {
       rule: [
         {
           reg: "^md.+",
-          fnc: "Markdown",
-        },
-      ],
+          fnc: "Markdown"
+        }
+      ]
     })
   }
 

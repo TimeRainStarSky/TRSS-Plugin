@@ -41,17 +41,17 @@ export class SystemInfo extends plugin {
       rule: [
         {
           reg: "^#?系统信息$",
-          fnc: "SystemInfo",
+          fnc: "SystemInfo"
         },
         {
           reg: "^#?系统信息图片$",
-          fnc: "SystemInfoPic",
+          fnc: "SystemInfoPic"
         },
         {
           reg: "^#?系统测试$",
-          fnc: "SystemBench",
-        },
-      ],
+          fnc: "SystemBench"
+        }
+      ]
     })
   }
 

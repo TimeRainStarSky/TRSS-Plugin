@@ -1,7 +1,7 @@
 import fs from "fs"
 import { segment } from "oicq"
 import { exec } from "child_process"
-import common from '../../../lib/common/common.js'
+import common from "../../../lib/common/common.js"
 
 let Commands = {
   "":         "help",
@@ -45,17 +45,17 @@ export class BaiduPan extends plugin {
       rule: [
         {
           reg: "^百度网盘上传",
-          fnc: "UploadDetect",
+          fnc: "UploadDetect"
         },
         {
           reg: "^百度网盘下载",
-          fnc: "Download",
+          fnc: "Download"
         },
         {
           reg: "^百度网盘",
-          fnc: "BaiduPan",
-        },
-      ],
+          fnc: "BaiduPan"
+        }
+      ]
     })
   }
 
@@ -89,7 +89,7 @@ export class BaiduPan extends plugin {
 
   async UploadDetect(e) {
     es = this.e
-    this.setContext('Upload')
+    this.setContext("Upload")
     await this.e.reply("请发送文件", true)
   }
 
@@ -97,7 +97,7 @@ export class BaiduPan extends plugin {
     if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     if(!this.e.file)return false
 
-    this.finish('Upload')
+    this.finish("Upload")
     let filePath = `${path}${this.e.file.name}`
     let fileUrl
     if (this.e.isGroup) {
@@ -123,7 +123,7 @@ export class BaiduPan extends plugin {
 
     let remotePath = this.e.msg.replace("百度网盘上传", "").trim()
     await this.e.reply(`文件下载完成，开始上传到：${remotePath}`, true)
-    let cmd = `"${cmdPath}" upload "${filePath}" "${remotePath}"`
+    let cmd = `'${cmdPath}' upload '${filePath}' '${remotePath}'`
 
     await this.execTask(es, cmd)
     await fs.unlinkSync(filePath)
@@ -137,10 +137,10 @@ export class BaiduPan extends plugin {
       return false
     }
 
-    this.finish('Download')
+    this.finish("Download")
     let remotePath = this.e.msg.replace("百度网盘下载", "").trim()
     if (!remotePath) {
-      this.setContext('Download')
+      this.setContext("Download")
       await this.e.reply("请发送文件路径", true)
       return true
     }
@@ -148,11 +148,11 @@ export class BaiduPan extends plugin {
     Running = true
     await this.e.reply("开始下载文件，请稍等……", true)
 
-    let cmd = `"${cmdPath}" download "${remotePath}" --saveto "${path}"`
+    let cmd = `'${cmdPath}' download '${remotePath}' --saveto '${path}'`
 
     await this.execTask(e, cmd)
 
-    let filePath = `${path}${remotePath.substr(remotePath.lastIndexOf('/')+1)}`
+    let filePath = `${path}${remotePath.substr(remotePath.lastIndexOf("/")+1)}`
     if (!fs.existsSync(filePath)) {
       await this.e.reply("文件下载错误", true)
       Running = false
@@ -198,7 +198,7 @@ export class BaiduPan extends plugin {
       msg[0] = Commands[msg[0]]
     }
     msg = msg.join(" ")
-    let cmd = `"${cmdPath}" ${msg}`
+    let cmd = `'${cmdPath}' ${msg}`
     await this.execTask(e, cmd)
   }
 }

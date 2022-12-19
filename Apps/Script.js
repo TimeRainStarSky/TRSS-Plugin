@@ -20,9 +20,9 @@ export class Script extends plugin {
       rule: [
         {
           reg: "^脚本.+",
-          fnc: "Script",
-        },
-      ],
+          fnc: "Script"
+        }
+      ]
     })
   }
 
