@@ -15,14 +15,6 @@ let config = {
 
   RealESRGAN: {
     api: ""
-  },
-
-  ChatGPT: {
-    api: "",
-    tokenapi: "",
-    username: "",
-    password: "",
-    sessionToken: ""
   }
 }
 
