@@ -30,7 +30,11 @@ git clone --depth=1 https://gitee.com/TimeRainStarSky/TRSS-Plugin plugins/TRSS-P
 pnpm i
 ```
 
-3. 安装 [Python 3.10](https://python.org) 和 [Poetry](https://python-poetry.org)，并在插件目录执行以下操作
+3. 需要 `原神语音合成` 和 `图片修复` 继续操作，不用可忽略
+
+<details><summary>展开</summary>
+
+安装 [Python 3.10](https://python.org) 和 [Poetry](https://python-poetry.org)，并在插件目录执行以下操作
 
 ```
 poetry install
@@ -73,6 +77,8 @@ poetry run python server.py [端口]
 - 阿里云盘 / 百度网盘：
 
 使用脚本安装后，启动 CLI，输入 `login -h`，按提示登录
+
+</details>
 
 ## 使用教程
 
