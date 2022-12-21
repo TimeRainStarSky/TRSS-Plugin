@@ -3,6 +3,7 @@ import { spawn } from "child_process"
 import fetch from "node-fetch"
 import crypto from "crypto"
 import _ from "lodash"
+import QRCode from "qrcode"
 
 const CN_DS_SALT = "JwYDpKvLj6MrMqqYU6jTKF17KNO2PXoS"
 const publicKey = `-----BEGIN PUBLIC KEY-----
@@ -10,6 +11,11 @@ MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDvekdPMHN3AYhm/vktJT+YJr7cI5DcsNKqdsx5DZX
 9ExXCdvqrn51qELbqj0XxtMTIpaCHFSI50PfPpTFV9Xt/hmyVwokoOXFlAEgCn+Q
 CgGs52bFoYMtyi+xEQIDAQAB
 -----END PUBLIC KEY-----`
+const app_id = 4
+
+function random_string(n) {
+  return _.sampleSize("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", n).join("")
+}
 
 function encrypt_data(data) {
   return crypto.publicEncrypt({
@@ -24,7 +30,7 @@ function md5(data) {
 
 function ds(data) {
   let t = Math.floor(Date.now()/1000)
-  let r = _.sampleSize("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", 6).join("")
+  let r = random_string(6)
   let b = data
   let h = md5(`salt=JwYDpKvLj6MrMqqYU6jTKF17KNO2PXoS&t=${t}&r=${r}&b=${b}&q=`)
   return `${t},${r},${h}`
@@ -34,10 +40,10 @@ function sleep(ms) {
   return new Promise(resolve=>setTimeout(resolve, ms))
 }
 
-async function request(data, aigis) {
-  return await fetch("https://passport-api.mihoyo.com/account/ma-cn-passport/app/loginByPassword", {
+async function request(url, data, aigis) {
+  return await fetch(url, {
     method: "post",
-	body: data,
+    body: data,
     headers: {
       "x-rpc-app_version": "2.41.0",
       "DS": ds(data),
@@ -45,14 +51,14 @@ async function request(data, aigis) {
       "Content-Type": "application/json",
       "Accept": "application/json",
       "x-rpc-game_biz": "bbs_cn",
-      "x-rpc-sys_version": "11",
-      "x-rpc-device_id": "375a021233a1fef7",
-      "x-rpc-device_fp": "38d7eaecf48b1",
-      "x-rpc-device_name": "2698291465%E7%9A%84Redmi+Note+11+5G",
-      "x-rpc-device_model": "21091116AC",
+      "x-rpc-sys_version": "12",
+      "x-rpc-device_id": random_string(16),
+      "x-rpc-device_fp": random_string(13),
+      "x-rpc-device_name": random_string(16),
+      "x-rpc-device_model": random_string(16),
       "x-rpc-app_id": "bll8iq97cem8",
       "x-rpc-client_type": "2",
-      "User-Agent": "okhttp/4.8.0",
+      "User-Agent": "okhttp/4.8.0"
     }
   })
 }
@@ -73,6 +79,11 @@ export class miHoYoLogin extends plugin {
           reg: "^米哈游登录.+",
           event: "message.private",
           fnc: "miHoYoLoginDetect"
+        },
+        {
+          reg: "^米哈游登录$",
+          event: "message.private",
+          fnc: "miHoYoLoginQRCode"
         }
       ]
     })
@@ -81,21 +92,21 @@ export class miHoYoLogin extends plugin {
   async miHoYoLoginDetect(e) {
     accounts[this.e.user_id] = this.e
     this.setContext("miHoYoLogin")
-    await await this.e.reply("请发送密码", true)
+    await await this.reply("请发送密码", true)
   }
 
   async crack_geetest(gt, challenge) {
     let res = await fetch(`https://s.microgg.cn/gt/https://validate.microgg.cn/?gt=${gt}&challenge=${challenge}`)
-    let data = await res.json()
-    logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(data))}`)
-    await this.e.reply(`请完成验证：${data.shorturl}`, true)
+    res = await res.json()
+    logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
+    await this.e.reply(`请完成验证：${res.shorturl}`, true)
     for (let n=1;n<60;n++) {
       await sleep(5000)
       try {
         res = await fetch(`https://validate.microgg.cn/?callback=${challenge}`)
-        data = await res.json()
-        if (data.geetest_validate) {
-          return data
+        res = await res.json()
+        if (res.geetest_validate) {
+          return res
         }
       } catch (err) {
         logger.error(`[米哈游登录] 错误：${logger.red(err)}`)
@@ -118,7 +129,9 @@ export class miHoYoLogin extends plugin {
       password: encrypt_data(password)
     })
 
-    let res = await request(data, "")
+    let url = "https://passport-api.mihoyo.com/account/ma-cn-passport/app/loginByPassword"
+    let res = await request(url, data, "")
+    logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
     let aigis_data = JSON.parse(res.headers.get("x-rpc-aigis"))
     res = await res.json()
 
@@ -137,24 +150,91 @@ export class miHoYoLogin extends plugin {
       let aigis = aigis_data.session_id + ";" + Buffer.from(JSON.stringify({
         geetest_challenge: challenge,
         geetest_seccode: validate.geetest_validate + "|jordan",
-        geetest_validate: validate.geetest_validate,
+        geetest_validate: validate.geetest_validate
       })).toString("base64")
 
-      res = await request(data, aigis)
+      res = await request(url, data, aigis)
       res = await res.json()
+      logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
     }
 
     if (res.retcode == 0) {
-      logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
       let cookie = await fetch(`https://api-takumi.mihoyo.com/auth/api/getCookieAccountInfoBySToken?stoken=${res.data.token.token}&mid=${res.data.user_info.mid}`)
       cookie = await cookie.json()
       logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(cookie))}`)
-      await this.e.reply(`ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token};login_ticket=${res.data.login_ticket}`, true)
-      await this.e.reply("登录完成，回复 Cookie 绑定", true)
+      await this.e.reply(`ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token};login_ticket=${res.data.login_ticket}`)
+      await this.reply(`stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`)
+    await this.reply("登录完成，以上分别是 Cookie 和 Stoken，发送给 Bot 完成绑定", true)
     } else {
-      logger.error(`[米哈游登录] 错误：${logger.red(JSON.stringify(res))}`)
       await this.e.reply(`错误：${JSON.stringify(res)}`, true)
       return false
     }
+  }
+
+  async miHoYoLoginQRCode(e) {
+    let device = random_string(64)
+    let res = await fetch("https://hk4e-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/fetch", {
+      method: "post",
+      body: JSON.stringify({ app_id, device })
+    })
+    res = await res.json()
+    logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
+
+    let url = res.data.url
+    let ticket = url.split("ticket=")[1]
+    let img = await QRCode.toDataURL(url)
+    img = img.replace("data:image/png;base64,", "base64://")
+    await this.reply(["请使用米游社或原神客户端扫码登录", segment.image(img)], true)
+
+    let data
+    for (let n=1;n<60;n++) {
+      await sleep(5000)
+      try {
+        res = await fetch("https://hk4e-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/query", {
+          method: "post",
+          body: JSON.stringify({ app_id, device, ticket })
+        })
+        res = await res.json()
+
+        if (res.retcode != 0) {
+          await this.reply("二维码已过期，请重新登录", true)
+          return false
+        }
+
+        if (res.data.stat == "Scanned") {
+          logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
+          await this.reply("二维码已扫描，请确认登录", true)
+        }
+
+        if (res.data.stat == "Confirmed") {
+          logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
+          data = JSON.parse(res.data.payload.raw)
+          break
+        }
+      } catch (err) {
+        logger.error(`[米哈游登录] 错误：${logger.red(err)}`)
+      }
+    }
+
+    if (!data) {
+      await this.reply("验证超时", true)
+      return false
+    }
+
+    res = await request(
+      "https://passport-api.mihoyo.com/account/ma-cn-session/app/getTokenByGameToken",
+      JSON.stringify({ account_id: parseInt(data.uid), game_token: data.token }),
+      ""
+    )
+    res = await res.json()
+    logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
+
+    let cookie = await fetch(`https://api-takumi.mihoyo.com/auth/api/getCookieAccountInfoByGameToken?account_id=${data.uid}&game_token=${data.token}`)
+    cookie = await cookie.json()
+    logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(cookie))}`)
+
+    await this.reply(`ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token}`)
+    await this.reply(`stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`)
+    await this.reply("登录完成，以上分别是 Cookie 和 Stoken，发送给 Bot 完成绑定", true)
   }
 }

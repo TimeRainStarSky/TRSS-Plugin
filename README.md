@@ -111,7 +111,8 @@ poetry run python server.py [端口]
 
 <details><summary>展开</summary>
 
-- 米哈游登录 + `账号`
+- 二维码登录：米哈游登录
+- 账号密码登录：米哈游登录 + `账号`
 
 </details>
 
