@@ -73,24 +73,24 @@ export class AliyunPan extends plugin {
     logger.mark(`[阿里云盘]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
     if (ret.stdout) {
-      await this.e.reply(ret.stdout.trim(), true)
+      await this.reply(ret.stdout.trim(), true)
     }
 
     if (ret.stderr) {
-      await this.e.reply(`标准错误输出：\n${ret.stderr.trim()}`, true)
+      await this.reply(`标准错误输出：\n${ret.stderr.trim()}`, true)
     }
 
     if (ret.error) {
       logger.error(`阿里云盘错误：${logger.red(ret.error)}`)
-      await this.e.reply(`阿里云盘错误：${ret.error}`, true)
-      await this.e.reply(errorTips)
+      await this.reply(`阿里云盘错误：${ret.error}`, true)
+      await this.reply(errorTips)
     }
   }
 
   async UploadDetect(e) {
     es = this.e
     this.setContext("Upload")
-    await this.e.reply("请发送文件", true)
+    await this.reply("请发送文件", true)
   }
 
   async Upload(e) {
@@ -108,21 +108,21 @@ export class AliyunPan extends plugin {
     this.e = es
 
     if (Running) {
-      await this.e.reply("有正在执行的阿里云盘任务，请稍等……", true)
+      await this.reply("有正在执行的阿里云盘任务，请稍等……", true)
       return false
     }
     Running = true
-    await this.e.reply(`开始下载文件，请稍等……\n文件链接：${fileUrl}\n保存路径：${filePath}`, true)
+    await this.reply(`开始下载文件，请稍等……\n文件链接：${fileUrl}\n保存路径：${filePath}`, true)
 
     let ret = await common.downFile(fileUrl, filePath)
     if (!ret) {
-      await this.e.reply("文件下载错误", true)
+      await this.reply("文件下载错误", true)
       Running = false
       return true
     }
 
     let remotePath = this.e.msg.replace("阿里云盘上传", "").trim()
-    await this.e.reply(`文件下载完成，开始上传到：${remotePath}`, true)
+    await this.reply(`文件下载完成，开始上传到：${remotePath}`, true)
     let cmd = `'${cmdPath}' upload '${filePath}' '${remotePath}'`
 
     await this.execTask(es, cmd)
@@ -133,7 +133,7 @@ export class AliyunPan extends plugin {
   async Download(e) {
     if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     if (Running) {
-      await this.e.reply("有正在执行的阿里云盘任务，请稍等……", true)
+      await this.reply("有正在执行的阿里云盘任务，请稍等……", true)
       return false
     }
 
@@ -141,12 +141,12 @@ export class AliyunPan extends plugin {
     let remotePath = this.e.msg.replace("阿里云盘下载", "").trim()
     if (!remotePath) {
       this.setContext("Download")
-      await this.e.reply("请发送文件路径", true)
+      await this.reply("请发送文件路径", true)
       return true
     }
 
     Running = true
-    await this.e.reply("开始下载文件，请稍等……", true)
+    await this.reply("开始下载文件，请稍等……", true)
 
     let cmd = `'${cmdPath}' download '${remotePath}' --saveto '${path}'`
 
@@ -154,12 +154,12 @@ export class AliyunPan extends plugin {
 
     let filePath = `${path}${remotePath}`
     if (!fs.existsSync(filePath)) {
-      await this.e.reply("文件下载错误", true)
+      await this.reply("文件下载错误", true)
       Running = false
       return true
     }
     if (!fs.statSync(filePath).isFile()) {
-      await this.e.reply("暂不支持发送文件夹", true)
+      await this.reply("暂不支持发送文件夹", true)
       Running = false
       return true
     }
@@ -167,12 +167,12 @@ export class AliyunPan extends plugin {
     let res
     if (this.e.isGroup) {
       res = await this.e.group.fs.upload(filePath).catch((err) => {
-        this.e.reply(`文件发送错误：${JSON.stringify(err)}`)
+        this.reply(`文件发送错误：${JSON.stringify(err)}`)
         logger.error(`文件发送错误：${logger.red(JSON.stringify(err))}`)
       })
     } else {
       res = await this.e.friend.sendFile(filePath).catch((err) => {
-        this.e.reply(`文件发送错误：${JSON.stringify(err)}`)
+        this.reply(`文件发送错误：${JSON.stringify(err)}`)
         logger.error(`文件发送错误：${logger.red(JSON.stringify(err))}`)
       })
     }
@@ -184,7 +184,7 @@ export class AliyunPan extends plugin {
       } else {
         fileUrl = await this.e.friend.getFileUrl(res)
       }
-      await this.e.reply(`文件发送完成：${fileUrl}`, true)
+      await this.reply(`文件发送完成：${fileUrl}`, true)
     }
 
     await fs.unlinkSync(filePath)

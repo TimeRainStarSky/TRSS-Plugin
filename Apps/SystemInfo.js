@@ -70,11 +70,11 @@ export class SystemInfo extends plugin {
 
     if (ret.error) {
       logger.error(`系统信息错误：${logger.red(ret.error)}`)
-      await this.e.reply(`系统信息错误：${ret.error}`, true)
-      await this.e.reply(errorTips)
+      await this.reply(`系统信息错误：${ret.error}`, true)
+      await this.reply(errorTips)
     }
 
-    await this.e.reply(ret.stdout.trim(), true)
+    await this.reply(ret.stdout.trim(), true)
   }
 
   async SystemInfoPic(e) {
@@ -84,22 +84,22 @@ export class SystemInfo extends plugin {
 
     if (ret.error) {
       logger.error(`系统信息错误：${logger.red(ret.error)}`)
-      await this.e.reply(`系统信息错误：${ret.error}`, true)
-      await this.e.reply(errorTips)
+      await this.reply(`系统信息错误：${ret.error}`, true)
+      await this.reply(errorTips)
     }
 
     let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
     let img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
-    await this.e.reply(img, true)
+    await this.reply(img, true)
   }
 
   async SystemBench(e) {
     if (Running) {
-      await this.e.reply("正在测试，请稍等……", true)
+      await this.reply("正在测试，请稍等……", true)
       return false
     }
     Running = true
-    await this.e.reply("开始测试，请稍等……", true)
+    await this.reply("开始测试，请稍等……", true)
 
     logger.mark(`[系统测试] 执行：${logger.blue(benchcmd)}`)
     let ret = await this.execSync(`${benchcmd}`)
@@ -107,13 +107,13 @@ export class SystemInfo extends plugin {
 
     if (ret.error) {
       logger.error(`系统测试错误：${logger.red(ret.error)}`)
-      await this.e.reply(`系统测试错误：${ret.error}`, true)
-      await this.e.reply(errorTips)
+      await this.reply(`系统测试错误：${ret.error}`, true)
+      await this.reply(errorTips)
     }
 
     let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
     let img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
-    await this.e.reply(img, true)
+    await this.reply(img, true)
     Running = false
   }
 }

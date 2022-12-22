@@ -34,7 +34,7 @@ export class GenshinVoice extends plugin {
 
   async GenshinVoice(e) {
     if (Running) {
-      await this.e.reply("正在生成，请稍等……", true)
+      await this.reply("正在生成，请稍等……", true)
       return false
     }
     Running = true
@@ -62,14 +62,14 @@ export class GenshinVoice extends plugin {
 
       if (ret.error) {
         logger.error(`原神语音合成错误：${logger.red(ret.error)}`)
-        await this.e.reply(`原神语音合成错误：${ret.error}`, true)
-        await this.e.reply(errorTips)
+        await this.reply(`原神语音合成错误：${ret.error}`, true)
+        await this.reply(errorTips)
       }
       url = `${path}output.wav`
     }
 
     logger.mark(`[原神语音合成] 发送语音：${logger.blue(url)}`)
-    await this.e.reply(await uploadRecord(url, 68714, transcoding))
+    await this.reply(await uploadRecord(url, 68714, transcoding))
     Running = false
   }
 }

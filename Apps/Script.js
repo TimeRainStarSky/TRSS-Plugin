@@ -42,19 +42,19 @@ export class Script extends plugin {
     if (ret.stdout) {
       let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
       let img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
-      await this.e.reply(img, true)
+      await this.reply(img, true)
     }
 
     if (ret.stderr) {
       let Code = await ansi_up.ansi_to_html(ret.stderr.trim())
       let img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
-      await this.e.reply(["标准错误输出：", img], true)
+      await this.reply(["标准错误输出：", img], true)
     }
 
     if (ret.error) {
       logger.error(`脚本错误：${logger.red(ret.error)}`)
-      await this.e.reply(`脚本错误：${ret.error}`, true)
-      await this.e.reply(errorTips)
+      await this.reply(`脚本错误：${ret.error}`, true)
+      await this.reply(errorTips)
     }
   }
 

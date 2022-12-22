@@ -61,7 +61,7 @@ export class RealESRGAN extends plugin {
 
     if (!this.e.img) {
       this.setContext("RealESRGAN")
-      await this.e.reply("请发送图片", true)
+      await this.reply("请发送图片", true)
     } else {
       this.RealESRGAN()
     }
@@ -74,11 +74,11 @@ export class RealESRGAN extends plugin {
 
     this.finish("RealESRGAN")
     if (Running) {
-      await this.e.reply("正在生成，请稍等……", true)
+      await this.reply("正在生成，请稍等……", true)
       return false
     }
     Running = true
-    await this.e.reply("开始生成，请稍等……", true)
+    await this.reply("开始生成，请稍等……", true)
 
     let url
     if (config.RealESRGAN.api) {
@@ -86,8 +86,8 @@ export class RealESRGAN extends plugin {
     } else {
       let ret = await common.downFile(this.e.img[0], `${path}0${format}`)
       if (!ret) {
-        await this.e.reply("下载图片错误", true)
-        await this.e.reply(errorTips)
+        await this.reply("下载图片错误", true)
+        await this.reply(errorTips)
         Running = false
         return true
       }
@@ -102,15 +102,15 @@ export class RealESRGAN extends plugin {
 
       if (ret.error) {
         logger.error(`图片修复错误：${logger.red(ret.error)}`)
-        await this.e.reply(`图片修复错误：${ret.error}`, true)
-        await this.e.reply(errorTips)
+        await this.reply(`图片修复错误：${ret.error}`, true)
+        await this.reply(errorTips)
       }
 
       url = `${path}results/0_out${format}`
     }
 
     logger.mark(`[图片修复] 发送图片：${logger.blue(url)}`)
-    await this.e.reply(segment.image(url), true)
+    await this.reply(segment.image(url), true)
     Running = false
   }
 }

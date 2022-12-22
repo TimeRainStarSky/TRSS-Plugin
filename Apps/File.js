@@ -36,26 +36,26 @@ export class File extends plugin {
     let filePath = this.e.msg.replace("文件查看", "").trim()
     if (!filePath) {
       this.setContext("List")
-      await this.e.reply("请发送文件路径", true)
+      await this.reply("请发送文件路径", true)
       return true
     }
 
     if (!fs.existsSync(filePath)) {
-      await this.e.reply("路径不存在", true)
+      await this.reply("路径不存在", true)
       return true
     }
     if (!fs.statSync(filePath).isDirectory()) {
-      await this.e.reply("该路径不是一个文件夹", true)
+      await this.reply("该路径不是一个文件夹", true)
       return true
     }
 
-    await this.e.reply(fs.readdirSync(filePath).join("\n"), true)
+    await this.reply(fs.readdirSync(filePath).join("\n"), true)
   }
 
   async Upload(e) {
     if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     if (Running) {
-      await this.e.reply("有正在执行的文件任务，请稍等……", true)
+      await this.reply("有正在执行的文件任务，请稍等……", true)
       return false
     }
 
@@ -63,31 +63,31 @@ export class File extends plugin {
     let filePath = this.e.msg.replace("文件上传", "").trim()
     if (!filePath) {
       this.setContext("Upload")
-      await this.e.reply("请发送文件路径", true)
+      await this.reply("请发送文件路径", true)
       return true
     }
 
     if (!fs.existsSync(filePath)) {
-      await this.e.reply("文件不存在", true)
+      await this.reply("文件不存在", true)
       return true
     }
     if (!fs.statSync(filePath).isFile()) {
-      await this.e.reply("暂不支持上传文件夹", true)
+      await this.reply("暂不支持上传文件夹", true)
       return true
     }
 
     Running = true
-    await this.e.reply("开始上传文件，请稍等……", true)
+    await this.reply("开始上传文件，请稍等……", true)
 
     let res
     if (this.e.isGroup) {
       res = await this.e.group.fs.upload(filePath).catch((err) => {
-        this.e.reply(`文件上传错误：${JSON.stringify(err)}`)
+        this.reply(`文件上传错误：${JSON.stringify(err)}`)
         logger.error(`文件上传错误：${logger.red(JSON.stringify(err))}`)
       })
     } else {
       res = await this.e.friend.sendFile(filePath).catch((err) => {
-        this.e.reply(`文件上传错误：${JSON.stringify(err)}`)
+        this.reply(`文件上传错误：${JSON.stringify(err)}`)
         logger.error(`文件上传错误：${logger.red(JSON.stringify(err))}`)
       })
     }
@@ -99,7 +99,7 @@ export class File extends plugin {
       } else {
         fileUrl = await this.e.friend.getFileUrl(res)
       }
-      await this.e.reply(`文件上传完成：${fileUrl}`, true)
+      await this.reply(`文件上传完成：${fileUrl}`, true)
     }
 
     Running = false
@@ -108,7 +108,7 @@ export class File extends plugin {
   async DownloadDetect(e) {
     es = this.e
     this.setContext("Download")
-    await this.e.reply("请发送文件", true)
+    await this.reply("请发送文件", true)
   }
 
   async Download(e) {
@@ -126,17 +126,17 @@ export class File extends plugin {
     this.e = es
 
     if (Running) {
-      await this.e.reply("有正在执行的文件任务，请稍等……", true)
+      await this.reply("有正在执行的文件任务，请稍等……", true)
       return false
     }
     Running = true
-    await this.e.reply(`开始下载文件，请稍等……\n文件链接：${fileUrl}\n保存路径：${filePath}`, true)
+    await this.reply(`开始下载文件，请稍等……\n文件链接：${fileUrl}\n保存路径：${filePath}`, true)
 
     let ret = await common.downFile(fileUrl, filePath)
     if (ret) {
-      await this.e.reply("文件下载完成", true)
+      await this.reply("文件下载完成", true)
     } else {
-      await this.e.reply("文件下载错误", true)
+      await this.reply("文件下载错误", true)
     }
     Running = false
   }

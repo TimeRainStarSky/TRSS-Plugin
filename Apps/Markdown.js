@@ -34,19 +34,19 @@ export class Markdown extends plugin {
       mdFile =`${process.cwd()}/data/cache.md`
       let ret = await common.downFile(msg, mdFile)
       if (!ret) {
-        await this.e.reply("文件下载错误", true)
+        await this.reply("文件下载错误", true)
         return false
       }
     }
 
     if (!(fs.existsSync(mdFile) && fs.statSync(mdFile).isFile())) {
-      await this.e.reply("文件不存在", true)
+      await this.reply("文件不存在", true)
       return false
     }
 
     let Markdown = md.render(fs.readFileSync(mdFile, "utf-8"))
     let img = await puppeteer.screenshot("Markdown", { tplFile, htmlDir, Markdown })
 
-    await this.e.reply(img, true)
+    await this.reply(img, true)
   }
 }
