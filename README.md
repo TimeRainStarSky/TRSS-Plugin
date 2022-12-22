@@ -107,6 +107,14 @@ poetry run python server.py [端口]
 
 </details>
 
+### 二维码生成
+
+<details><summary>展开</summary>
+
+- 二维码 + `文字`
+
+</details>
+
 ### 米哈游登录（限制：私聊）
 
 <details><summary>展开</summary>

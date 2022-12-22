@@ -1,5 +1,4 @@
 import { segment } from "oicq"
-import { spawn } from "child_process"
 import fetch from "node-fetch"
 import crypto from "crypto"
 import _ from "lodash"
@@ -99,7 +98,7 @@ export class miHoYoLogin extends plugin {
     let res = await fetch(`https://s.microgg.cn/gt/https://validate.microgg.cn/?gt=${gt}&challenge=${challenge}`)
     res = await res.json()
     logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
-    await this.e.reply(`请完成验证：${res.shorturl}`, true)
+    await this.reply(`请完成验证：${res.shorturl}`, true)
     for (let n=1;n<60;n++) {
       await sleep(5000)
       try {
@@ -112,7 +111,7 @@ export class miHoYoLogin extends plugin {
         logger.error(`[米哈游登录] 错误：${logger.red(err)}`)
       }
     }
-    await this.e.reply("验证超时", true)
+    await this.reply("验证超时", true)
     return false
   }
 
@@ -162,11 +161,11 @@ export class miHoYoLogin extends plugin {
       let cookie = await fetch(`https://api-takumi.mihoyo.com/auth/api/getCookieAccountInfoBySToken?stoken=${res.data.token.token}&mid=${res.data.user_info.mid}`)
       cookie = await cookie.json()
       logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(cookie))}`)
-      await this.e.reply(`ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token};login_ticket=${res.data.login_ticket}`)
+      await this.reply(`ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token};login_ticket=${res.data.login_ticket}`)
       await this.reply(`stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`)
-    await this.reply("登录完成，以上分别是 Cookie 和 Stoken，发送给 Bot 完成绑定", true)
+      await this.reply("登录完成，以上分别是 Cookie 和 Stoken，发送给 Bot 完成绑定", true)
     } else {
-      await this.e.reply(`错误：${JSON.stringify(res)}`, true)
+      await this.reply(`错误：${JSON.stringify(res)}`, true)
       return false
     }
   }
