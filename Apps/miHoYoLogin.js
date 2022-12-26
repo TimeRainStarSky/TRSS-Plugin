@@ -83,6 +83,10 @@ export class miHoYoLogin extends plugin {
           reg: "^米哈游登录$",
           event: "message.private",
           fnc: "miHoYoLoginQRCode"
+        },
+        {
+          reg: "^#?(体力|ck|cookie|Cookie|sk|stoken|Stoken)帮助$",
+          fnc: "miHoYoLoginHelp"
         }
       ]
     })
@@ -235,5 +239,10 @@ export class miHoYoLogin extends plugin {
     await this.reply(`ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token}`)
     await this.reply(`stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`)
     await this.reply("登录完成，以上分别是 Cookie 和 Stoken，发送给 Bot 完成绑定", true)
+  }
+
+  async miHoYoLoginHelp(e) {
+    await this.reply("二维码登录：私聊发送【米哈游登录】\n账号密码登录：私聊发送【米哈游登录 账号】", true)
+    return false
   }
 }
