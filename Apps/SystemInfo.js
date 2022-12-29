@@ -8,27 +8,17 @@ let htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 let tplFile = `${htmlDir}Code.html`
 let errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://gitee.com/TimeRainStarSky/TRSS_Yunzai"
 
-let cmd
+let cmd = "fastfetch"
 let cmds
-try {
-  execSync("type fastfetch")
-  cmd = "fastfetch"
-  if (process.platform == "win32") {
-    cmds = `${cmd} --stdout`
-  } else {
-    cmds = `${cmd} --pipe`
-  }
-} catch (err) {
-  cmd = "bash <(curl -L https://gitee.com/TimeRainStarSky/neofetch/raw/master/neofetch)"
-  cmds = `${cmd} --stdout`
-}
 let benchcmd = "bash <(curl -L bench.sh)"
 let Running
 
 if (process.platform == "win32") {
   cmd = `bash -c "${cmd}"`
-  cmds = `bash -c "${cmds}"`
+  cmds = `bash -c "${cmd} --stdout"`
   benchcmd = `bash -c "${benchcmd}"`
+} else {
+  cmds = `${cmd} --pipe`
 }
 
 export class SystemInfo extends plugin {
