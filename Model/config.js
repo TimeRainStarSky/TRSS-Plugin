@@ -15,10 +15,10 @@ let config = {
 
   RealESRGAN: {
     api: ""
-  }
+  },
 
   miHoYoLogin: {
-    help: true
+    help: true,
     cover: false
   }
 }
