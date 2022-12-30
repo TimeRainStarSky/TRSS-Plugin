@@ -1,4 +1,5 @@
 import { segment } from "oicq"
+import config from "../Model/config.js"
 import fetch from "node-fetch"
 import crypto from "crypto"
 import _ from "lodash"
@@ -242,7 +243,9 @@ export class miHoYoLogin extends plugin {
   }
 
   async miHoYoLoginHelp(e) {
-    await this.reply("二维码登录：私聊发送【米哈游登录】\n账号密码登录：私聊发送【米哈游登录 账号】", true)
-    return false
+    if (config.miHoYoLogin.help) {
+      await this.reply("二维码登录：私聊发送【米哈游登录】\n账号密码登录：私聊发送【米哈游登录 账号】", true)
+    }
+    return config.miHoYoLogin.cover
   }
 }

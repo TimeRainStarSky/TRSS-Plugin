@@ -16,6 +16,11 @@ let config = {
   RealESRGAN: {
     api: ""
   }
+
+  miHoYoLogin: {
+    help: true
+    cover: false
+  }
 }
 
 if (fs.existsSync(configFile)) {
