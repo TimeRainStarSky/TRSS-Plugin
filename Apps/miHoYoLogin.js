@@ -188,7 +188,7 @@ export class miHoYoLogin extends plugin {
     let ticket = url.split("ticket=")[1]
     let img = await QRCode.toDataURL(url)
     img = img.replace("data:image/png;base64,", "base64://")
-    await this.reply(["请使用米游社或原神客户端扫码登录", segment.image(img)], true)
+    await this.reply(["请使用米游社扫码登录", segment.image(img)], true)
 
     let data
     for (let n=1;n<60;n++) {
@@ -220,8 +220,8 @@ export class miHoYoLogin extends plugin {
       }
     }
 
-    if (!data) {
-      await this.reply("验证超时", true)
+    if (!(data.uid&&data.token)) {
+      await this.reply(errorTips, true)
       return false
     }
 
