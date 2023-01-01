@@ -5,7 +5,6 @@ import crypto from "crypto"
 import _ from "lodash"
 import QRCode from "qrcode"
 
-const CN_DS_SALT = "JwYDpKvLj6MrMqqYU6jTKF17KNO2PXoS"
 const publicKey = `-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDvekdPMHN3AYhm/vktJT+YJr7cI5DcsNKqdsx5DZX0gDuWFuIjzdwButrIYPNmRJ1G8ybDIF7oDW2eEpm5sMbL9zs
 9ExXCdvqrn51qELbqj0XxtMTIpaCHFSI50PfPpTFV9Xt/hmyVwokoOXFlAEgCn+Q
@@ -31,8 +30,7 @@ function md5(data) {
 function ds(data) {
   let t = Math.floor(Date.now()/1000)
   let r = random_string(6)
-  let b = data
-  let h = md5(`salt=JwYDpKvLj6MrMqqYU6jTKF17KNO2PXoS&t=${t}&r=${r}&b=${b}&q=`)
+  let h = md5(`salt=JwYDpKvLj6MrMqqYU6jTKF17KNO2PXoS&t=${t}&r=${r}&b=${data}&q=`)
   return `${t},${r},${h}`
 }
 
