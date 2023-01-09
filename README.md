@@ -26,7 +26,7 @@
 2. 安装：[GitHub](https://github.com/TimeRainStarSky/TRSS-Plugin) 或 [Gitee](https://gitee.com/TimeRainStarSky/TRSS-Plugin)
 
 ```
-git clone --depth=1 https://gitee.com/TimeRainStarSky/TRSS-Plugin plugins/TRSS-Plugin
+git clone --depth=1 http://Yunzai.TRSS.me plugins/TRSS-Plugin
 pnpm i
 ```
 
@@ -43,7 +43,7 @@ poetry install
 - 图片修复：
 
 ```
-git clone --depth=1 https://gitee.com/TimeRainStarSky/Real-ESRGAN
+git clone --depth 1 https://gitee.com/TimeRainStarSky/Real-ESRGAN
 cd Real-ESRGAN
 poetry run python setup.py develop
 ```

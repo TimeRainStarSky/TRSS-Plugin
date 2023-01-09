@@ -7,8 +7,6 @@ let configFile = `${path}config.yaml`
 let configData
 
 let config = {
-  tips: ["欢迎使用 TRSS Yunzai Plugin ! 作者：时雨🌌星空", "按 Ctrl+Q Y 保存退出", "参考：https://gitee.com/TimeRainStarSky/TRSS-Plugin"],
-
   GenshinVoice: {
     api: ""
   },
@@ -23,6 +21,14 @@ let config = {
   }
 }
 
+let configTips = {
+  tips: [
+    "欢迎使用 TRSS Yunzai Plugin ! 作者：时雨🌌星空",
+    "按 Ctrl+Q Y 保存退出",
+    "参考：http://Yunzai.TRSS.me"
+  ]
+}
+
 if (fs.existsSync(configFile)) {
   try {
     configData = YAML.parse(fs.readFileSync(configFile, "utf-8"))
@@ -31,6 +37,8 @@ if (fs.existsSync(configFile)) {
     logger.error(`配置文件 读取失败：${logger.red(err)}`)
   }
 }
+
+_.merge(config, configTips)
 
 if (config != configData) {
   fs.writeFileSync(configFile, YAML.stringify(config), "utf-8")
