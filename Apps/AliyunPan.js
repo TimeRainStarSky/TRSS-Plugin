@@ -33,7 +33,7 @@ let path = `${process.env.HOME}/aliyunpan/`
 let cmdPath = `${path}aliyunpan`
 let Running
 let es
-let errorTips = "请使用脚本安装阿里云盘，并正常登录后再使用此功能\nhttps://gitee.com/TimeRainStarSky/TRSS-Plugin\nhttps://gitee.com/TimeRainStarSky/TRSS_Yunzai"
+let errorTips = "请使用脚本安装阿里云盘，并正常登录后再使用此功能\nhttp://Yunzai.TRSS.me\nhttps://TRSS.me"
 
 export class AliyunPan extends plugin {
   constructor() {

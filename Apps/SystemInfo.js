@@ -6,7 +6,7 @@ const ansi_up = new AU.default
 
 let htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 let tplFile = `${htmlDir}Code.html`
-let errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://gitee.com/TimeRainStarSky/TRSS_Yunzai"
+let errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://TRSS.me"
 
 let cmd = "fastfetch"
 let cmds
