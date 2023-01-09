@@ -8,7 +8,7 @@ let htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 let tplFile = `${htmlDir}Code.html`
 let path = `${process.env.HOME}/../`
 let cmdPath = `${path}Main.sh`
-let errorTips = "请使用脚本安装，再使用此功能\nhttp://Yunzai.TRSS.me\nhttps://TRSS.me"
+let errorTips = "请使用脚本安装，再使用此功能\nhttps://Yunzai.TRSS.me\nhttps://TRSS.me"
 
 export class Script extends plugin {
   constructor() {

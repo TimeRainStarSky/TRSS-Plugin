@@ -8,7 +8,7 @@ let path = `${process.cwd()}/plugins/TRSS-Plugin/Real-ESRGAN/`
 let model
 let format = ".jpg"
 let Running
-let errorTips = "请查看安装使用教程：\nhttp://Yunzai.TRSS.me\n并将报错通过联系方式反馈给开发者"
+let errorTips = "请查看安装使用教程：\nhttps://Yunzai.TRSS.me\n并将报错通过联系方式反馈给开发者"
 
 export class RealESRGAN extends plugin {
   constructor() {

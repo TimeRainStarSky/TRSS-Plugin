@@ -26,7 +26,7 @@
 2. 安装：[GitHub](https://github.com/TimeRainStarSky/TRSS-Plugin) 或 [Gitee](https://gitee.com/TimeRainStarSky/TRSS-Plugin)
 
 ```
-git clone --depth=1 http://Yunzai.TRSS.me plugins/TRSS-Plugin
+git clone --depth=1 https://Yunzai.TRSS.me plugins/TRSS-Plugin
 pnpm i
 ```
 
@@ -242,7 +242,7 @@ poetry run python server.py [端口]
 ### 时雨 🌌 星空
 
 - GitHub：[TimeRainStarSky](https://github.com/TimeRainStarSky)
-- 酷安：[时雨丶星空](http://www.coolapk.com/u/2650948)
+- 酷安：[时雨丶星空](https://coolapk.com/u/2650948)
 - QQ：[2536554304](https://qm.qq.com/cgi-bin/qm/qr?k=x8LtlP8vwZs7qLwmsbCsyLoAHy7Et1Pj)
 - Telegram：[TimeRainStarSky](https://t.me/TimeRainStarSky)
 
