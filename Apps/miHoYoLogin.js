@@ -74,14 +74,14 @@ export class miHoYoLogin extends plugin {
       priority: 10,
       rule: [
         {
+          reg: "^#?(米哈?游社?登录|登录米哈?游社?) ",
+          event: "message.private",
+          fnc: "miHoYoLoginDetect"
+        },
+        {
           reg: "^#?(米哈?游社?登录|登录米哈?游社?)$",
           event: "message.private",
           fnc: "miHoYoLoginQRCode"
-        },
-        {
-          reg: "^#?(米哈?游社?登录|登录米哈?游社?).+",
-          event: "message.private",
-          fnc: "miHoYoLoginDetect"
         },
         {
           reg: "^#?(体力|ck|cookie|Cookie|sk|stoken|Stoken)帮助$",
