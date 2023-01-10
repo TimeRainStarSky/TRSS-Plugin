@@ -26,7 +26,7 @@
 2. 安装：[GitHub](https://github.com/TimeRainStarSky/TRSS-Plugin) 或 [Gitee](https://gitee.com/TimeRainStarSky/TRSS-Plugin)
 
 ```
-git clone --depth=1 https://Yunzai.TRSS.me plugins/TRSS-Plugin
+git clone --depth 1 https://Yunzai.TRSS.me plugins/TRSS-Plugin
 pnpm i
 ```
 
@@ -59,7 +59,7 @@ poetry run python inference_realesrgan_server.py [端口]
 - 原神语音合成：
 
 ```
-git clone --depth=1 https://gitee.com/TimeRainStarSky/GenshinVoice
+git clone --depth 1 https://gitee.com/TimeRainStarSky/GenshinVoice
 cd GenshinVoice
 poetry run pip install monotonic-align
 curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest/G_809000.pth.xz

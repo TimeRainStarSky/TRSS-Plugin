@@ -74,14 +74,14 @@ export class miHoYoLogin extends plugin {
       priority: 10,
       rule: [
         {
-          reg: "^(米哈游|米游社)登录.+",
-          event: "message.private",
-          fnc: "miHoYoLoginDetect"
-        },
-        {
-          reg: "^(米哈游|米游社)登录$",
+          reg: "^#?(米哈?游社?登录|登录米哈?游社?)$",
           event: "message.private",
           fnc: "miHoYoLoginQRCode"
+        },
+        {
+          reg: "^#?(米哈?游社?登录|登录米哈?游社?).+",
+          event: "message.private",
+          fnc: "miHoYoLoginDetect"
         },
         {
           reg: "^#?(体力|ck|cookie|Cookie|sk|stoken|Stoken)帮助$",
@@ -124,7 +124,7 @@ export class miHoYoLogin extends plugin {
 
     let password = this.e.msg.trim()
     this.e = accounts[this.e.user_id]
-    let account = this.e.msg.replace(/(米哈游|米游社)登录/, "").trim()
+    let account = this.e.msg.replace(/#?(米哈?游社?登录|登录米哈?游社?)/, "").trim()
 
     let data = JSON.stringify({
       account: encrypt_data(account),
