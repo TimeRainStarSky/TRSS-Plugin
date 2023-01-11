@@ -84,7 +84,7 @@ export class miHoYoLogin extends plugin {
           fnc: "miHoYoLoginQRCode"
         },
         {
-          reg: "^#?(体力|ck|cookie|Cookie|sk|stoken|Stoken)帮助$",
+          reg: "^#?(体力|(c|C)(oo)?k(ie)?|(s|S)(to)?k(en)?)帮助$",
           fnc: "miHoYoLoginHelp"
         }
       ]
@@ -124,7 +124,7 @@ export class miHoYoLogin extends plugin {
 
     let password = this.e.msg.trim()
     this.e = accounts[this.e.user_id]
-    let account = this.e.msg.replace(/#?(米哈?游社?登录|登录米哈?游社?)/, "").trim()
+    let account = this.e.msg.replace(/^#?(米哈?游社?登录|登录米哈?游社?) /, "").trim()
 
     let data = JSON.stringify({
       account: encrypt_data(account),
