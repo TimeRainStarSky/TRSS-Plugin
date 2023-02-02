@@ -64,6 +64,7 @@ async function request(url, data, aigis) {
 let path = `${process.cwd()}/plugins/TRSS-Plugin/Python/main.sh`
 let errorTips = "登录失败，请检查日志\nhttps://Yunzai.TRSS.me"
 let accounts = {}
+let Running = {}
 
 export class miHoYoLogin extends plugin {
   constructor() {
@@ -84,7 +85,7 @@ export class miHoYoLogin extends plugin {
           fnc: "miHoYoLoginQRCode"
         },
         {
-          reg: "^#?(体力|(c|C)(oo)?k(ie)?|(s|S)(to)?k(en)?)帮助$",
+          reg: "^#?(体力|(c|C)(oo)?k(ie)?|(s|S)(to)?k(en)?)(帮助|教程)$",
           fnc: "miHoYoLoginHelp"
         }
       ]
@@ -121,6 +122,11 @@ export class miHoYoLogin extends plugin {
   async miHoYoLogin(e) {
     if(!this.e.msg)return false
     this.finish("miHoYoLogin")
+    if (Running[this.e.user_id]) {
+      await this.reply("有正在进行的登录操作，请完成后再试……", true)
+      return false
+    }
+    Running[this.e.user_id] = true
 
     let password = this.e.msg.trim()
     this.e = accounts[this.e.user_id]
@@ -146,6 +152,7 @@ export class miHoYoLogin extends plugin {
         logger.mark("[米哈游登录] 验证成功")
       } else {
         logger.error("[米哈游登录] 验证失败")
+        Running[this.e.user_id] = false
         return false
       }
 
@@ -169,11 +176,20 @@ export class miHoYoLogin extends plugin {
       await this.reply("登录完成，以上分别是 Cookie 和 Stoken，发送给 Bot 完成绑定", true)
     } else {
       await this.reply(`错误：${JSON.stringify(res)}`, true)
+      Running[this.e.user_id] = false
       return false
     }
+
+    Running[this.e.user_id] = false
   }
 
   async miHoYoLoginQRCode(e) {
+    if (Running[this.e.user_id]) {
+      await this.reply("有正在进行的登录操作，请完成后再试……", true)
+      return false
+    }
+    Running[this.e.user_id] = true
+
     let device = random_string(64)
     let res = await fetch("https://hk4e-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/fetch", {
       method: "post",
@@ -200,6 +216,7 @@ export class miHoYoLogin extends plugin {
 
         if (res.retcode != 0) {
           await this.reply("二维码已过期，请重新登录", true)
+          Running[this.e.user_id] = false
           return false
         }
 
@@ -220,6 +237,7 @@ export class miHoYoLogin extends plugin {
 
     if (!(data.uid&&data.token)) {
       await this.reply(errorTips, true)
+      Running[this.e.user_id] = false
       return false
     }
 
@@ -238,6 +256,8 @@ export class miHoYoLogin extends plugin {
     await this.reply(`ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token}`)
     await this.reply(`stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`)
     await this.reply("登录完成，以上分别是 Cookie 和 Stoken，发送给 Bot 完成绑定", true)
+
+    Running[this.e.user_id] = false
   }
 
   async miHoYoLoginHelp(e) {
