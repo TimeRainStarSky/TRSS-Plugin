@@ -75,12 +75,12 @@ export class miHoYoLogin extends plugin {
       priority: 10,
       rule: [
         {
-          reg: "^#?(米哈?游社?登录|登录米哈?游社?) ",
+          reg: "^#?(米哈?游社?登[录陆]|登[录陆]米哈?游社?) ",
           event: "message.private",
           fnc: "miHoYoLoginDetect"
         },
         {
-          reg: "^#?(米哈?游社?登录|登录米哈?游社?)$",
+          reg: "^#?(米哈?游社?登[录陆]|登[录陆]米哈?游社?)$",
           event: "message.private",
           fnc: "miHoYoLoginQRCode"
         },
