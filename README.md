@@ -225,6 +225,9 @@ poetry run python server.py [端口]
 - 问：`ModuleNotFoundError: No module named 'torch/cv2'`
 - 答：未正确执行 `poetry install`
 
+- 问：`已杀死` | `Signal 9` | `MemoryError`
+- 答：`清理内存` 或 `增加 SWAP`
+
 - 问：使用 `Git Bash` 执行 `poetry install` 失败
 - 答：改用 `命令提示符` 或 `Windows PowerShell`
 
