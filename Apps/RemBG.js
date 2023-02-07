@@ -5,6 +5,7 @@ import { exec } from "child_process"
 import common from "../../../lib/common/common.js"
 
 let path = `${process.cwd()}/plugins/TRSS-Plugin/RemBG/`
+let model
 let Running
 let errorTips = "请查看安装使用教程：\nhttps://Yunzai.TRSS.me\n并将报错通过联系方式反馈给开发者"
 
@@ -17,7 +18,7 @@ export class RemBG extends plugin {
       priority: 10,
       rule: [
         {
-          reg: "^(图片)?(去除?背景|背景去除?)$",
+          reg: "^(动漫)?(图片)?(去除?背景|背景去除?)$",
           fnc: "DetectImage"
         }
       ]
@@ -33,6 +34,12 @@ export class RemBG extends plugin {
   }
 
   async DetectImage(e) {
+    if (this.e.msg.match("动漫")) {
+      model = "anime.sh"
+    } else {
+      model = "main.sh i"
+    }
+
     if (this.e.source) {
       let reply
       if (this.e.isGroup) {
@@ -86,7 +93,7 @@ export class RemBG extends plugin {
 
       logger.mark(`[图片背景去除] 图片保存成功：${logger.blue(this.e.img[0])}`)
 
-      let cmd = `bash ${path}main.sh i input.png output.png`
+      let cmd = `bash ${path}${model} input.png output.png`
 
       logger.mark(`[图片背景去除] 执行：${logger.blue(cmd)}`)
       ret = await this.execSync(cmd)

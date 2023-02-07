@@ -54,7 +54,8 @@ poetry run python setup.py develop
 git clone --depth 1 https://gitee.com/TimeRainStarSky/RemBG
 cd RemBG
 curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest/u2net.onnx.xz
-xz -dv u2net.onnx.xz
+curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest/isnetis.onnx.xz
+xz -dv u2net.onnx.xz isnetis.onnx.xz
 ```
 
 - 原神语音合成：
@@ -83,91 +84,69 @@ bash server.sh [端口]
 
 ## 使用教程
 
-### 图片修复
-
-<details><summary>展开</summary>
+<details><summary>图片修复</summary>
 
 - 图片修复 / 动漫图片修复 + `图片`
 
 </details>
 
-### 图片背景去除
+<details><summary>图片背景去除</summary>
 
-<details><summary>展开</summary>
-
-- 图片背景去除 + `图片`
+- 图片背景去除 / 动漫图片背景去除 + `图片`
 
 </details>
 
-### 原神语音合成
-
-<details><summary>展开</summary>
+<details><summary>原神语音合成</summary>
 
 - `角色名` + (转码)?说 + `中文`
 - 支持角色：派蒙、凯亚、安柏、丽莎、琴、香菱、枫原万叶、迪卢克、温迪、可莉、早柚、托马、芭芭拉、优菈、云堇、钟离、魈、凝光、雷电将军、北斗、甘雨、七七、刻晴、神里绫华、戴因斯雷布、雷泽、神里绫人、罗莎莉亚、阿贝多、八重神子、宵宫、荒泷一斗、九条裟罗、夜兰、珊瑚宫心海、五郎、散兵、女士、达达利亚、莫娜、班尼特、申鹤、行秋、烟绯、久岐忍、辛焱、砂糖、胡桃、重云、菲谢尔、诺艾尔、迪奥娜、鹿野院平藏
 
 </details>
 
-### 系统信息
-
-<details><summary>展开</summary>
+<details><summary>系统信息</summary>
 
 - 系统信息 / 系统信息图片 / 系统测试
 
 </details>
 
-### 二维码生成
-
-<details><summary>展开</summary>
+<details><summary>二维码生成</summary>
 
 - 二维码 + `文字`
 
 </details>
 
-### 米哈游登录（限制：私聊）
-
-<details><summary>展开</summary>
+<details><summary>米哈游登录（限制：私聊）</summary>
 
 - 二维码登录：米哈游登录
 - 账号密码登录：米哈游登录 + `账号`
 
 </details>
 
-### Markdown（权限：主人）
-
-<details><summary>展开</summary>
+<details><summary>Markdown（权限：主人）</summary>
 
 - md + `文件` / `URL`
 
 </details>
 
-### 代码高亮（权限：主人）
-
-<details><summary>展开</summary>
+<details><summary>代码高亮（权限：主人）</summary>
 
 - sc + `文件` / `URL`
 
 </details>
 
-### 远程命令（权限：主人）
-
-<details><summary>展开</summary>
+<details><summary>远程命令（权限：主人）</summary>
 
 - rc / rcp + `命令`
 
 </details>
 
-### 文件操作（权限：主人）
-
-<details><summary>展开</summary>
+<details><summary>文件操作（权限：主人）</summary>
 
 - 文件查看 / 文件上传 / 文件下载 + `路径`
 
 </details>
 
-### 阿里云盘（权限：主人）
-
-<details><summary>展开</summary>
+<details><summary>阿里云盘（权限：主人）</summary>
 
 阿里云盘 +
 
@@ -196,9 +175,7 @@ bash server.sh [端口]
 
 </details>
 
-### 百度网盘（权限：主人）
-
-<details><summary>展开</summary>
+<details><summary>百度网盘（权限：主人）</summary>
 
 百度网盘 +
 
