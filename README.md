@@ -30,7 +30,7 @@ git clone --depth 1 https://Yunzai.TRSS.me plugins/TRSS-Plugin
 pnpm i
 ```
 
-3. 需要 `原神语音合成` 和 `图片修复` 继续操作，不用可忽略
+3. 安装 `图片修复` | `图片背景去除` | `原神语音合成`，不用可忽略
 
 <details><summary>展开</summary>
 
@@ -48,13 +48,14 @@ cd Real-ESRGAN
 poetry run python setup.py develop
 ```
 
-<details><summary>部署为 API 服务器</summary>
+- 图片背景去除：
 
 ```
-poetry run python inference_realesrgan_server.py [端口]
+git clone --depth 1 https://gitee.com/TimeRainStarSky/RemBG
+cd RemBG
+curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest/u2net.onnx.xz
+xz -dv u2net.onnx.xz
 ```
-
-</details>
 
 - 原神语音合成：
 
@@ -69,7 +70,7 @@ xz -dv G_809000.pth.xz
 <details><summary>部署为 API 服务器</summary>
 
 ```
-poetry run python server.py [端口]
+bash server.sh [端口]
 ```
 
 </details>
@@ -87,6 +88,14 @@ poetry run python server.py [端口]
 <details><summary>展开</summary>
 
 - 图片修复 / 动漫图片修复 + `图片`
+
+</details>
+
+### 图片背景去除
+
+<details><summary>展开</summary>
+
+- 图片背景去除 + `图片`
 
 </details>
 

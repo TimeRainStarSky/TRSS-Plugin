@@ -5,7 +5,7 @@ description = "TRSS Yunzai Plugin"
 authors = ["时雨🌌星空 <Time.Rain.Star.Sky@Gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.10,<3.11"
 matplotlib = "^3.6.2"
 torch = "^1.13.1"
 scipy = "^1.9.3"
@@ -25,6 +25,7 @@ pillow = "^9.3.0"
 torchvision = "^0.14.1"
 tqdm = "^4.64.1"
 flask = "^2.2.2"
+rembg = "^2.0.30"
 
 [[tool.poetry.source]]
 name = "BFSU"

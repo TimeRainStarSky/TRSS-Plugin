@@ -14,6 +14,11 @@ let config = {
   },
 
   RealESRGAN: {
+    api: "",
+    format: "jpg"
+  },
+
+  RemBG: {
     api: ""
   },
 
