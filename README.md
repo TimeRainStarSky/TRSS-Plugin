@@ -1,6 +1,11 @@
 <div align="center">
 
-[![苏半夏](Picture/苏半夏.png)](https://moegirl.org.cn/苏半夏)
+<a href="https://moegirl.org.cn/苏半夏">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="Picture/苏半夏冬.png">
+    <img alt="苏半夏" src="Picture/苏半夏.png">
+  </picture>
+</a>
 
 # TRSS Yunzai Plugin
 
