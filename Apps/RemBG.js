@@ -93,7 +93,7 @@ export class RemBG extends plugin {
 
       logger.mark(`[图片背景去除] 图片保存成功：${logger.blue(this.e.img[0])}`)
 
-      let cmd = `bash '${path}${model}' input.png output.png`
+      let cmd = `bash '${path}'${model} input.png output.png`
 
       logger.mark(`[图片背景去除] 执行：${logger.blue(cmd)}`)
       ret = await this.execSync(cmd)
