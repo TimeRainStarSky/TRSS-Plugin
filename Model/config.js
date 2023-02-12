@@ -10,6 +10,7 @@ let config = {
   tips: "",
 
   GenshinVoice: {
+    publicApi: true,
     api: ""
   },
 
