@@ -2,6 +2,7 @@ import { segment } from "oicq"
 import config from "../Model/config.js"
 import { exec } from "child_process"
 import uploadRecord from "../Model/uploadRecord.js"
+import common from "../../../lib/common/common.js"
 import gsCfg from "../../genshin/model/gsCfg.js"
 
 let path = `${process.cwd()}/plugins/TRSS-Plugin/GenshinVoice/`
@@ -25,8 +26,12 @@ export class GenshinVoice extends plugin {
       priority: 10,
       rule: [
         {
-          reg: `.+(转码)?说.+`,
+          reg: ".+(转码)?说.+",
           fnc: "GenshinVoice"
+        },
+        {
+          reg: "#?语音(合成)?(角色)?列表$",
+          fnc: "VoiceList"
         }
       ]
     })
@@ -97,5 +102,9 @@ export class GenshinVoice extends plugin {
     logger.mark(`[原神语音合成] 发送语音：${logger.blue(url)}`)
     await this.reply(await uploadRecord(url, 68714, transcoding))
     Running = false
+  }
+
+  async VoiceList(e) {
+    await this.reply(await common.makeForwardMsg(this.e, [].concat("https://Yunzai.TRSS.me", speakers), "TRSS-Plugin 语音合成角色列表"))
   }
 }
