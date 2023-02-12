@@ -70,6 +70,8 @@ export class GenshinVoice extends plugin {
       }
     }
 
+    logger.mark(`[原神语音合成] ${logger.blue(speaker)} 说 ${logger.green(text)}`)
+
     let url
     if (config.GenshinVoice.publicApi) {
       url = `https://yuanshenai.azurewebsites.net/api?speaker=${encodeURIComponent(speaker)}&text=${encodeURIComponent(text)}`
