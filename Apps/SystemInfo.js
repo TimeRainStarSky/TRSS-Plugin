@@ -14,8 +14,8 @@ let benchcmd = "bash <(curl -L bench.sh)"
 let Running
 
 if (process.platform == "win32") {
-  cmd = `bash -c "${cmd}"`
   cmds = `bash -c "${cmd} --stdout"`
+  cmd = `bash -c "${cmd}"`
   benchcmd = `bash -c "${benchcmd}"`
 } else {
   cmds = `${cmd} --pipe`

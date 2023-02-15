@@ -61,7 +61,6 @@ async function request(url, data, aigis) {
   })
 }
 
-let path = `${process.cwd()}/plugins/TRSS-Plugin/Python/main.sh`
 let errorTips = "登录失败，请检查日志\nhttps://Yunzai.TRSS.me"
 let accounts = {}
 let Running = {}
