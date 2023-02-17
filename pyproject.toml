@@ -27,7 +27,7 @@ tqdm = "^4.64.1"
 flask = "^2.2.2"
 rembg = "^2.0.30"
 cn2an = "^0.5.19"
-openjtalk = "^0.3.0.dev2"
+openjtalk = { version = "^0.3.0.dev2", markers = "platform_machine == 'x86_64'" }
 
 [[tool.poetry.source]]
 name = "BFSU"
