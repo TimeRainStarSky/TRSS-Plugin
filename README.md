@@ -35,7 +35,7 @@ git clone --depth 1 https://Yunzai.TRSS.me plugins/TRSS-Plugin
 pnpm i
 ```
 
-3. 安装 `图片修复` | `图片背景去除` | `原神语音合成`，不用可忽略
+3. 安装 `图片修复` | `图片背景去除` | `语音合成`，不用可忽略
 
 <details><summary>展开</summary>
 
@@ -63,9 +63,17 @@ curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest
 xz -dv u2net.onnx.xz isnetis.onnx.xz
 ```
 
-- 原神语音合成：
+- 语音合成：
 
 ```
+git clone --depth 1 https://gitee.com/TimeRainStarSky/ChatWaifu
+cd ChatWaifu
+curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest/ChatWaifuCN.txz
+curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest/ChatWaifuJP.txz
+xz -dv ChatWaifuCN.txz ChatWaifuJP.txz
+
+cd -
+
 git clone --depth 1 https://gitee.com/TimeRainStarSky/GenshinVoice
 cd GenshinVoice
 poetry run pip install monotonic-align
@@ -101,7 +109,7 @@ bash server.sh [端口]
 
 </details>
 
-<details><summary>原神语音合成</summary>
+<details><summary>语音合成</summary>
 
 - `角色名` + (转码)?说 + `中文`
 - 语音合成角色列表

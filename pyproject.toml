@@ -26,6 +26,8 @@ torchvision = "^0.14.1"
 tqdm = "^4.64.1"
 flask = "^2.2.2"
 rembg = "^2.0.30"
+cn2an = "^0.5.19"
+openjtalk = "^0.3.0.dev2"
 
 [[tool.poetry.source]]
 name = "BFSU"

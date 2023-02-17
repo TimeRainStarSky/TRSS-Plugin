@@ -9,9 +9,10 @@ let configData
 let config = {
   tips: "",
 
-  GenshinVoice: {
+  Voice: {
     publicApi: true,
-    api: ""
+    GenshinVoiceApi: "",
+    ChatWaifuApi: ""
   },
 
   RealESRGAN: {
