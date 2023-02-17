@@ -66,17 +66,30 @@ xz -dv u2net.onnx.xz isnetis.onnx.xz
 - 语音合成：
 
 ```
+poetry run pip install monotonic-align
 git clone --depth 1 https://gitee.com/TimeRainStarSky/ChatWaifu
+git clone --depth 1 https://gitee.com/TimeRainStarSky/GenshinVoice
+```
+
+- 语音合成 汉语模型：
+
+```
 cd ChatWaifu
 curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest/ChatWaifuCN.txz
+tar -xvJf ChatWaifuCN.txz
+```
+
+- 语音合成 日语模型：
+
+```
+cd ChatWaifu
 curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest/ChatWaifuJP.txz
-xz -dv ChatWaifuCN.txz ChatWaifuJP.txz
+tar -xvJf ChatWaifuJP.txz
+```
 
-cd -
-
-git clone --depth 1 https://gitee.com/TimeRainStarSky/GenshinVoice
+- 语音合成 原神模型：
+```
 cd GenshinVoice
-poetry run pip install monotonic-align
 curl -LO https://github.com/TimeRainStarSky/TRSS-Plugin/releases/download/latest/G_809000.pth.xz
 xz -dv G_809000.pth.xz
 ```
