@@ -109,7 +109,7 @@ export class RemBG extends plugin {
     }
 
     logger.mark(`[图片背景去除] 发送图片：${logger.blue(url)}`)
-    await this.reply(segment.image(url), true)
     Running = false
+    await this.reply(segment.image(url), true)
   }
 }

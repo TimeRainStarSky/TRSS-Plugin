@@ -109,7 +109,7 @@ export class RealESRGAN extends plugin {
     }
 
     logger.mark(`[图片修复] 发送图片：${logger.blue(url)}`)
-    await this.reply(segment.image(url), true)
     Running = false
+    await this.reply(segment.image(url), true)
   }
 }

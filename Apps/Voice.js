@@ -120,8 +120,8 @@ export class Voice extends plugin {
     }
 
     logger.mark(`[语音合成] 发送语音：${logger.blue(url)}`)
-    await this.reply(await uploadRecord(url, 68714, transcoding))
     Running = false
+    await this.reply(await uploadRecord(url, 68714, transcoding))
   }
 
   async VoiceList(e) {
