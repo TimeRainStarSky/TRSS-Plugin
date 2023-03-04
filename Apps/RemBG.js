@@ -18,7 +18,7 @@ export class RemBG extends plugin {
       priority: 10,
       rule: [
         {
-          reg: "^(动漫)?(图片)?(去除?背景|背景去除?)$",
+          reg: "^#?(动漫)?(图片)?(去除?背景|背景去除?)$",
           fnc: "DetectImage"
         }
       ]

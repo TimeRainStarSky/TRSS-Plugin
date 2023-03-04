@@ -234,7 +234,7 @@ bash server.sh [端口]
 
 <details><summary>展开</summary>
 
-- 问：`ModuleNotFoundError: No module named 'torch/cv2'`
+- 问：`ModuleNotFoundError: No module named 'xxx'`
 - 答：未正确执行 `poetry install`
 
 - 问：`已杀死` | `Signal 9` | `MemoryError`
