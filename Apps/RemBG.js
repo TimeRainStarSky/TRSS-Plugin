@@ -1,14 +1,3 @@
-import config from "../Model/config.js"
-import { exec } from "child_process"
-import common from "../../../lib/common/common.js"
-let segment
-try {
-  segment = (await import("icqq")).segment
-} catch (err) {
-  logger.warn(`找不到 icqq，建议升级 Yunzai\n${logger.red(err)}`)
-  segment = (await import("oicq")).segment
-}
-
 let path = `${process.cwd()}/plugins/TRSS-Plugin/RemBG/`
 let model
 let Running

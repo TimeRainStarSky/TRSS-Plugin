@@ -1,9 +1,3 @@
-import fs from "fs"
-import common from "../../../lib/common/common.js"
-import puppeteer from "../../../lib/puppeteer/puppeteer.js"
-import MarkdownIt from "markdown-it"
-const md = new MarkdownIt()
-
 let htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Markdown/`
 let tplFile = `${htmlDir}Markdown.html`
 

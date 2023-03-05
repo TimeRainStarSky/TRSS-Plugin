@@ -1,15 +1,6 @@
-import config from "../Model/config.js"
-import fetch from "node-fetch"
-import crypto from "crypto"
 import _ from "lodash"
-import QRCode from "qrcode"
-let segment
-try {
-  segment = (await import("icqq")).segment
-} catch (err) {
-  logger.warn(`找不到 icqq，建议升级 Yunzai\n${logger.red(err)}`)
-  segment = (await import("oicq")).segment
-}
+import crypto from "crypto"
+import fetch from "node-fetch"
 
 const publicKey = `-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDvekdPMHN3AYhm/vktJT+YJr7cI5DcsNKqdsx5DZX0gDuWFuIjzdwButrIYPNmRJ1G8ybDIF7oDW2eEpm5sMbL9zs
@@ -205,7 +196,7 @@ export class miHoYoLogin extends plugin {
 
     let url = res.data.url
     let ticket = url.split("ticket=")[1]
-    let img = await QRCode.toDataURL(url)
+    let img = await QR.toDataURL(url)
     img = img.replace("data:image/png;base64,", "base64://")
     await this.reply(["请使用米游社扫码登录", segment.image(img)], true)
 

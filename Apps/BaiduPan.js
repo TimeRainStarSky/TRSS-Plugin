@@ -1,7 +1,3 @@
-import fs from "fs"
-import { exec } from "child_process"
-import common from "../../../lib/common/common.js"
-
 let Commands = {
   "":         "help",
   "帮助":     "help",

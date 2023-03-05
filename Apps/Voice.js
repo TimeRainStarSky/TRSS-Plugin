@@ -1,7 +1,3 @@
-import config from "../Model/config.js"
-import { exec } from "child_process"
-import uploadRecord from "../Model/uploadRecord.js"
-import common from "../../../lib/common/common.js"
 import gsCfg from "../../genshin/model/gsCfg.js"
 
 let GenshinVoicePath = `${process.cwd()}/plugins/TRSS-Plugin/GenshinVoice/`

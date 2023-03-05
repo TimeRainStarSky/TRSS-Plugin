@@ -1,8 +1,3 @@
-import { exec } from "child_process"
-import puppeteer from "../../../lib/puppeteer/puppeteer.js"
-import AU from "ansi_up"
-const ansi_up = new AU.default
-
 let htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 let tplFile = `${htmlDir}Code.html`
 

@@ -1,7 +1,3 @@
-import fs from "fs"
-import common from "../../../lib/common/common.js"
-import puppeteer from "../../../lib/puppeteer/puppeteer.js"
-
 let htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/SourceCode/`
 let tplFile = `${htmlDir}SourceCode.html`
 

@@ -1,8 +1,3 @@
-import { exec, execSync } from "child_process"
-import puppeteer from "../../../lib/puppeteer/puppeteer.js"
-import AU from "ansi_up"
-const ansi_up = new AU.default
-
 let htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 let tplFile = `${htmlDir}Code.html`
 let errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://TRSS.me"
