@@ -1,9 +1,15 @@
-import { segment } from "oicq"
 import config from "../Model/config.js"
 import fetch from "node-fetch"
 import crypto from "crypto"
 import _ from "lodash"
 import QRCode from "qrcode"
+let segment
+try {
+  segment = (await import("icqq")).segment
+} catch (err) {
+  logger.warn(`找不到 icqq，建议升级 Yunzai\n${logger.red(err)}`)
+  segment = (await import("oicq")).segment
+}
 
 const publicKey = `-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDvekdPMHN3AYhm/vktJT+YJr7cI5DcsNKqdsx5DZX0gDuWFuIjzdwButrIYPNmRJ1G8ybDIF7oDW2eEpm5sMbL9zs

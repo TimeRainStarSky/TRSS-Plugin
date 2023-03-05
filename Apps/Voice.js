@@ -1,4 +1,3 @@
-import { segment } from "oicq"
 import config from "../Model/config.js"
 import { exec } from "child_process"
 import uploadRecord from "../Model/uploadRecord.js"

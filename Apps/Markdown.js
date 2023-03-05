@@ -1,5 +1,4 @@
 import fs from "fs"
-import { segment } from "oicq"
 import common from "../../../lib/common/common.js"
 import puppeteer from "../../../lib/puppeteer/puppeteer.js"
 import MarkdownIt from "markdown-it"

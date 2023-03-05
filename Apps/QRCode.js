@@ -1,5 +1,11 @@
-import { segment } from "oicq"
 import QR from "qrcode"
+let segment
+try {
+  segment = (await import("icqq")).segment
+} catch (err) {
+  logger.warn(`找不到 icqq，建议升级 Yunzai\n${logger.red(err)}`)
+  segment = (await import("oicq")).segment
+}
 
 export class QRCode extends plugin {
   constructor() {

@@ -1,5 +1,4 @@
 import fs from "fs"
-import { segment } from "oicq"
 import { exec } from "child_process"
 import common from "../../../lib/common/common.js"
 
