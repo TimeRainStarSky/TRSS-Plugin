@@ -21,7 +21,7 @@ global.md = new MarkdownIt()
 global.ansi_up = new AU.default
 
 if (!global.segment) {
-  logger.warn(logger.red("! 找不到 segment，建议升级 Yunzai"))
+  logger.warn(logger.red("! 未找到 segment，建议更新 Yunzai"))
   global.segment = (await import("oicq")).segment
 }
 
@@ -47,4 +47,4 @@ for (let i in files) {
 }
 export { apps }
 
-logger.info(logger.green("- TRSS 插件加载完成"))
+logger.info(logger.green("- TRSS 插件 加载完成"))

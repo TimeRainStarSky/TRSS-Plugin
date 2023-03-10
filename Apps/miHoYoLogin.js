@@ -2,12 +2,13 @@ import _ from "lodash"
 import crypto from "crypto"
 import fetch from "node-fetch"
 
+const regex = "^#?(米哈?游社?登(录|陆|入)|登(录|陆|入)米哈?游社?)"
 const publicKey = `-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDvekdPMHN3AYhm/vktJT+YJr7cI5DcsNKqdsx5DZX0gDuWFuIjzdwButrIYPNmRJ1G8ybDIF7oDW2eEpm5sMbL9zs
 9ExXCdvqrn51qELbqj0XxtMTIpaCHFSI50PfPpTFV9Xt/hmyVwokoOXFlAEgCn+Q
 CgGs52bFoYMtyi+xEQIDAQAB
 -----END PUBLIC KEY-----`
-const app_id = 4
+const app_id = 8
 
 function random_string(n) {
   return _.sampleSize("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", n).join("")
@@ -71,12 +72,12 @@ export class miHoYoLogin extends plugin {
       priority: 10,
       rule: [
         {
-          reg: "^#?(米哈?游社?登录|登录米哈?游社?) ",
+          reg: `${regex} `,
           event: "message.private",
           fnc: "miHoYoLoginDetect"
         },
         {
-          reg: "^#?(米哈?游社?登录|登录米哈?游社?)$",
+          reg: `${regex}$`,
           event: "message.private",
           fnc: "miHoYoLoginQRCode"
         },
@@ -95,17 +96,15 @@ export class miHoYoLogin extends plugin {
   }
 
   async crack_geetest(gt, challenge) {
-    let res = await fetch(`https://s.microgg.cn/gt/https://validate.microgg.cn/?gt=${gt}&challenge=${challenge}`)
-    res = await res.json()
-    logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
-    await this.reply(`请完成验证：${res.shorturl}`, true)
+    let res
+    await this.reply(`请完成验证：https://challenge.minigg.cn/manual/index.html?gt=${gt}&challenge=${challenge}`, true)
     for (let n=1;n<60;n++) {
       await sleep(5000)
       try {
-        res = await fetch(`https://validate.microgg.cn/?callback=${challenge}`)
+        res = await fetch(`https://challenge.minigg.cn/manual/?callback=${challenge}`)
         res = await res.json()
-        if (res.geetest_validate) {
-          return res
+        if (res.retcode == 200) {
+          return res.data
         }
       } catch (err) {
         logger.error(`[米哈游登录] 错误：${logger.red(err)}`)
@@ -126,7 +125,7 @@ export class miHoYoLogin extends plugin {
 
     let password = this.e.msg.trim()
     this.e = accounts[this.e.user_id]
-    let account = this.e.msg.replace(/^#?(米哈?游社?登录|登录米哈?游社?) /, "").trim()
+    let account = this.e.msg.replace(new RegExp(`${regex} `), "").trim()
 
     let data = JSON.stringify({
       account: encrypt_data(account),
@@ -135,9 +134,9 @@ export class miHoYoLogin extends plugin {
 
     let url = "https://passport-api.mihoyo.com/account/ma-cn-passport/app/loginByPassword"
     let res = await request(url, data, "")
-    logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
     let aigis_data = JSON.parse(res.headers.get("x-rpc-aigis"))
     res = await res.json()
+    logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
 
     if (res.retcode == -3101) {
       logger.mark("[米哈游登录] 正在验证")
