@@ -3,7 +3,6 @@ logger.info(logger.yellow("- 正在加载 TRSS 插件"))
 import fs from "fs"
 import QR from "qrcode"
 import config from "./Model/config.js"
-import uploadRecord from "./Model/uploadRecord.js"
 import common from "../../lib/common/common.js"
 import puppeteer from "../../lib/puppeteer/puppeteer.js"
 import { exec } from "child_process"
@@ -13,7 +12,6 @@ import AU from "ansi_up"
 global.fs = fs
 global.QR = QR
 global.config = config
-global.uploadRecord = uploadRecord
 global.common = common
 global.puppeteer = puppeteer
 global.exec = exec
@@ -23,6 +21,12 @@ global.ansi_up = new AU.default
 if (!global.segment) {
   logger.warn(logger.red("! 未找到 segment，建议更新 Yunzai"))
   global.segment = (await import("oicq")).segment
+}
+
+try {
+  global.uploadRecord = await import("./Model/uploadRecord.js")
+} catch (err) {
+  global.uploadRecord = segment.record
 }
 
 const files = fs
