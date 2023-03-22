@@ -99,7 +99,7 @@ export class RemBG extends plugin {
         await this.reply(errorTips)
       }
 
-      url = `${path}output.png`
+      url = `file://${path}output.png`
     }
 
     logger.mark(`[图片背景去除] 发送图片：${logger.blue(url)}`)

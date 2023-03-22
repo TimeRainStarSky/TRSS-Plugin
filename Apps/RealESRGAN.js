@@ -99,7 +99,7 @@ export class RealESRGAN extends plugin {
         await this.reply(errorTips)
       }
 
-      url = `${path}results/input_out.${config.RealESRGAN.format}`
+      url = `file://${path}results/input_out.${config.RealESRGAN.format}`
     }
 
     logger.mark(`[图片修复] 发送图片：${logger.blue(url)}`)

@@ -101,7 +101,7 @@ export class Voice extends plugin {
         await this.reply(`语音合成错误：${ret.error}`, true)
         await this.reply(errorTips)
       }
-      url = `${path}output.wav`
+      url = `file://${path}output.wav`
     }
 
     logger.mark(`[语音合成] 发送语音：${logger.blue(url)}`)
