@@ -24,7 +24,7 @@ if (!global.segment) {
 }
 
 try {
-  global.uploadRecord = await import("./Model/uploadRecord.js")
+  global.uploadRecord = (await import("./Model/uploadRecord.js")).default
 } catch (err) {
   global.uploadRecord = segment.record
 }
