@@ -162,7 +162,7 @@ bash server.sh [端口]
 
 <details><summary>远程命令（权限：主人）</summary>
 
-- rc / rcp + `命令`
+- rc / rcp / rcj / rcjp + `命令`
 
 </details>
 

