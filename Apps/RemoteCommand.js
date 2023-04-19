@@ -41,19 +41,11 @@ export class RemoteCommand extends plugin {
     let ret = {}
     try {
       ret.stdout = await eval(cmd)
-      switch (typeof ret.stdout) {
-        case "string":
-        break;
-      case "number":
-        ret.stdout = String(ret.stdout);
-        break;
-      case "object":
+      if (typeof ret.stdout == "object") {
         if (Buffer.isBuffer(ret.stdout))
-          ret.stdout = Buffer.from(ret.stdout, "utf8").toString();
-        else if (Array.isArray(ret.stdout))
-          ret.stdout = ret.stdout.join("");
+          ret.stdout = Buffer.from(ret.stdout, "utf8").toString()
         else
-          ret.stdout = JSON.stringify(ret.stdout);
+          ret.stdout = JSON.stringify(ret.stdout)
       }
     } catch (err) {
       ret.stderr = err

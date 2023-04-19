@@ -44,8 +44,7 @@ config.tips = [
   "参考：https://Yunzai.TRSS.me"
 ]
 
-if (config != configData) {
+if (YAML.stringify(config) != YAML.stringify(configData))
   fs.writeFileSync(configFile, YAML.stringify(config), "utf-8")
-}
 
 export default config
