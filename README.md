@@ -39,7 +39,7 @@ pnpm i
 
 <details><summary>展开</summary>
 
-安装 [Python 3.10](https://python.org) 和 [Poetry](https://python-poetry.org)，并在插件目录执行以下操作
+安装 [Python 3.10-3.11](https://python.org) 和 [Poetry](https://python-poetry.org)，并在插件目录执行以下操作
 
 ```
 poetry install
@@ -260,7 +260,10 @@ bash server.sh [端口]
 
 ## 联系方式
 
-- QQ 群组：[211414032](https://jq.qq.com/?k=QU1xGLEB)
+- QQ 群组：
+1. [659945190](https://jq.qq.com/?k=VBuHGPv3)
+2. [1027131254](https://jq.qq.com/?k=Af0pTDHU)
+3. [300714227](https://jq.qq.com/?k=V2xVpaR7)
 
 ### 时雨 🌌 星空
 
@@ -273,12 +276,3 @@ bash server.sh [端口]
 
 - 爱发电：<https://afdian.net/a/TimeRainStarSky>
 - Partme：<https://partme.com/TimeRainStarSky>
-
-## 相关项目
-
-[![TRSS OneBot 管理脚本](https://github-readme-stats.vercel.app/api/pin/?username=TimeRainStarSky&repo=TRSS_OneBot&show_owner=true)](../../../TRSS_OneBot)
-[![TRSS Liteyuki 管理脚本](https://github-readme-stats.vercel.app/api/pin/?username=TimeRainStarSky&repo=TRSS_Liteyuki&show_owner=true)](../../../TRSS_Liteyuki)
-[![TRSS Yunzai 管理脚本](https://github-readme-stats.vercel.app/api/pin/?username=TimeRainStarSky&repo=TRSS_Yunzai&show_owner=true)](../../../TRSS_Yunzai)
-[![TRSS Sagiri 管理脚本](https://github-readme-stats.vercel.app/api/pin/?username=TimeRainStarSky&repo=TRSS_Sagiri&show_owner=true)](../../../TRSS_Sagiri)
-[![TRSS Amiya 管理脚本](https://github-readme-stats.vercel.app/api/pin/?username=TimeRainStarSky&repo=TRSS_Amiya&show_owner=true)](../../../TRSS_Amiya)
-[![TRSS Zhenxun 管理脚本](https://github-readme-stats.vercel.app/api/pin/?username=TimeRainStarSky&repo=TRSS_Zhenxun&show_owner=true)](../../../TRSS_Zhenxun)

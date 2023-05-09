@@ -5,7 +5,7 @@ description = "TRSS Yunzai Plugin"
 authors = ["时雨🌌星空 <Time.Rain.Star.Sky@Gmail.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+python = ">=3.10,<3.12"
 matplotlib = "^3.7.1"
 torch = "^2.0.0"
 scipy = "^1.10.1"
@@ -25,10 +25,10 @@ pillow = "^9.5.0"
 torchvision = "^0.15.1"
 tqdm = "^4.65.0"
 flask = "^2.2.3"
-rembg = "^2.0.32"
+rembg = { version = "^2.0.32", python = "<3.11" }
 cn2an = "^0.5.19"
 openjtalk = { version = "^0.3.0.dev3", markers = "platform_machine == 'x86_64'" }
-llvmlite = "^0.39.1"
+llvmlite = "^0.40.0"
 
 [[tool.poetry.source]]
 name = "BFSU"

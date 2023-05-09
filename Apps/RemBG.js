@@ -20,7 +20,7 @@ export class RemBG extends plugin {
   }
 
   async execSync(cmd) {
-    return new Promise((resolve, reject) => {
+    return new Promise(resolve => {
       exec(cmd, (error, stdout, stderr) => {
         resolve({ error, stdout, stderr })
       })
