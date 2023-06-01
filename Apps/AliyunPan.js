@@ -1,4 +1,4 @@
-let Commands = {
+const Commands = {
   "":         "help",
   "帮助":     "help",
   "相簿":     "album",
@@ -24,11 +24,15 @@ let Commands = {
   "当前账号": "who"
 }
 
-let path = `${process.env.HOME}/aliyunpan/`
-let cmdPath = `${path}aliyunpan`
+let path
+if (process.platform == "win32")
+  path = `${process.env.HOME}\\aliyunpan\\`
+else
+  path = `${process.env.HOME}/aliyunpan/`
+const cmdPath = `${path}aliyunpan`
+const errorTips = "请使用脚本安装阿里云盘，并正常登录后再使用此功能\nhttps://Yunzai.TRSS.me\nhttps://TRSS.me"
 let Running
 let es
-let errorTips = "请使用脚本安装阿里云盘，并正常登录后再使用此功能\nhttps://Yunzai.TRSS.me\nhttps://TRSS.me"
 
 export class AliyunPan extends plugin {
   constructor() {
@@ -64,7 +68,7 @@ export class AliyunPan extends plugin {
 
   async execTask(e, cmd) {
     logger.mark(`[阿里云盘] 执行：${logger.blue(cmd)}`)
-    let ret = await this.execSync(cmd)
+    const ret = await this.execSync(cmd)
     logger.mark(`[阿里云盘]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
     if (ret.stdout) {
@@ -93,7 +97,7 @@ export class AliyunPan extends plugin {
     if(!this.e.file)return false
 
     this.finish("Upload")
-    let filePath = `${path}${this.e.file.name}`
+    const filePath = `${path}${this.e.file.name}`
     let fileUrl
     if (this.e.isGroup) {
       fileUrl = await this.e.group.getFileUrl(this.e.file.fid)
@@ -109,16 +113,16 @@ export class AliyunPan extends plugin {
     Running = true
     await this.reply(`开始下载文件，请稍等……\n文件链接：${fileUrl}\n保存路径：${filePath}`, true)
 
-    let ret = await common.downFile(fileUrl, filePath)
+    const ret = await common.downFile(fileUrl, filePath)
     if (!ret) {
       await this.reply("文件下载错误", true)
       Running = false
       return true
     }
 
-    let remotePath = this.e.msg.replace("阿里云盘上传", "").trim()
+    const remotePath = this.e.msg.replace("阿里云盘上传", "").trim()
     await this.reply(`文件下载完成，开始上传到：${remotePath}`, true)
-    let cmd = `'${cmdPath}' upload '${filePath}' '${remotePath}'`
+    const cmd = `'${cmdPath}' upload '${filePath}' '${remotePath}'`
 
     await this.execTask(es, cmd)
     await fs.unlinkSync(filePath)
@@ -133,7 +137,7 @@ export class AliyunPan extends plugin {
     }
 
     this.finish("Download")
-    let remotePath = this.e.msg.replace("阿里云盘下载", "").trim()
+    const remotePath = this.e.msg.replace("阿里云盘下载", "").trim()
     if (!remotePath) {
       this.setContext("Download")
       await this.reply("请发送文件路径", true)
@@ -143,11 +147,11 @@ export class AliyunPan extends plugin {
     Running = true
     await this.reply("开始下载文件，请稍等……", true)
 
-    let cmd = `'${cmdPath}' download '${remotePath}' --saveto '${path}'`
+    const cmd = `'${cmdPath}' download '${remotePath}' --saveto '${path}'`
 
     await this.execTask(e, cmd)
 
-    let filePath = `${path}${remotePath}`
+    const filePath = `${path}${remotePath}`
     if (!fs.existsSync(filePath)) {
       await this.reply("文件下载错误", true)
       Running = false
@@ -193,7 +197,7 @@ export class AliyunPan extends plugin {
       msg[0] = Commands[msg[0]]
     }
     msg = msg.join(" ")
-    let cmd = `'${cmdPath}' ${msg}`
+    const cmd = `'${cmdPath}' ${msg}`
     await this.execTask(e, cmd)
   }
 }

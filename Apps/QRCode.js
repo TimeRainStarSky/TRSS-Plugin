@@ -15,10 +15,9 @@ export class QRCode extends plugin {
   }
 
   async QRCode(e) {
-    let msg = this.e.msg.replace("二维码", "").trim()
+    const msg = this.e.msg.replace("二维码", "").trim()
     logger.mark(`[二维码生成] 信息：${logger.blue(msg)}`)
-    let img = await QR.toDataURL(msg)
-    img = img.replace("data:image/png;base64,", "base64://")
+    const img = (await QR.toDataURL(msg)).replace("data:image/png;base64,", "base64://")
     await this.reply(segment.image(img), true)
   }
 }

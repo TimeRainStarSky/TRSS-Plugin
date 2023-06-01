@@ -1,6 +1,6 @@
-let htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
-let tplFile = `${htmlDir}Code.html`
-let errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://TRSS.me"
+const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
+const tplFile = `${htmlDir}Code.html`
+const errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://TRSS.me"
 
 let cmd = "fastfetch"
 let cmds
@@ -49,7 +49,7 @@ export class SystemInfo extends plugin {
 
   async SystemInfo(e) {
     logger.mark(`[系统信息] 执行：${logger.blue(cmds)}`)
-    let ret = await this.execSync(cmds)
+    const ret = await this.execSync(cmds)
     logger.mark(`[系统信息]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
     if (ret.error) {
@@ -63,7 +63,7 @@ export class SystemInfo extends plugin {
 
   async SystemInfoPic(e) {
     logger.mark(`[系统信息] 执行：${logger.blue(cmd)}`)
-    let ret = await this.execSync(`${cmd}`)
+    const ret = await this.execSync(`${cmd}`)
     logger.mark(`[系统信息]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
     if (ret.error) {
@@ -72,8 +72,8 @@ export class SystemInfo extends plugin {
       await this.reply(errorTips)
     }
 
-    let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
-    let img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
+    const Code = await ansi_up.ansi_to_html(ret.stdout.trim())
+    const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
     await this.reply(img, true)
   }
 
@@ -86,7 +86,7 @@ export class SystemInfo extends plugin {
     await this.reply("开始测试，请稍等……", true)
 
     logger.mark(`[系统测试] 执行：${logger.blue(benchcmd)}`)
-    let ret = await this.execSync(`${benchcmd}`)
+    const ret = await this.execSync(`${benchcmd}`)
     logger.mark(`[系统测试]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
 
     if (ret.error) {
@@ -95,8 +95,8 @@ export class SystemInfo extends plugin {
       await this.reply(errorTips)
     }
 
-    let Code = await ansi_up.ansi_to_html(ret.stdout.trim())
-    let img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
+    const Code = await ansi_up.ansi_to_html(ret.stdout.trim())
+    const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
     await this.reply(img, true)
     Running = false
   }

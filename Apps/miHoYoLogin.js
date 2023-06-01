@@ -26,9 +26,9 @@ function md5(data) {
 }
 
 function ds(data) {
-  let t = Math.floor(Date.now()/1000)
-  let r = random_string(6)
-  let h = md5(`salt=JwYDpKvLj6MrMqqYU6jTKF17KNO2PXoS&t=${t}&r=${r}&b=${data}&q=`)
+  const t = Math.floor(Date.now()/1000)
+  const r = random_string(6)
+  const h = md5(`salt=JwYDpKvLj6MrMqqYU6jTKF17KNO2PXoS&t=${t}&r=${r}&b=${data}&q=`)
   return `${t},${r},${h}`
 }
 
@@ -59,9 +59,9 @@ async function request(url, data, aigis) {
   })
 }
 
-let errorTips = "登录失败，请检查日志\nhttps://Yunzai.TRSS.me"
-let accounts = {}
-let Running = {}
+const errorTips = "登录失败，请检查日志\nhttps://Yunzai.TRSS.me"
+const accounts = {}
+const Running = {}
 
 export class miHoYoLogin extends plugin {
   constructor() {
@@ -123,26 +123,26 @@ export class miHoYoLogin extends plugin {
     }
     Running[this.e.user_id] = true
 
-    let password = this.e.msg.trim()
+    const password = this.e.msg.trim()
     this.e = accounts[this.e.user_id]
-    let account = this.e.msg.replace(new RegExp(`${regex} `), "").trim()
+    const account = this.e.msg.replace(new RegExp(`${regex} `), "").trim()
 
-    let data = JSON.stringify({
+    const data = JSON.stringify({
       account: encrypt_data(account),
       password: encrypt_data(password)
     })
 
-    let url = "https://passport-api.mihoyo.com/account/ma-cn-passport/app/loginByPassword"
+    const url = "https://passport-api.mihoyo.com/account/ma-cn-passport/app/loginByPassword"
     let res = await request(url, data, "")
-    let aigis_data = JSON.parse(res.headers.get("x-rpc-aigis"))
+    const aigis_data = JSON.parse(res.headers.get("x-rpc-aigis"))
     res = await res.json()
     logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
 
     if (res.retcode == -3101) {
       logger.mark("[米哈游登录] 正在验证")
-      let aigis_captcha_data = JSON.parse(aigis_data.data)
-      let challenge = aigis_captcha_data.challenge
-      let validate = await this.crack_geetest(aigis_captcha_data.gt, challenge)
+      const aigis_captcha_data = JSON.parse(aigis_data.data)
+      const challenge = aigis_captcha_data.challenge
+      const validate = await this.crack_geetest(aigis_captcha_data.gt, challenge)
       if (validate.geetest_validate) {
         logger.mark("[米哈游登录] 验证成功")
       } else {
@@ -151,7 +151,7 @@ export class miHoYoLogin extends plugin {
         return false
       }
 
-      let aigis = aigis_data.session_id + ";" + Buffer.from(JSON.stringify({
+      const aigis = aigis_data.session_id + ";" + Buffer.from(JSON.stringify({
         geetest_challenge: challenge,
         geetest_seccode: validate.geetest_validate + "|jordan",
         geetest_validate: validate.geetest_validate
@@ -185,7 +185,7 @@ export class miHoYoLogin extends plugin {
     }
     Running[this.e.user_id] = true
 
-    let device = random_string(64)
+    const device = random_string(64)
     let res = await fetch("https://hk4e-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/fetch", {
       method: "post",
       body: JSON.stringify({ app_id, device })
@@ -193,10 +193,9 @@ export class miHoYoLogin extends plugin {
     res = await res.json()
     logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
 
-    let url = res.data.url
-    let ticket = url.split("ticket=")[1]
-    let img = await QR.toDataURL(url)
-    img = img.replace("data:image/png;base64,", "base64://")
+    const url = res.data.url
+    const ticket = url.split("ticket=")[1]
+    const img = (await QR.toDataURL(url)).replace("data:image/png;base64,", "base64://")
     await this.reply(["请使用米游社扫码登录", segment.image(img)], true)
 
     let data

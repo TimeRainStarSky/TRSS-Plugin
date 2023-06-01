@@ -2,11 +2,10 @@ import fs from "fs"
 import YAML from "yaml"
 import _ from "lodash"
 
-let path = `${process.cwd()}/plugins/TRSS-Plugin/`
-let configFile = `${path}config.yaml`
-let configData
+const path = `${process.cwd()}/plugins/TRSS-Plugin/`
+const configFile = `${path}config.yaml`
 
-let config = {
+const config = {
   tips: "",
 
   Voice: {
@@ -28,6 +27,8 @@ let config = {
     cover: false
   }
 }
+
+let configData
 
 if (fs.existsSync(configFile)) {
   try {

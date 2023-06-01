@@ -1,7 +1,7 @@
-let path = `${process.cwd()}/plugins/TRSS-Plugin/Real-ESRGAN/`
+const path = `${process.cwd()}/plugins/TRSS-Plugin/Real-ESRGAN/`
+const errorTips = "请查看安装使用教程：\nhttps://Yunzai.TRSS.me\n并将报错通过联系方式反馈给开发者"
 let model
 let Running
-let errorTips = "请查看安装使用教程：\nhttps://Yunzai.TRSS.me\n并将报错通过联系方式反馈给开发者"
 
 export class RealESRGAN extends plugin {
   constructor() {
@@ -43,7 +43,7 @@ export class RealESRGAN extends plugin {
       }
 
       if (reply) {
-        for (let val of reply) {
+        for (const val of reply) {
           if (val.type == "image") {
             this.e.img = [val.url]
             break
@@ -87,7 +87,7 @@ export class RealESRGAN extends plugin {
 
       logger.mark(`[图片修复] 图片保存成功：${logger.blue(this.e.img[0])}`)
 
-      let cmd = `bash '${path}main.sh' --fp32 --tile 100 -n ${model} -i input.${config.RealESRGAN.format}`
+      const cmd = `bash '${path}main.sh' --fp32 --tile 100 -n ${model} -i input.${config.RealESRGAN.format}`
 
       logger.mark(`[图片修复] 执行：${logger.blue(cmd)}`)
       ret = await this.execSync(cmd)

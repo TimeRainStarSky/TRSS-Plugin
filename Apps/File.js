@@ -29,7 +29,7 @@ export class File extends plugin {
     if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
 
     this.finish("List")
-    let filePath = this.e.msg.replace("文件查看", "").trim()
+    const filePath = this.e.msg.replace("文件查看", "").trim()
     if (!filePath) {
       this.setContext("List")
       await this.reply("请发送文件路径", true)
@@ -56,7 +56,7 @@ export class File extends plugin {
     }
 
     this.finish("Upload")
-    let filePath = this.e.msg.replace("文件上传", "").trim()
+    const filePath = this.e.msg.replace("文件上传", "").trim()
     if (!filePath) {
       this.setContext("Upload")
       await this.reply("请发送文件路径", true)
@@ -112,7 +112,7 @@ export class File extends plugin {
     if(!this.e.file)return false
 
     this.finish("Download")
-    let filePath = `${es.msg.replace("文件下载", "").trim()||process.cwd()}/${this.e.file.name}`
+    const filePath = `${es.msg.replace("文件下载", "").trim()||process.cwd()}/${this.e.file.name}`
     let fileUrl
     if (this.e.isGroup) {
       fileUrl = await this.e.group.getFileUrl(this.e.file.fid)
@@ -128,7 +128,7 @@ export class File extends plugin {
     Running = true
     await this.reply(`开始下载文件，请稍等……\n文件链接：${fileUrl}\n保存路径：${filePath}`, true)
 
-    let ret = await common.downFile(fileUrl, filePath)
+    const ret = await common.downFile(fileUrl, filePath)
     if (ret) {
       await this.reply("文件下载完成", true)
     } else {
