@@ -1,6 +1,7 @@
 logger.info(logger.yellow("- 正在加载 TRSS 插件"))
 
-import fs from "fs"
+import fs from "node:fs"
+import util from "node:util"
 import QR from "qrcode"
 import config from "./Model/config.js"
 import common from "../../lib/common/common.js"
@@ -10,6 +11,7 @@ import MarkdownIt from "markdown-it"
 import AU from "ansi_up"
 
 global.fs = fs
+global.util = util
 global.QR = QR
 global.config = config
 global.common = common
