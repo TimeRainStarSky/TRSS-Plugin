@@ -75,29 +75,34 @@ export class File extends plugin {
     Running = true
     await this.reply("开始上传文件，请稍等……", true)
 
-    let res
-    if (this.e.isGroup) {
-      res = await this.e.group.fs.upload(filePath).catch((err) => {
-        this.reply(`文件上传错误：${JSON.stringify(err)}`)
-        logger.error(`文件上传错误：${logger.red(JSON.stringify(err))}`)
-      })
-    } else {
-      res = await this.e.friend.sendFile(filePath).catch((err) => {
-        this.reply(`文件上传错误：${JSON.stringify(err)}`)
-        logger.error(`文件上传错误：${logger.red(JSON.stringify(err))}`)
-      })
-    }
-
-    if (res) {
-      let fileUrl
+    try {
+      let res
       if (this.e.isGroup) {
-        fileUrl = await this.e.group.getFileUrl(res.fid)
+        if (this.e.group.sendFile)
+          res = await this.e.group.sendFile(filePath)
+        else
+          res = await this.e.group.fs.upload(filePath)
       } else {
-        fileUrl = await this.e.friend.getFileUrl(res)
+        res = await this.e.friend.sendFile(filePath)
       }
-      await this.reply(`文件上传完成：${fileUrl}`, true)
-    }
 
+      if (res) {
+        let fileUrl
+        if (this.e.group?.getFileUrl)
+          fileUrl = await this.e.group.getFileUrl(res.fid)
+        else if (this.e.friend?.getFileUrl)
+          fileUrl = await this.e.friend.getFileUrl(res)
+
+        if (fileUrl)
+          await this.reply(`文件上传完成：${fileUrl}`, true)
+        else
+          await this.reply(`文件上传完成：${JSON.stringify(res)}`, true)
+      }
+
+    } catch(err) {
+      logger.error(`文件上传错误：${logger.red(JSON.stringify(err))}`)
+      await this.reply(`文件上传错误：${JSON.stringify(err)}`)
+    }
     Running = false
   }
 
@@ -114,12 +119,16 @@ export class File extends plugin {
     this.finish("Download")
     const filePath = `${es.msg.replace("文件下载", "").trim()||process.cwd()}/${this.e.file.name}`
     let fileUrl
-    if (this.e.isGroup) {
+    if (this.e.group?.getFileUrl)
       fileUrl = await this.e.group.getFileUrl(this.e.file.fid)
-    } else {
+    else if (this.e.friend?.getFileUrl)
       fileUrl = await this.e.friend.getFileUrl(this.e.file.fid)
-    }
     this.e = es
+
+    if (!fileUrl) {
+      await this.reply("文件链接获取失败", true)
+      return false
+    }
 
     if (Running) {
       await this.reply("有正在执行的文件任务，请稍等……", true)

@@ -29,6 +29,22 @@ export class RemoteCommand extends plugin {
     })
   }
 
+  toStr(data) {
+    switch (typeof data) {
+      case "string":
+        return data
+      case "number":
+        return String(data)
+      case "object":
+        if (util.isError(data))
+          return data.stack
+        if (Buffer.isBuffer(data))
+          return Buffer.from(data, "utf8").toString()
+        else
+          return JSON.stringify(data)
+    }
+  }
+
   async execSync(cmd) {
     return new Promise(resolve => {
       exec(cmd, (error, stdout, stderr) => {
@@ -40,15 +56,9 @@ export class RemoteCommand extends plugin {
   async evalSync(cmd) {
     const ret = {}
     try {
-      ret.stdout = await eval(cmd)
-      if (typeof ret.stdout == "object") {
-        if (Buffer.isBuffer(ret.stdout))
-          ret.stdout = Buffer.from(ret.stdout, "utf8").toString()
-        else
-          ret.stdout = JSON.stringify(ret.stdout)
-      }
+      ret.stdout = this.toStr(await eval(cmd))
     } catch (err) {
-      ret.stderr = err
+      ret.stderr = this.toStr(err)
     }
     return ret
   }
