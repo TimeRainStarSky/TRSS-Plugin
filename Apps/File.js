@@ -119,7 +119,9 @@ export class File extends plugin {
     this.finish("Download")
     const filePath = `${es.msg.replace("文件下载", "").trim()||process.cwd()}/${this.e.file.name}`
     let fileUrl
-    if (this.e.group?.getFileUrl)
+    if (this.e.file.url)
+      fileUrl = this.e.file.url
+    else if (this.e.group?.getFileUrl)
       fileUrl = await this.e.group.getFileUrl(this.e.file.fid)
     else if (this.e.friend?.getFileUrl)
       fileUrl = await this.e.friend.getFileUrl(this.e.file.fid)

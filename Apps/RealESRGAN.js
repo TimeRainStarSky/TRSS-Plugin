@@ -34,23 +34,20 @@ export class RealESRGAN extends plugin {
       model = "RealESRGAN_x4plus"
     }
 
-    if (this.e.source) {
-      let reply
-      if (this.e.isGroup) {
-        reply = (await this.e.group.getChatHistory(this.e.source.seq, 1)).pop()?.message
-      } else {
-        reply = (await this.e.friend.getChatHistory(this.e.source.time, 1)).pop()?.message
-      }
-
-      if (reply) {
-        for (const val of reply) {
-          if (val.type == "image") {
-            this.e.img = [val.url]
-            break
-          }
-        }
-      }
+    let reply
+    if (this.e.getReply) {
+      reply = await this.e.getReply()
+    } else if (this.e.source) {
+      if (this.e.group?.getChatHistory)
+        reply = (await this.e.group.getChatHistory(this.e.source.seq, 1)).pop()
+      else if (this.e.friend?.getChatHistory)
+        reply = (await this.e.friend.getChatHistory(this.e.source.time, 1)).pop()
     }
+    if (reply?.message) for (const i of reply.message)
+      if (i.type == "image" || i.type == "file") {
+        this.e.img = [i.url]
+        break
+      }
 
     if (!this.e.img) {
       this.setContext("RealESRGAN")
@@ -75,7 +72,7 @@ export class RealESRGAN extends plugin {
 
     let url
     if (config.RealESRGAN.api) {
-      url = `${config.RealESRGAN.api}?user_id=${this.e.user_id}&bot_id=${Bot.uin}&fp32=True&tile=100&model_name=${model}&input=${encodeURIComponent(this.e.img[0])}`
+      url = `${config.RealESRGAN.api}?user_id=${this.e.user_id}&bot_id=${this.e.self_id}&fp32=True&tile=100&model_name=${model}&input=${encodeURIComponent(this.e.img[0])}`
     } else {
       let ret = await common.downFile(this.e.img[0], `${path}input.${config.RealESRGAN.format}`)
       if (!ret) {

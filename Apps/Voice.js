@@ -55,7 +55,7 @@ export class Voice extends plugin {
     if (ChatWaifuSpeakers.indexOf(speaker) != -1){
       speakerid = ChatWaifuSpeakers.indexOf(speaker)
       if (config.Voice.ChatWaifuApi) {
-        url = `${config.Voice.ChatWaifuApi}?user_id=${this.e.user_id}&bot_id=${Bot.uin}&id=${speakerid}&text=${encodeURIComponent(text)}`
+        url = `${config.Voice.ChatWaifuApi}?user_id=${this.e.user_id}&bot_id=${this.e.self_id}&id=${speakerid}&text=${encodeURIComponent(text)}`
       } else {
         path = ChatWaifuPath
       }
@@ -76,7 +76,7 @@ export class Voice extends plugin {
 
       speakerid = GenshinVoiceSpeakers.indexOf(speaker)
       if (config.Voice.GenshinVoiceApi) {
-        url = `${config.Voice.GenshinVoiceApi}?user_id=${this.e.user_id}&bot_id=${Bot.uin}&id=${speakerid}&text=${encodeURIComponent(text)}`
+        url = `${config.Voice.GenshinVoiceApi}?user_id=${this.e.user_id}&bot_id=${this.e.self_id}&id=${speakerid}&text=${encodeURIComponent(text)}`
       } else {
         path = GenshinVoicePath
       }
