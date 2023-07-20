@@ -2,8 +2,10 @@ import fs from "fs"
 import YAML from "yaml"
 import _ from "lodash"
 
-const path = `${process.cwd()}/plugins/TRSS-Plugin/`
-const configFile = `${path}config.yaml`
+const configFile = "config/TRSS.yaml"
+const configFileOld = "plugins/TRSS-Plugin/config.yaml"
+if (fs.existsSync(configFileOld))
+  fs.renameSync(configFileOld, configFile)
 
 const config = {
   tips: "",
@@ -30,14 +32,13 @@ const config = {
 
 let configData
 
-if (fs.existsSync(configFile)) {
+if (fs.existsSync(configFile))
   try {
     configData = YAML.parse(fs.readFileSync(configFile, "utf-8"))
     _.merge(config, configData)
   } catch (err) {
     logger.error(`配置文件 读取失败：${logger.red(err)}`)
   }
-}
 
 config.tips = [
   "欢迎使用 TRSS Yunzai Plugin ! 作者：时雨🌌星空",
