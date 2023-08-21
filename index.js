@@ -8,7 +8,7 @@ import common from "../../lib/common/common.js"
 import puppeteer from "../../lib/puppeteer/puppeteer.js"
 import { exec } from "child_process"
 import MarkdownIt from "markdown-it"
-import AU from "ansi_up"
+import { AnsiUp } from "ansi_up"
 
 global.fs = fs
 global.util = util
@@ -17,8 +17,8 @@ global.config = config
 global.common = common
 global.puppeteer = puppeteer
 global.exec = exec
-global.md = new MarkdownIt()
-global.ansi_up = new AU.default
+global.md = new MarkdownIt
+global.ansi_up = new AnsiUp
 
 if (!global.segment) {
   logger.warn(logger.red("! 未找到 segment，建议更新 Yunzai"))
