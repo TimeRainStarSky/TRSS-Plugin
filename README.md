@@ -141,7 +141,7 @@ bash server.sh [端口]
 
 </details>
 
-<details><summary>米哈游登录（限制：私聊）</summary>
+<details><summary>米哈游登录</summary>
 
 - 二维码登录：米哈游登录
 - 账号密码登录：米哈游登录 + `账号`

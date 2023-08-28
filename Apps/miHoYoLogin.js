@@ -72,14 +72,12 @@ export class miHoYoLogin extends plugin {
       priority: 10,
       rule: [
         {
-          reg: `${regex} `,
-          event: "message.private",
-          fnc: "miHoYoLoginDetect"
+          reg: `${regex}$`,
+          fnc: "miHoYoLoginQRCode"
         },
         {
-          reg: `${regex}$`,
-          event: "message.private",
-          fnc: "miHoYoLoginQRCode"
+          reg: `${regex}.+$`,
+          fnc: "miHoYoLoginDetect"
         },
         {
           reg: "^#?(体力|(c|C)(oo)?k(ie)?|(s|S)(to)?k(en)?)(帮助|教程)$",
@@ -92,7 +90,7 @@ export class miHoYoLogin extends plugin {
   async miHoYoLoginDetect(e) {
     accounts[this.e.user_id] = this.e
     this.setContext("miHoYoLogin")
-    await await this.reply("请发送密码", true)
+    await this.reply("请发送密码", true)
   }
 
   async crack_geetest(gt, challenge) {
@@ -125,7 +123,7 @@ export class miHoYoLogin extends plugin {
 
     const password = this.e.msg.trim()
     this.e = accounts[this.e.user_id]
-    const account = this.e.msg.replace(new RegExp(`${regex} `), "").trim()
+    const account = this.e.msg.replace(new RegExp(regex), "").trim()
 
     const data = JSON.stringify({
       account: encrypt_data(account),
@@ -162,18 +160,22 @@ export class miHoYoLogin extends plugin {
       logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
     }
 
-    if (res.retcode == 0) {
-      let cookie = await fetch(`https://api-takumi.mihoyo.com/auth/api/getCookieAccountInfoBySToken?stoken=${res.data.token.token}&mid=${res.data.user_info.mid}`)
-      cookie = await cookie.json()
-      logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(cookie))}`)
-      await this.reply(`ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token};login_ticket=${res.data.login_ticket}`)
-      await this.reply(`stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`)
-      await this.reply("登录完成，以上分别是 Cookie 和 Stoken，发送给 Bot 完成绑定", true)
-    } else {
+    if (res.retcode != 0)  {
       await this.reply(`错误：${JSON.stringify(res)}`, true)
       Running[this.e.user_id] = false
       return false
     }
+
+    let cookie = await fetch(`https://api-takumi.mihoyo.com/auth/api/getCookieAccountInfoBySToken?stoken=${res.data.token.token}&mid=${res.data.user_info.mid}`)
+    cookie = await cookie.json()
+    logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(cookie))}`)
+    cookie = [
+      `ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token};login_ticket=${res.data.login_ticket}`,
+      `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`,
+    ]
+    for (const i of cookie) this.makeMessage(this.e, i)
+    if (this.e.isPrivate)
+      await this.reply(await common.makeForwardMsg(this.e, cookie, "登录完成，以下分别是 Cookie 和 Stoken，将会自动绑定"))
 
     Running[this.e.user_id] = false
   }
@@ -196,7 +198,7 @@ export class miHoYoLogin extends plugin {
     const url = res.data.url
     const ticket = url.split("ticket=")[1]
     const img = (await QR.toDataURL(url)).replace("data:image/png;base64,", "base64://")
-    await this.reply(["请使用米游社扫码登录", segment.image(img)], true)
+    await this.reply(["请使用米游社扫码登录", segment.image(img)], true, { recallMsg: 60 })
 
     let data
     for (let n=1;n<60;n++) {
@@ -247,17 +249,32 @@ export class miHoYoLogin extends plugin {
     cookie = await cookie.json()
     logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(cookie))}`)
 
-    await this.reply(`ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token}`)
-    await this.reply(`stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`)
-    await this.reply("登录完成，以上分别是 Cookie 和 Stoken，发送给 Bot 完成绑定", true)
+    cookie = [
+      `ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token}`,
+      `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`,
+    ]
+    for (const i of cookie) this.makeMessage(this.e, i)
+    if (this.e.isPrivate)
+      await this.reply(await common.makeForwardMsg(this.e, cookie, "登录完成，以下分别是 Cookie 和 Stoken，将会自动绑定"))
 
     Running[this.e.user_id] = false
   }
 
+  makeMessage(e, msg) {
+    Bot.emit("message", {
+      ...e,
+      isGroup: undefined,
+      msg: undefined,
+      original_msg: undefined,
+      message_type: "private",
+      message: [{ type: "text", text: msg }],
+      raw_message: msg,
+    })
+  }
+
   async miHoYoLoginHelp(e) {
-    if (config.miHoYoLogin.help) {
-      await this.reply("二维码登录：私聊发送【米哈游登录】\n账号密码登录：私聊发送【米哈游登录 账号】", true)
-    }
+    if (config.miHoYoLogin.help)
+      await this.reply("二维码登录：发送【米哈游登录】\n账号密码登录：发送【米哈游登录 账号】", true)
     return config.miHoYoLogin.cover
   }
 }
