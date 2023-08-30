@@ -38,7 +38,7 @@ export class Voice extends plugin {
     })
   }
 
-  async Voice(e) {
+  async Voice() {
     const msg = this.e.msg.split("说")
     let speaker = msg.shift()
     const text = msg.join("说").replace("'", "").trim()
@@ -110,7 +110,11 @@ export class Voice extends plugin {
     await this.reply(await uploadRecord(url, 68714, transcoding))
   }
 
-  async VoiceList(e) {
-    await this.reply(await common.makeForwardMsg(this.e, [].concat("https://Yunzai.TRSS.me", GenshinVoiceSpeakers, ChatWaifuSpeakers), "TRSS-Plugin 语音合成角色列表"))
+  async VoiceList() {
+    await this.reply(await common.makeForwardMsg(this.e, [
+      "https://Yunzai.TRSS.me",
+      GenshinVoiceSpeakers.join("\n"),
+      ChatWaifuSpeakers.join("\n"),
+    ], "TRSS-Plugin 语音合成角色列表"))
   }
 }

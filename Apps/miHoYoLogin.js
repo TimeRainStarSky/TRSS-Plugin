@@ -87,7 +87,7 @@ export class miHoYoLogin extends plugin {
     })
   }
 
-  miHoYoLoginDetect(e) {
+  miHoYoLoginDetect() {
     accounts[this.e.user_id] = this.e
     this.setContext("miHoYoLogin")
     this.reply("请发送密码", true, { recallMsg: 60 })
@@ -111,7 +111,7 @@ export class miHoYoLogin extends plugin {
     return false
   }
 
-  async miHoYoLogin(e) {
+  async miHoYoLogin() {
     if(!this.e.msg)return false
     this.finish("miHoYoLogin")
     if (Running[this.e.user_id]) {
@@ -172,14 +172,14 @@ export class miHoYoLogin extends plugin {
       `ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token};login_ticket=${res.data.login_ticket}`,
       `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`,
     ]
-    for (const i of cookie) this.makeMessage(this.e, i)
+    for (const i of cookie) this.makeMessage(i)
     if (this.e.isPrivate)
       this.reply(await common.makeForwardMsg(this.e, cookie, "登录完成，以下分别是 Cookie 和 Stoken，将会自动绑定"))
 
     Running[this.e.user_id] = false
   }
 
-  async miHoYoLoginQRCode(e) {
+  async miHoYoLoginQRCode() {
     if (Running[this.e.user_id]) {
       this.reply("有正在进行的登录操作，请完成后再试……", true, { recallMsg: 60 })
       return false
@@ -254,16 +254,16 @@ export class miHoYoLogin extends plugin {
       `ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token}`,
       `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`,
     ]
-    for (const i of cookie) this.makeMessage(this.e, i)
+    for (const i of cookie) this.makeMessage(i)
     if (this.e.isPrivate)
       this.reply(await common.makeForwardMsg(this.e, cookie, "登录完成，以下分别是 Cookie 和 Stoken，将会自动绑定"))
 
     Running[this.e.user_id] = false
   }
 
-  makeMessage(e, msg) {
+  makeMessage(msg) {
     Bot.emit("message", {
-      ...e,
+      ...this.e,
       isGroup: undefined,
       msg: undefined,
       original_msg: undefined,
@@ -273,7 +273,7 @@ export class miHoYoLogin extends plugin {
     })
   }
 
-  miHoYoLoginHelp(e) {
+  miHoYoLoginHelp() {
     if (!config.miHoYoLogin.help) return false
     this.reply("二维码登录：发送【米哈游登录】\n账号密码登录：发送【米哈游登录 账号】", true)
   }
