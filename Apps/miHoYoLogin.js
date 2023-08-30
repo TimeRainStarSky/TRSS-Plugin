@@ -87,15 +87,15 @@ export class miHoYoLogin extends plugin {
     })
   }
 
-  async miHoYoLoginDetect(e) {
+  miHoYoLoginDetect(e) {
     accounts[this.e.user_id] = this.e
     this.setContext("miHoYoLogin")
-    await this.reply("请发送密码", true)
+    this.reply("请发送密码", true)
   }
 
   async crack_geetest(gt, challenge) {
     let res
-    await this.reply(`请完成验证：https://challenge.minigg.cn/manual/index.html?gt=${gt}&challenge=${challenge}`, true)
+    this.reply(`请完成验证：https://challenge.minigg.cn/manual/index.html?gt=${gt}&challenge=${challenge}`, true)
     for (let n=1;n<60;n++) {
       await sleep(5000)
       try {
@@ -108,7 +108,7 @@ export class miHoYoLogin extends plugin {
         logger.error(`[米哈游登录] 错误：${logger.red(err)}`)
       }
     }
-    await this.reply("验证超时", true)
+    this.reply("验证超时", true)
     return false
   }
 
@@ -116,7 +116,7 @@ export class miHoYoLogin extends plugin {
     if(!this.e.msg)return false
     this.finish("miHoYoLogin")
     if (Running[this.e.user_id]) {
-      await this.reply("有正在进行的登录操作，请完成后再试……", true)
+      this.reply("有正在进行的登录操作，请完成后再试……", true)
       return false
     }
     Running[this.e.user_id] = true
@@ -161,7 +161,7 @@ export class miHoYoLogin extends plugin {
     }
 
     if (res.retcode != 0)  {
-      await this.reply(`错误：${JSON.stringify(res)}`, true)
+      this.reply(`错误：${JSON.stringify(res)}`, true)
       Running[this.e.user_id] = false
       return false
     }
@@ -175,14 +175,14 @@ export class miHoYoLogin extends plugin {
     ]
     for (const i of cookie) this.makeMessage(this.e, i)
     if (this.e.isPrivate)
-      await this.reply(await common.makeForwardMsg(this.e, cookie, "登录完成，以下分别是 Cookie 和 Stoken，将会自动绑定"))
+      this.reply(await common.makeForwardMsg(this.e, cookie, "登录完成，以下分别是 Cookie 和 Stoken，将会自动绑定"))
 
     Running[this.e.user_id] = false
   }
 
   async miHoYoLoginQRCode(e) {
     if (Running[this.e.user_id]) {
-      await this.reply("有正在进行的登录操作，请完成后再试……", true)
+      this.reply("有正在进行的登录操作，请完成后再试……", true)
       return false
     }
     Running[this.e.user_id] = true
@@ -198,9 +198,10 @@ export class miHoYoLogin extends plugin {
     const url = res.data.url
     const ticket = url.split("ticket=")[1]
     const img = (await QR.toDataURL(url)).replace("data:image/png;base64,", "base64://")
-    await this.reply(["请使用米游社扫码登录", segment.image(img)], true, { recallMsg: 60 })
+    this.reply(["请使用米游社扫码登录", segment.image(img)], true, { recallMsg: 60 })
 
     let data
+    let Scanned
     for (let n=1;n<60;n++) {
       await sleep(5000)
       try {
@@ -211,14 +212,15 @@ export class miHoYoLogin extends plugin {
         res = await res.json()
 
         if (res.retcode != 0) {
-          await this.reply("二维码已过期，请重新登录", true)
+          this.reply("二维码已过期，请重新登录", true)
           Running[this.e.user_id] = false
           return false
         }
 
-        if (res.data.stat == "Scanned") {
+        if (res.data.stat == "Scanned" && !Scanned) {
           logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
-          await this.reply("二维码已扫描，请确认登录", true)
+          Scanned = true
+          this.reply("二维码已扫描，请确认登录", true)
         }
 
         if (res.data.stat == "Confirmed") {
@@ -232,7 +234,7 @@ export class miHoYoLogin extends plugin {
     }
 
     if (!(data.uid&&data.token)) {
-      await this.reply(errorTips, true)
+      this.reply(errorTips, true)
       Running[this.e.user_id] = false
       return false
     }
@@ -255,7 +257,7 @@ export class miHoYoLogin extends plugin {
     ]
     for (const i of cookie) this.makeMessage(this.e, i)
     if (this.e.isPrivate)
-      await this.reply(await common.makeForwardMsg(this.e, cookie, "登录完成，以下分别是 Cookie 和 Stoken，将会自动绑定"))
+      this.reply(await common.makeForwardMsg(this.e, cookie, "登录完成，以下分别是 Cookie 和 Stoken，将会自动绑定"))
 
     Running[this.e.user_id] = false
   }
@@ -272,9 +274,9 @@ export class miHoYoLogin extends plugin {
     })
   }
 
-  async miHoYoLoginHelp(e) {
+  miHoYoLoginHelp(e) {
     if (config.miHoYoLogin.help)
-      await this.reply("二维码登录：发送【米哈游登录】\n账号密码登录：发送【米哈游登录 账号】", true)
+      this.reply("二维码登录：发送【米哈游登录】\n账号密码登录：发送【米哈游登录 账号】", true)
     return config.miHoYoLogin.cover
   }
 }
