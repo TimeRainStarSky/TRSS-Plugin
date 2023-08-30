@@ -90,20 +90,19 @@ export class miHoYoLogin extends plugin {
   miHoYoLoginDetect(e) {
     accounts[this.e.user_id] = this.e
     this.setContext("miHoYoLogin")
-    this.reply("请发送密码", true)
+    this.reply("请发送密码", true, { recallMsg: 60 })
   }
 
   async crack_geetest(gt, challenge) {
     let res
-    this.reply(`请完成验证：https://challenge.minigg.cn/manual/index.html?gt=${gt}&challenge=${challenge}`, true)
+    this.reply(`请完成验证：https://challenge.minigg.cn/manual/index.html?gt=${gt}&challenge=${challenge}`, true, { recallMsg: 60 })
     for (let n=1;n<60;n++) {
       await sleep(5000)
       try {
         res = await fetch(`https://challenge.minigg.cn/manual/?callback=${challenge}`)
         res = await res.json()
-        if (res.retcode == 200) {
+        if (res.retcode == 200)
           return res.data
-        }
       } catch (err) {
         logger.error(`[米哈游登录] 错误：${logger.red(err)}`)
       }
@@ -116,7 +115,7 @@ export class miHoYoLogin extends plugin {
     if(!this.e.msg)return false
     this.finish("miHoYoLogin")
     if (Running[this.e.user_id]) {
-      this.reply("有正在进行的登录操作，请完成后再试……", true)
+      this.reply("有正在进行的登录操作，请完成后再试……", true, { recallMsg: 60 })
       return false
     }
     Running[this.e.user_id] = true
@@ -182,7 +181,7 @@ export class miHoYoLogin extends plugin {
 
   async miHoYoLoginQRCode(e) {
     if (Running[this.e.user_id]) {
-      this.reply("有正在进行的登录操作，请完成后再试……", true)
+      this.reply("有正在进行的登录操作，请完成后再试……", true, { recallMsg: 60 })
       return false
     }
     Running[this.e.user_id] = true
@@ -212,7 +211,7 @@ export class miHoYoLogin extends plugin {
         res = await res.json()
 
         if (res.retcode != 0) {
-          this.reply("二维码已过期，请重新登录", true)
+          this.reply("二维码已过期，请重新登录", true, { recallMsg: 60 })
           Running[this.e.user_id] = false
           return false
         }
@@ -220,7 +219,7 @@ export class miHoYoLogin extends plugin {
         if (res.data.stat == "Scanned" && !Scanned) {
           logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
           Scanned = true
-          this.reply("二维码已扫描，请确认登录", true)
+          this.reply("二维码已扫描，请确认登录", true, { recallMsg: 60 })
         }
 
         if (res.data.stat == "Confirmed") {
@@ -275,8 +274,7 @@ export class miHoYoLogin extends plugin {
   }
 
   miHoYoLoginHelp(e) {
-    if (config.miHoYoLogin.help)
-      this.reply("二维码登录：发送【米哈游登录】\n账号密码登录：发送【米哈游登录 账号】", true)
-    return config.miHoYoLogin.cover
+    if (!config.miHoYoLogin.help) return false
+    this.reply("二维码登录：发送【米哈游登录】\n账号密码登录：发送【米哈游登录 账号】", true)
   }
 }

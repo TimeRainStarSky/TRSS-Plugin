@@ -25,8 +25,7 @@ const config = {
   },
 
   miHoYoLogin: {
-    help: true,
-    cover: false
+    help: true
   }
 }
 
