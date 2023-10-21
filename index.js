@@ -8,7 +8,9 @@ import common from "../../lib/common/common.js"
 import puppeteer from "../../lib/puppeteer/puppeteer.js"
 import { exec } from "child_process"
 import MarkdownIt from "markdown-it"
-import { AnsiUp } from "ansi_up"
+//import { AnsiUp } from "ansi_up"
+import ansiUp from 'ansi_up';
+const AnsiUp = ansiUp.default;
 
 global.fs = fs
 global.util = util
