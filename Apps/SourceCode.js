@@ -7,7 +7,7 @@ export class SourceCode extends plugin {
       name: "SourceCode",
       dsc: "SourceCode",
       event: "message",
-      priority: 10,
+      priority: -Infinity,
       rule: [
         {
           reg: "^sc.+",

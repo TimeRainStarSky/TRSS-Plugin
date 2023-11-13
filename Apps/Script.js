@@ -10,7 +10,7 @@ export class Script extends plugin {
       name: "脚本执行",
       dsc: "脚本执行",
       event: "message",
-      priority: 10,
+      priority: -Infinity,
       rule: [
         {
           reg: "^脚本执行.+",

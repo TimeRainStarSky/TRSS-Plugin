@@ -7,7 +7,7 @@ export class File extends plugin {
       name: "文件操作",
       dsc: "文件操作",
       event: "message",
-      priority: 10,
+      priority: -Infinity,
       rule: [
         {
           reg: "^文件查看",
