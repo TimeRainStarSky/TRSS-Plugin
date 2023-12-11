@@ -34,4 +34,9 @@ ruamel-yaml = "^0.17.32"
 [[tool.poetry.source]]
 name = "BFSU"
 url = "https://mirrors.bfsu.edu.cn/pypi/web/simple"
-priority = "default"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "TUNA"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+priority = "supplemental"
