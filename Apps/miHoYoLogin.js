@@ -181,8 +181,8 @@ export class miHoYoLogin extends plugin {
 
   async miHoYoLoginQRCode() {
     if (Running[this.e.user_id]) {
-      this.reply("有正在进行的登录操作，请完成后再试……", true, { recallMsg: 60 })
-      return false
+      this.reply(["请使用米游社扫码登录", Running[this.e.user_id]], true, { recallMsg: 60 })
+      return true
     }
     Running[this.e.user_id] = true
 
@@ -196,8 +196,9 @@ export class miHoYoLogin extends plugin {
 
     const url = res.data.url
     const ticket = url.split("ticket=")[1]
-    const img = (await QR.toDataURL(url)).replace("data:image/png;base64,", "base64://")
-    this.reply(["请使用米游社扫码登录", segment.image(img)], true, { recallMsg: 60 })
+    const img = segment.image((await QR.toDataURL(url)).replace("data:image/png;base64,", "base64://"))
+    Running[this.e.user_id] = img
+    this.reply(["请使用米游社扫码登录", img], true, { recallMsg: 60 })
 
     let data
     let Scanned
@@ -211,7 +212,9 @@ export class miHoYoLogin extends plugin {
         res = await res.json()
 
         if (res.retcode != 0) {
-          this.reply("二维码已过期，请重新登录", true, { recallMsg: 60 })
+          this.reply(["二维码已过期，请重新登录", segment.button([
+            { text: "米哈游登录", callback: "米哈游登录" },
+          ])], true, { recallMsg: 60 })
           Running[this.e.user_id] = false
           return false
         }
@@ -263,10 +266,13 @@ export class miHoYoLogin extends plugin {
 
   makeMessage(msg) {
     Bot.emit("message", {
-      ...this.e,
-      isGroup: undefined,
-      msg: undefined,
-      original_msg: undefined,
+      self_id: this.e.self_id,
+      message_id: this.e.message_id,
+      user_id: this.e.user_id,
+      sender: this.e.sender,
+      friend: this.e.friend,
+      reply: (...args) => this.reply(...args),
+      post_type: "message",
       message_type: "private",
       message: [{ type: "text", text: msg }],
       raw_message: msg,
@@ -275,6 +281,8 @@ export class miHoYoLogin extends plugin {
 
   miHoYoLoginHelp() {
     if (!config.miHoYoLogin.help) return false
-    this.reply("二维码登录：发送【米哈游登录】\n账号密码登录：发送【米哈游登录 账号】", true)
+    this.reply(["发送【米哈游登录】", segment.button([
+      { text: "米哈游登录", callback: "米哈游登录" },
+    ])], true)
   }
 }

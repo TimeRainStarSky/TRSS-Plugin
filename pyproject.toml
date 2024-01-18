@@ -2,7 +2,7 @@
 name = "TRSS-Plugin"
 version = "1.0.0"
 description = "TRSS Yunzai Plugin"
-authors = ["时雨🌌星空 <Time.Rain.Star.Sky@Gmail.com>"]
+authors = ["TimeRainStarSky <Time.Rain.Star.Sky@Gmail.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"
