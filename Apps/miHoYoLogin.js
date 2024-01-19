@@ -90,12 +90,12 @@ export class miHoYoLogin extends plugin {
   miHoYoLoginDetect() {
     accounts[this.e.user_id] = this.e
     this.setContext("miHoYoLogin")
-    this.reply("请发送密码", true, { recallMsg: 60 })
+    this.reply("请发送密码", true, { at: true, recallMsg: 60 })
   }
 
   async crack_geetest(gt, challenge) {
     let res
-    this.reply(`请完成验证：https://challenge.minigg.cn/manual/index.html?gt=${gt}&challenge=${challenge}`, true, { recallMsg: 60 })
+    this.reply(`请完成验证：https://challenge.minigg.cn/manual/index.html?gt=${gt}&challenge=${challenge}`, true, { at: true, recallMsg: 60 })
     for (let n=1;n<60;n++) {
       await sleep(5000)
       try {
@@ -107,7 +107,7 @@ export class miHoYoLogin extends plugin {
         logger.error(`[米哈游登录] 错误：${logger.red(err)}`)
       }
     }
-    this.reply("验证超时", true)
+    this.reply("验证超时", true, { at: true })
     return false
   }
 
@@ -115,7 +115,7 @@ export class miHoYoLogin extends plugin {
     if(!this.e.msg)return false
     this.finish("miHoYoLogin")
     if (Running[this.e.user_id]) {
-      this.reply("有正在进行的登录操作，请完成后再试……", true, { recallMsg: 60 })
+      this.reply("有正在进行的登录操作，请完成后再试……", true, { at: true, recallMsg: 60 })
       return false
     }
     Running[this.e.user_id] = true
@@ -160,7 +160,7 @@ export class miHoYoLogin extends plugin {
     }
 
     if (res.retcode != 0)  {
-      this.reply(`错误：${JSON.stringify(res)}`, true)
+      this.reply(`错误：${JSON.stringify(res)}`, true, { at: true })
       Running[this.e.user_id] = false
       return false
     }
@@ -181,7 +181,7 @@ export class miHoYoLogin extends plugin {
 
   async miHoYoLoginQRCode() {
     if (Running[this.e.user_id]) {
-      this.reply(["请使用米游社扫码登录", Running[this.e.user_id]], true, { recallMsg: 60 })
+      this.reply(["请使用米游社扫码登录", Running[this.e.user_id]], true, { at: true, recallMsg: 60 })
       return true
     }
     Running[this.e.user_id] = true
@@ -198,7 +198,7 @@ export class miHoYoLogin extends plugin {
     const ticket = url.split("ticket=")[1]
     const img = segment.image((await QR.toDataURL(url)).replace("data:image/png;base64,", "base64://"))
     Running[this.e.user_id] = img
-    this.reply(["请使用米游社扫码登录", img], true, { recallMsg: 60 })
+    this.reply(["请使用米游社扫码登录", img], true, { at: true, recallMsg: 60 })
 
     let data
     let Scanned
@@ -214,7 +214,7 @@ export class miHoYoLogin extends plugin {
         if (res.retcode != 0) {
           this.reply(["二维码已过期，请重新登录", segment.button([
             { text: "米哈游登录", callback: "米哈游登录" },
-          ])], true, { recallMsg: 60 })
+          ])], true, { at: true, recallMsg: 60 })
           Running[this.e.user_id] = false
           return false
         }
@@ -222,7 +222,7 @@ export class miHoYoLogin extends plugin {
         if (res.data.stat == "Scanned" && !Scanned) {
           logger.mark(`[米哈游登录] ${logger.blue(JSON.stringify(res))}`)
           Scanned = true
-          this.reply("二维码已扫描，请确认登录", true, { recallMsg: 60 })
+          this.reply("二维码已扫描，请确认登录", true, { at: true, recallMsg: 60 })
         }
 
         if (res.data.stat == "Confirmed") {
@@ -236,7 +236,7 @@ export class miHoYoLogin extends plugin {
     }
 
     if (!(data.uid&&data.token)) {
-      this.reply(errorTips, true)
+      this.reply(errorTips, true, { at: true })
       Running[this.e.user_id] = false
       return false
     }
@@ -283,6 +283,6 @@ export class miHoYoLogin extends plugin {
     if (!config.miHoYoLogin.help) return false
     this.reply(["发送【米哈游登录】", segment.button([
       { text: "米哈游登录", callback: "米哈游登录" },
-    ])], true)
+    ])], true, { at: true })
   }
 }
