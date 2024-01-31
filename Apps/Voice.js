@@ -78,6 +78,10 @@ export class Voice extends plugin {
     }
 
     logger.mark(`[语音合成] ${logger.blue(`${speaker}(${speakerid})`)} 说 ${logger.cyan(text)}`)
+    if (path && !fs.existsSync(path)) {
+      logger.warn(`[语音合成] ${path} 不存在，请检查是否正确安装`)
+      return false
+    }
 
     if (Running) {
       await this.reply("正在生成，请稍等……", true)

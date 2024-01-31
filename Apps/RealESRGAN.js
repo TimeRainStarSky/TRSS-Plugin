@@ -28,6 +28,11 @@ export class RealESRGAN extends plugin {
   }
 
   async DetectImage(e) {
+    if (!fs.existsSync(path)) {
+      logger.warn(`[图片修复] ${path} 不存在，请检查是否正确安装`)
+      return false
+    }
+
     if (this.e.msg.match("动漫")) {
       model = "RealESRGAN_x4plus_anime_6B"
     } else {
