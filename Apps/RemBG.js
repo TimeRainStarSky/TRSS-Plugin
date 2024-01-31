@@ -28,7 +28,7 @@ export class RemBG extends plugin {
   }
 
   async DetectImage(e) {
-    if (!fs.existsSync(path)) {
+    if (!fs.existsSync(path) && !config.RemBG.api) {
       logger.warn(`[图片背景去除] ${path} 不存在，请检查是否正确安装`)
       return false
     }

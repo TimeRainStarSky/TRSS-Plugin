@@ -28,7 +28,7 @@ export class RealESRGAN extends plugin {
   }
 
   async DetectImage(e) {
-    if (!fs.existsSync(path)) {
+    if (!fs.existsSync(path) && !config.RealESRGAN.api) {
       logger.warn(`[图片修复] ${path} 不存在，请检查是否正确安装`)
       return false
     }
