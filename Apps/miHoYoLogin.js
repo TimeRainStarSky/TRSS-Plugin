@@ -216,7 +216,7 @@ export class miHoYoLogin extends plugin {
             { text: "米哈游登录", callback: "米哈游登录" },
           ])], true, { at: true, recallMsg: 60 })
           Running[this.e.user_id] = false
-          return false
+          return true
         }
 
         if (res.data.stat == "Scanned" && !Scanned) {

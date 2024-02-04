@@ -3,10 +3,6 @@ import YAML from "yaml"
 import _ from "lodash"
 
 const configFile = "config/TRSS.yaml"
-const configFileOld = "plugins/TRSS-Plugin/config.yaml"
-if (fs.existsSync(configFileOld))
-  fs.renameSync(configFileOld, configFile)
-
 const config = {
   tips: "",
 
