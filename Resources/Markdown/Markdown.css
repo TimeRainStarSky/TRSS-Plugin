@@ -1,9 +1,9 @@
 @font-face {
-  font-family: InconsolataGo;
-  src: url("../fonts/InconsolataGo.ttf");
+  font-family: Inconsolata;
+  src: url("../fonts/Inconsolata.ttf");
 }
 body {
-  background: url("https://api.gmit.vip/Api/DmImg?format=image") white center top no-repeat;
+  background: url("https://api.suyanw.cn/api/comic2") white center top no-repeat;
   background-size: cover;
   padding: 10px 20px;
 }

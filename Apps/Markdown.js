@@ -1,3 +1,8 @@
+import fs from "node:fs"
+import puppeteer from "../../../lib/puppeteer/puppeteer.js"
+import MarkdownIt from "markdown-it"
+const md = new MarkdownIt
+
 const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Markdown/`
 const tplFile = `${htmlDir}Markdown.html`
 
@@ -25,7 +30,7 @@ export class Markdown extends plugin {
     let mdFile = msg
     if (/^https?:\/\//.test(msg)) {
       mdFile =`${process.cwd()}/data/cache.md`
-      const ret = await common.downFile(msg, mdFile)
+      const ret = await Bot.download(msg, mdFile)
       if (!ret) {
         await this.reply("文件下载错误", true)
         return false

@@ -1,3 +1,5 @@
+import fs from "node:fs"
+
 let Running
 let es
 
@@ -99,9 +101,9 @@ export class File extends plugin {
           await this.reply(`文件上传完成：${JSON.stringify(res)}`, true)
       }
 
-    } catch(err) {
-      logger.error(`文件上传错误：${logger.red(JSON.stringify(err))}`)
-      await this.reply(`文件上传错误：${JSON.stringify(err)}`)
+    } catch (err) {
+      logger.error(`文件上传错误：${logger.red(err.stack)}`)
+      await this.reply(`文件上传错误：${err.stack}`)
     }
     Running = false
   }
@@ -139,11 +141,12 @@ export class File extends plugin {
     Running = true
     await this.reply(`开始下载文件，请稍等……\n文件链接：${fileUrl}\n保存路径：${filePath}`, true)
 
-    const ret = await common.downFile(fileUrl, filePath)
-    if (ret) {
-      await this.reply("文件下载完成", true)
-    } else {
-      await this.reply("文件下载错误", true)
+    try {
+      await Bot.download(fileUrl, filePath)
+      await this.reply(`文件下载完成`, true)
+    } catch (err) {
+      logger.error(`文件下载错误：${logger.red(err.stack)}`)
+      await this.reply(`文件下载错误：${err.stack}`)
     }
     Running = false
   }

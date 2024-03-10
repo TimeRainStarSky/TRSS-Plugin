@@ -1,3 +1,6 @@
+import fs from "node:fs"
+import puppeteer from "../../../lib/puppeteer/puppeteer.js"
+
 const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/SourceCode/`
 const tplFile = `${htmlDir}SourceCode.html`
 
@@ -25,7 +28,7 @@ export class SourceCode extends plugin {
     let scFile = msg
     if (/^https?:\/\//.test(msg)) {
       scFile =`${process.cwd()}/data/cache.sc`
-      const ret = await common.downFile(msg, scFile)
+      const ret = await Bot.download(msg, scFile)
       if (!ret) {
         await this.reply("文件下载错误", true)
         return false

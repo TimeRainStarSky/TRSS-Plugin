@@ -1,3 +1,5 @@
+import config from "../Model/config.js"
+import QR from "qrcode"
 import _ from "lodash"
 import crypto from "crypto"
 import fetch from "node-fetch"
@@ -30,10 +32,6 @@ function ds(data) {
   const r = random_string(6)
   const h = md5(`salt=JwYDpKvLj6MrMqqYU6jTKF17KNO2PXoS&t=${t}&r=${r}&b=${data}&q=`)
   return `${t},${r},${h}`
-}
-
-function sleep(ms) {
-  return new Promise(resolve=>setTimeout(resolve, ms))
 }
 
 async function request(url, data, aigis) {
@@ -97,7 +95,7 @@ export class miHoYoLogin extends plugin {
     let res
     this.reply(`请完成验证：https://challenge.minigg.cn/manual/index.html?gt=${gt}&challenge=${challenge}`, true, { at: true, recallMsg: 60 })
     for (let n=1;n<60;n++) {
-      await sleep(5000)
+      await Bot.sleep(5000)
       try {
         res = await fetch(`https://challenge.minigg.cn/manual/?callback=${challenge}`)
         res = await res.json()
@@ -174,7 +172,7 @@ export class miHoYoLogin extends plugin {
     ]
     for (const i of cookie) this.makeMessage(i)
     if (this.e.isPrivate)
-      this.reply(await common.makeForwardMsg(this.e, cookie, "登录完成，以下分别是 Cookie 和 Stoken，将会自动绑定"))
+      this.reply(await Bot.makeForwardArray(["登录完成，以下分别是 Cookie 和 Stoken，将会自动绑定", ...cookie]))
 
     Running[this.e.user_id] = false
   }
@@ -203,7 +201,7 @@ export class miHoYoLogin extends plugin {
     let data
     let Scanned
     for (let n=1;n<60;n++) {
-      await sleep(5000)
+      await Bot.sleep(5000)
       try {
         res = await fetch("https://hk4e-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/query", {
           method: "post",
@@ -259,7 +257,7 @@ export class miHoYoLogin extends plugin {
     ]
     for (const i of cookie) this.makeMessage(i)
     if (this.e.isPrivate)
-      this.reply(await common.makeForwardMsg(this.e, cookie, "登录完成，以下分别是 Cookie 和 Stoken，将会自动绑定"))
+      this.reply(await Bot.makeForwardArray(["登录完成，以下分别是 Cookie 和 Stoken，将会自动绑定", ...cookie]))
 
     Running[this.e.user_id] = false
   }

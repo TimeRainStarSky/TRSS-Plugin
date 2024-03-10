@@ -1,3 +1,5 @@
+import fs from "node:fs"
+
 const Commands = {
   "":         "help",
   "帮助":     "help",
@@ -58,31 +60,22 @@ export class AliyunPan extends plugin {
     })
   }
 
-  async execSync(cmd) {
-    return new Promise(resolve => {
-      exec(cmd, (error, stdout, stderr) => {
-        resolve({ error, stdout, stderr })
-      })
-    })
-  }
-
   async execTask(e, cmd) {
-    logger.mark(`[阿里云盘] 执行：${logger.blue(cmd)}`)
-    const ret = await this.execSync(cmd)
-    logger.mark(`[阿里云盘]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
+    const ret = await Bot.exec(cmd)
 
     if (ret.stdout) {
       await this.reply(ret.stdout.trim(), true)
-    }
-
-    if (ret.stderr) {
-      await this.reply(`标准错误输出：\n${ret.stderr.trim()}`, true)
     }
 
     if (ret.error) {
       logger.error(`阿里云盘错误：${logger.red(ret.error)}`)
       await this.reply(`阿里云盘错误：${ret.error}`, true)
       await this.reply(errorTips)
+      return false
+    }
+
+    if (ret.stderr) {
+      await this.reply(`标准错误输出：\n${ret.stderr.trim()}`, true)
     }
   }
 
@@ -119,9 +112,11 @@ export class AliyunPan extends plugin {
     Running = true
     await this.reply(`开始下载文件，请稍等……\n文件链接：${fileUrl}\n保存路径：${filePath}`, true)
 
-    const ret = await common.downFile(fileUrl, filePath)
-    if (!ret) {
-      await this.reply("文件下载错误", true)
+    try {
+      await Bot.download(fileUrl, filePath)
+    } catch (err) {
+      logger.error(`文件下载错误：${logger.red(err.stack)}`)
+      await this.reply(`文件下载错误：${err.stack}`)
       Running = false
       return true
     }
@@ -192,10 +187,9 @@ export class AliyunPan extends plugin {
         else
           await this.reply(`文件发送完成：${JSON.stringify(res)}`, true)
       }
-
-    } catch(err) {
-      logger.error(`文件发送错误：${logger.red(JSON.stringify(err))}`)
-      await this.reply(`文件发送错误：${JSON.stringify(err)}`)
+    } catch (err) {
+      logger.error(`文件发送错误：${logger.red(err.stack)}`)
+      await this.reply(`文件发送错误：${err.stack}`)
     }
 
     await fs.unlinkSync(filePath)

@@ -1,3 +1,6 @@
+import fs from "node:fs"
+import config from "../Model/config.js"
+
 const path = `${process.cwd()}/plugins/TRSS-Plugin/RemBG/`
 const errorTips = "请查看安装使用教程：\nhttps://Yunzai.TRSS.me\n并将报错通过联系方式反馈给开发者"
 let model
@@ -16,14 +19,6 @@ export class RemBG extends plugin {
           fnc: "DetectImage"
         }
       ]
-    })
-  }
-
-  async execSync(cmd) {
-    return new Promise(resolve => {
-      exec(cmd, (error, stdout, stderr) => {
-        resolve({ error, stdout, stderr })
-      })
     })
   }
 
@@ -79,7 +74,7 @@ export class RemBG extends plugin {
     if (config.RemBG.api) {
       url = `${config.RemBG.api}?user_id=${this.e.user_id}&bot_id=${this.e.self_id}&url=${encodeURIComponent(this.e.img[0])}`
     } else {
-      let ret = await common.downFile(this.e.img[0], `${path}input.png`)
+      let ret = await Bot.download(this.e.img[0], `${path}input.png`)
       if (!ret) {
         await this.reply("下载图片错误", true)
         await this.reply(errorTips)
@@ -90,10 +85,7 @@ export class RemBG extends plugin {
       logger.mark(`[图片背景去除] 图片保存成功：${logger.blue(this.e.img[0])}`)
 
       const cmd = `bash '${path}'${model} input.png output.png`
-
-      logger.mark(`[图片背景去除] 执行：${logger.blue(cmd)}`)
-      ret = await this.execSync(cmd)
-      logger.mark(`[图片背景去除]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
+      ret = await Bot.exec(cmd)
 
       if (ret.error) {
         logger.error(`图片背景去除错误：${logger.red(ret.error)}`)

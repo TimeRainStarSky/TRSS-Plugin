@@ -1,3 +1,7 @@
+import puppeteer from "../../../lib/puppeteer/puppeteer.js"
+import { AnsiUp } from "ansi_up"
+const ansi_up = new AnsiUp
+
 const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 const tplFile = `${htmlDir}Code.html`
 const errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://TRSS.me"
@@ -39,18 +43,8 @@ export class SystemInfo extends plugin {
     })
   }
 
-  async execSync(cmd) {
-    return new Promise(resolve => {
-      exec(cmd, (error, stdout, stderr) => {
-        resolve({ error, stdout, stderr })
-      })
-    })
-  }
-
   async SystemInfo(e) {
-    logger.mark(`[系统信息] 执行：${logger.blue(cmds)}`)
-    const ret = await this.execSync(cmds)
-    logger.mark(`[系统信息]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
+    const ret = await Bot.exec(cmds)
 
     if (ret.error) {
       logger.error(`系统信息错误：${logger.red(ret.error)}`)
@@ -62,9 +56,7 @@ export class SystemInfo extends plugin {
   }
 
   async SystemInfoPic(e) {
-    logger.mark(`[系统信息] 执行：${logger.blue(cmd)}`)
-    const ret = await this.execSync(`${cmd}`)
-    logger.mark(`[系统信息]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
+    const ret = await Bot.exec(cmd)
 
     if (ret.error) {
       logger.error(`系统信息错误：${logger.red(ret.error)}`)
@@ -85,9 +77,7 @@ export class SystemInfo extends plugin {
     Running = true
     await this.reply("开始测试，请稍等……", true)
 
-    logger.mark(`[系统测试] 执行：${logger.blue(benchcmd)}`)
-    const ret = await this.execSync(`${benchcmd}`)
-    logger.mark(`[系统测试]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
+    const ret = await Bot.exec(benchcmd)
 
     if (ret.error) {
       logger.error(`系统测试错误：${logger.red(ret.error)}`)

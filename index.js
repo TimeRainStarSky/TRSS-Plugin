@@ -1,51 +1,61 @@
 logger.info(logger.yellow("- 正在加载 TRSS 插件"))
 
 import fs from "node:fs"
-import util from "node:util"
-import QR from "qrcode"
-import config from "./Model/config.js"
-import common from "../../lib/common/common.js"
-import puppeteer from "../../lib/puppeteer/puppeteer.js"
-import { exec } from "child_process"
-import MarkdownIt from "markdown-it"
-import { AnsiUp } from "ansi_up"
 
-global.fs = fs
-global.util = util
-global.QR = QR
-global.config = config
-global.common = common
-global.puppeteer = puppeteer
-global.exec = exec
-global.md = new MarkdownIt
-global.ansi_up = new AnsiUp
-
-if (!global.segment) {
-  logger.warn(logger.red("! 未找到 segment，建议更新 Yunzai"))
+if (!global.segment)
   global.segment = (await import("oicq")).segment
+
+if (!Bot.makeForwardArray) {
+  const { makeForwardMsg } = await import("../../lib/common/common.js")
+  Bot.makeForwardArray = msg => makeForwardMsg({}, msg)
 }
 
-try {
-  global.uploadRecord = (await import("./Model/uploadRecord.js")).default
-} catch (err) {
-  global.uploadRecord = segment.record
+if (!Bot.sleep)
+  Bot.sleep = time => new Promise(resolve => setTimeout(resolve, time))
+
+if (!Bot.download)
+  Bot.download = (await import("../../lib/common/common.js")).downFile
+
+if (!Bot.String)
+  Bot.String = data => {
+    switch (typeof data) {
+      case "string":
+        return data
+      case "object":
+        if (data instanceof Error)
+          return data.stack
+        if (Buffer.isBuffer(data))
+          return Buffer.from(data, "utf8").toString()
+    }
+    return JSON.stringify(data)
+  }
+
+if (!Bot.exec) {
+  const { exec } = await import("node:child_process")
+  Bot.exec = cmd => new Promise(resolve => {
+    logger.mark(`[执行命令] ${logger.blue(cmd)}`)
+    exec(cmd, (error, stdout, stderr) => {
+      resolve({ error, stdout, stderr })
+      logger.mark(`[执行命令完成] ${logger.blue(cmd)}${stdout?`\n${String(stdout).trim()}`:""}${stderr?logger.red(`\n${String(stderr).trim()}`):""}`)
+      if (error) logger.error(`[执行命令错误] ${logger.blue(cmd)}\n${logger.red(Bot.String(error).trim())}`)
+    })
+  })
 }
 
 const files = fs
   .readdirSync("plugins/TRSS-Plugin/Apps")
-  .filter((file) => file.endsWith(".js"))
+  .filter(file => file.endsWith(".js"))
 
 let ret = []
-files.forEach((file) => {
-  ret.push(import(`./Apps/${file}`))
-})
+for (const i of files)
+  ret.push(import(`./Apps/${i}`))
 ret = await Promise.allSettled(ret)
 
 const apps = {}
 for (const i in files) {
   const name = files[i].replace(".js", "")
   if (ret[i].status != "fulfilled") {
-    logger.error("载入插件错误：" + logger.red(name))
+    logger.error(`载入插件错误：${logger.red(name)}`)
     logger.error(ret[i].reason)
     continue
   }

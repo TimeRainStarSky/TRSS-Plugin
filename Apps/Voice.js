@@ -1,4 +1,10 @@
-import { Character } from "../../miao-plugin/models/index.js"
+import fs from "node:fs"
+import config from "../Model/config.js"
+
+let Character
+try {
+  Character = (await import("../../miao-plugin/models/index.js")).Character
+} catch (err) {}
 
 const GenshinVoicePath = `${process.cwd()}/plugins/TRSS-Plugin/GenshinVoice/`
 const ChatWaifuPath = `${process.cwd()}/plugins/TRSS-Plugin/ChatWaifu/`
@@ -18,7 +24,7 @@ export class Voice extends plugin {
       priority: 10,
       rule: [
         {
-          reg: ".+(转码)?说.+",
+          reg: ".+说.+",
           fnc: "Voice"
         },
         {
@@ -29,24 +35,10 @@ export class Voice extends plugin {
     })
   }
 
-  async execSync(cmd) {
-    return new Promise(resolve => {
-      exec(cmd, (error, stdout, stderr) => {
-        resolve({ error, stdout, stderr })
-      })
-    })
-  }
-
   async Voice() {
     const msg = this.e.msg.split("说")
     let speaker = msg.shift()
     const text = msg.join("说").replace("'", "").trim()
-
-    let transcoding = false
-    if (speaker.match("转码")) {
-      speaker = speaker.replace("转码", "")
-      transcoding = true
-    }
 
     let url
     let path
@@ -60,8 +52,10 @@ export class Voice extends plugin {
       }
     } else {
       if (GenshinVoiceSpeakers.indexOf(speaker) == -1) {
-        const role = Character.get(speaker)
-        if (role?.name) speaker = role.name
+        if (Character) {
+          const role = Character.get(speaker)
+          if (role?.name) speaker = role.name
+        }
 
         if (GenshinVoiceSpeakers.indexOf(speaker) == -1) {
           logger.warn(`[语音合成] 不存在该角色：${logger.yellow(speaker)}`)
@@ -91,10 +85,7 @@ export class Voice extends plugin {
 
     if (path) {
       const cmd = `bash '${path}main.sh' output.wav ${speakerid} '${text}'`
-
-      logger.mark(`[语音合成] 执行：${logger.blue(cmd)}`)
-      const ret = await this.execSync(cmd)
-      logger.mark(`[语音合成]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
+      const ret = await Bot.exec(cmd)
 
       if (ret.error) {
         logger.error(`语音合成错误：${logger.red(ret.error)}`)
@@ -106,14 +97,15 @@ export class Voice extends plugin {
 
     logger.mark(`[语音合成] 发送语音：${logger.blue(url)}`)
     Running = false
-    await this.reply(await uploadRecord(url, 68714, transcoding))
+    await this.reply(segment.record(url))
   }
 
   async VoiceList() {
-    await this.reply(await common.makeForwardMsg(this.e, [
+    await this.reply(await Bot.makeForwardArray([
+      "TRSS-Plugin 语音合成角色列表",
       "https://Yunzai.TRSS.me",
       GenshinVoiceSpeakers.join("\n"),
       ChatWaifuSpeakers.join("\n"),
-    ], "TRSS-Plugin 语音合成角色列表"))
+    ]))
   }
 }

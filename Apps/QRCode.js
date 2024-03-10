@@ -1,3 +1,5 @@
+import QR from "qrcode"
+
 export class QRCode extends plugin {
   constructor() {
     super({

@@ -1,3 +1,7 @@
+import puppeteer from "../../../lib/puppeteer/puppeteer.js"
+import { AnsiUp } from "ansi_up"
+const ansi_up = new AnsiUp
+
 const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 const tplFile = `${htmlDir}Code.html`
 const path = `${process.env.HOME}/../`
@@ -20,18 +24,8 @@ export class Script extends plugin {
     })
   }
 
-  async execSync(cmd) {
-    return new Promise(resolve => {
-      exec(cmd, (error, stdout, stderr) => {
-        resolve({ error, stdout, stderr })
-      })
-    })
-  }
-
   async execTask(e, cmd) {
-    logger.mark(`[脚本执行] 执行：${logger.blue(cmd)}`)
-    const ret = await this.execSync(cmd)
-    logger.mark(`[脚本执行]\n${ret.stdout.trim()}\n${logger.red(ret.stderr.trim())}`)
+    const ret = await Bot.exec(cmd)
 
     if (ret.stdout) {
       const Code = await ansi_up.ansi_to_html(ret.stdout.trim())
