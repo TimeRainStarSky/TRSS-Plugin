@@ -6,7 +6,7 @@ if (!global.segment)
   global.segment = (await import("oicq")).segment
 
 if (!Bot.makeForwardArray) {
-  const { makeForwardMsg } = await import("../../lib/common/common.js")
+  const { makeForwardMsg } = (await import("../../lib/common/common.js")).default
   Bot.makeForwardArray = msg => makeForwardMsg({}, msg)
 }
 
@@ -14,7 +14,7 @@ if (!Bot.sleep)
   Bot.sleep = time => new Promise(resolve => setTimeout(resolve, time))
 
 if (!Bot.download)
-  Bot.download = (await import("../../lib/common/common.js")).downFile
+  Bot.download = (await import("../../lib/common/common.js")).default.downFile
 
 if (!Bot.String)
   Bot.String = data => {
