@@ -30,6 +30,9 @@ if (!Bot.String)
     return JSON.stringify(data)
   }
 
+if (!Bot.Loging)
+  Bot.Loging = Bot.String
+
 if (!Bot.exec) {
   const { exec } = await import("node:child_process")
   Bot.exec = cmd => new Promise(resolve => {
