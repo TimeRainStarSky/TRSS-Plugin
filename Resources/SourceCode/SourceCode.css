@@ -2,11 +2,13 @@
   font-family: Inconsolata;
   src: url("../fonts/Inconsolata.ttf");
 }
+
 body {
   background: url("https://api.suyanw.cn/api/comic2") white center top no-repeat;
   background-size: cover;
   padding: 10px 20px;
 }
+
 .hljs {
   padding: 10px;
   font-family: Inconsolata;
@@ -17,12 +19,31 @@ body {
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
+
 .hljs-ln-code {
   color: #F8F8E5
 }
+
 .hljs-ln-numbers {
   color: #ccc;
 }
+
 .hljs-ln-n:before {
   padding-right: 10px;
+}
+
+.title,
+.copyright {
+  text-align: center;
+  font-weight: bold;
+  color: #000;
+}
+
+.title {
+  font-size: 40px;
+}
+
+.copyright {
+  font-size: 30px;
+  font-style: italic;
 }
