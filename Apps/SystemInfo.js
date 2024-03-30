@@ -12,11 +12,12 @@ let benchcmd = "bash <(curl -L bench.sh)"
 let Running
 
 if (process.platform == "win32") {
-  cmds = `bash -c "${cmd} --stdout"`
-  cmd = `bash -c "${cmd}"`
+  cmds = `bash -c "${cmd}"`
+  cmd = `bash -c "${cmd} --stdout"`
   benchcmd = `bash -c "${benchcmd}"`
 } else {
-  cmds = `${cmd} --pipe`
+  cmd = `${cmd} --pipe`
+  cmds = `${cmd} false`
 }
 
 export class SystemInfo extends plugin {
@@ -44,7 +45,7 @@ export class SystemInfo extends plugin {
   }
 
   async SystemInfo(e) {
-    const ret = await Bot.exec(cmds)
+    const ret = await Bot.exec(cmd)
 
     if (ret.error) {
       logger.error(`系统信息错误：${logger.red(ret.error)}`)
@@ -56,7 +57,7 @@ export class SystemInfo extends plugin {
   }
 
   async SystemInfoPic(e) {
-    const ret = await Bot.exec(cmd)
+    const ret = await Bot.exec(cmds)
 
     if (ret.error) {
       logger.error(`系统信息错误：${logger.red(ret.error)}`)

@@ -124,7 +124,7 @@ bash server.sh [端口]
 
 <details><summary>语音合成</summary>
 
-- `角色名` + (转码)?说 + `中文`
+- `角色名` + 说 + `中文`
 - 语音合成角色列表
 
 </details>
