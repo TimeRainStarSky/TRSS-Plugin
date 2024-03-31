@@ -22,14 +22,15 @@ body {
 
 .box {
   padding: 10px;
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(13, 13, 13, 0.85);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(19px);
+  -webkit-backdrop-filter: blur(19px);
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   white-space: pre-wrap;
   font-family: Inconsolata, monospace;
+  color: #fff;
 }
 
 .title,
@@ -46,4 +47,16 @@ body {
   font-size: 30px;
   font-style: italic;
   font-weight: bold;
+}
+
+.cmd-start {
+  color: #F9F1A5;
+}
+
+.cmd-camelCase {
+  color: #767676;
+}
+
+.cmd-string {
+  color: #3A96DD;
 }

