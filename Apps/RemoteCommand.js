@@ -7,9 +7,9 @@ const ansi_up = new AnsiUp
 
 const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 const tplFile = `${htmlDir}Code.html`
-let prompt = cmd => `echo "$($0 -ic 'echo "\${PS1@P}"')"'${cmd.replace(/'/g, "'\\''")}';${cmd}`
+let prompt = cmd => `echo "$("$0" -ic 'echo "\${PS1@P}"')"'${cmd.replace(/'/g, "'\\''")}';${cmd}`
 if (process.platform == "win32")
-  prompt = cmd => `powershell -EncodedCommand ${Buffer.from(`[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;[Console]::Write("$(prompt)"+'${cmd.replace(/'/g, `'+"'"+'`)}\n');${cmd}`, "utf-16le").toString("base64")}`
+  prompt = cmd => `powershell -EncodedCommand ${Buffer.from(`$ProgressPreference="SilentlyContinue";[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;[Console]::Write("$(prompt)"+'${cmd.replace(/'/g, `'+"'"+'`)}\n');${cmd}`, "utf-16le").toString("base64")}`
 
 export class RemoteCommand extends plugin {
   constructor() {
@@ -89,17 +89,15 @@ export class RemoteCommand extends plugin {
     if (!ret.stdout && !ret.error)
       return this.reply("命令执行完成，没有返回值", true)
 
-    if (ret.stdout) {
-      const Code = await ansi_up.ansi_to_html(ret.stdout)
-      const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
-      await this.reply(img, true)
-    }
+    let Code = []
+    if (ret.stdout)
+      Code.push(ret.stdout.trim())
+    if (ret.error)
+      Code.push(`错误输出：\n${Bot.Loging(ret.error)}`)
 
-    if (ret.error) {
-      const Code = await ansi_up.ansi_to_html(Bot.Loging(ret.error))
-      const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
-      await this.reply(["错误输出：", img], true)
-    }
+    Code = await ansi_up.ansi_to_html(Code.join("\n\n"))
+    const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
+    return this.reply(img, true)
   }
 
   async Shell(e) {
@@ -125,23 +123,17 @@ export class RemoteCommand extends plugin {
     if (!ret.stdout && !ret.stderr && !ret.error)
       return this.reply("命令执行完成，没有返回值", true)
 
-    if (ret.stdout) {
-      const Code = await ansi_up.ansi_to_html(ret.stdout.trim())
-      const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
-      await this.reply(img, true)
-    }
+    let Code = []
+    if (ret.stdout)
+      Code.push(ret.stdout.trim())
+    if (ret.error)
+      Code.push(`远程命令错误：\n${Bot.Loging(ret.error)}`)
+    else if (ret.stderr)
+      Code.push(`标准错误输出：\n${ret.stderr.trim()}`)
 
-    if (ret.error) {
-      const Code = await ansi_up.ansi_to_html(ret.error.stack)
-      const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
-      return this.reply(["远程命令错误：", img], true)
-    }
-
-    if (ret.stderr) {
-      const Code = await ansi_up.ansi_to_html(ret.stderr.trim())
-      const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
-      await this.reply(["标准错误输出：", img], true)
-    }
+    Code = await ansi_up.ansi_to_html(Code.join("\n\n"))
+    const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
+    return this.reply(img, true)
   }
 
   async DirectMsg() {
