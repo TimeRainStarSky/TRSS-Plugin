@@ -3,14 +3,6 @@
   src: url("../fonts/Inconsolata.ttf");
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
 body {
   background: url("https://api.suyanw.cn/api/comic2") white center top no-repeat;
   background-size: cover;
