@@ -46,7 +46,7 @@ export class Markdown extends plugin {
 
     const Markdown = md.render(fs.readFileSync(mdFile, "utf-8"))
     const img = await puppeteer.screenshot("Markdown", { tplFile, htmlDir, Markdown, pageGotoParams: {
-        waitUntil: 'networkidle0'
+        waitUntil: 'networkidle2'
       } })
 
     await this.reply(img, true)
