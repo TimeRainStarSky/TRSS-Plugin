@@ -60,3 +60,26 @@ body {
   font-style: italic;
   font-weight: bold;
 }
+
+table:not(code table) {
+  border-collapse: collapse;
+  margin-bottom: 16px;
+}
+
+table:not(code table) th,
+table:not(code table) td {
+  border: 1px solid #dfe2e5;
+  padding: 6px 13px;
+}
+
+table:not(code table) th {
+  background-color: #f1f8ff;
+}
+
+table:not(code table) td {
+  background-color: #fff;
+}
+
+table:not(code table) tr:nth-child(even) td {
+  background-color: #f8f8f8;
+}
