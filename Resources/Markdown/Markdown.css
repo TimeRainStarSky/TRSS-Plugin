@@ -56,7 +56,6 @@ body {
 .title,
 .copyright {
   text-align: center;
-  font-weight: bold;
   color: #000;
 }
 
@@ -67,4 +66,5 @@ body {
 .copyright {
   font-size: 30px;
   font-style: italic;
+  font-weight: bold;
 }

