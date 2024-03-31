@@ -1,5 +1,7 @@
 logger.info(logger.yellow("- 正在加载 TRSS 插件"))
 
+if (process.version < "v18")
+  throw Error(`Node.js ${process.version} < v18`)
 import fs from "node:fs"
 
 if (!global.segment)
