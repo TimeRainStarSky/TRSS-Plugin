@@ -37,9 +37,9 @@ if (!Bot.Loging)
 
 if (!Bot.exec) {
   const { exec } = await import("node:child_process")
-  Bot.exec = cmd => new Promise(resolve => {
+  Bot.exec = (cmd, opts = {}) => new Promise(resolve => {
     logger.mark(`[执行命令] ${logger.blue(cmd)}`)
-    exec(cmd, (error, stdout, stderr) => {
+    exec(cmd, opts, (error, stdout, stderr) => {
       resolve({ error, stdout, stderr })
       logger.mark(`[执行命令完成] ${logger.blue(cmd)}${stdout?`\n${String(stdout).trim()}`:""}${stderr?logger.red(`\n${String(stderr).trim()}`):""}`)
       if (error) logger.error(`[执行命令错误] ${logger.blue(cmd)}\n${logger.red(Bot.String(error).trim())}`)
