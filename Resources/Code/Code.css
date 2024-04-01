@@ -48,15 +48,3 @@ body {
   font-style: italic;
   font-weight: bold;
 }
-
-.cmd-start {
-  color: #F9F1A5;
-}
-
-.cmd-camelCase {
-  color: #767676;
-}
-
-.cmd-string {
-  color: #3A96DD;
-}
