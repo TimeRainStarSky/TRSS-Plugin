@@ -1,15 +1,28 @@
-<link rel="stylesheet" href="{{htmlDir}}../../node_modules/@highlightjs/cdn-assets/styles/monokai.min.css">
-<script src="{{htmlDir}}../../node_modules/@highlightjs/cdn-assets/highlight.min.js"></script>
-<script src="{{htmlDir}}../../node_modules/highlightjs-line-numbers.js/highlightjs-line-numbers.min.js"></script>
-<script>
-  hljs.highlightAll()
-  hljs.initLineNumbersOnLoad()
-</script>
-<link rel="stylesheet" type="text/css" href="{{htmlDir}}Markdown.css">
-<div class="container">
-  <div class="title">源码展示框</div>
-  <div class="box">
-    {{@Markdown}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="{{htmlDir}}Markdown.css">
+  <link rel="stylesheet" href="{{htmlDir}}../../node_modules/@highlightjs/cdn-assets/styles/monokai.min.css">
+  <script src="{{htmlDir}}../../node_modules/@highlightjs/cdn-assets/highlight.min.js"></script>
+  <script src="{{htmlDir}}../../node_modules/highlightjs-line-numbers.js/highlightjs-line-numbers.min.js"></script>
+  <script>
+    hljs.highlightAll()
+    hljs.initLineNumbersOnLoad()
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="title">源码展示框</div>
+    <div class="box">
+      {{@Markdown}}
+    </div>
+    <div class="copyright">TRSS-Plugin</div>
   </div>
-  <div class="copyright">TRSS-Plugin</div>
-</div>
+</body>
+
+</html>
