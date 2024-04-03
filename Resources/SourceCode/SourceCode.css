@@ -11,12 +11,14 @@
   user-select: none;
 }
 
-body {
-  background: url("https://api.sretna.cn/layout/pe.php") white center top no-repeat;
+.container {
+  background: url("https://api.sretna.cn/layout/pe.php") #b5b5b5 center top no-repeat;
   padding: 10px 20px;
+  background-size: cover;
   transform: scale(1.4);
   transform-origin: 0 0;
-  font-family: Inconsolata
+  font-family: Inconsolata;
+  width: 900px;
 }
 
 .hljs {
