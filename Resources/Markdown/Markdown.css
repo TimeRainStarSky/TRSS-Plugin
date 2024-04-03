@@ -6,7 +6,6 @@
 body {
   transform: scale(1.4);
   transform-origin: 0 0;
-  width: 900px;
 }
 
 .container {
@@ -14,7 +13,6 @@ body {
   padding: 10px 20px;
   background-size: cover;
   font-family: Inconsolata;
-  width: 900px;
 }
 
 .hljs {
