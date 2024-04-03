@@ -13,7 +13,6 @@
 
 body {
   background: url("https://api.sretna.cn/layout/pe.php") white center top no-repeat;
-  background-size: cover;
   padding: 10px 20px;
   transform: scale(1.4);
   transform-origin: 0 0;
