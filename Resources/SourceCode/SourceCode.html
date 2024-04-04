@@ -22,5 +22,13 @@
     <div class="copyright">TRSS-Plugin</div>
   </div>
 </body>
+<script>
+  const container = document.querySelector(".container")
+  const img = new Image()
+  img.onload = function() {
+    container.style.backgroundImage = 'url("https://api.sretna.cn/layout/pe.php")'
+  }
+  img.src = "https://api.sretna.cn/layout/pe.php"
+</script>
 
 </html>

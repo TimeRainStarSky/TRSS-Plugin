@@ -2,20 +2,28 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="{{htmlDir}}../../node_modules/@highlightjs/cdn-assets/styles/monokai.min.css">
-    <link rel="stylesheet" type="text/css" href="{{htmlDir}}Code.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="{{htmlDir}}../../node_modules/@highlightjs/cdn-assets/styles/monokai.min.css">
+  <link rel="stylesheet" type="text/css" href="{{htmlDir}}Code.css">
 </head>
 
 <body>
 
-    <div class="container">
-        <div class="title">代码展示框</div>
-        <div class="box">{{@Code}}</div>
-        <div class="copyright">TRSS-Plugin</div>
-    </div>
+  <div class="container">
+    <div class="title">代码展示框</div>
+    <div class="box">{{@Code}}</div>
+    <div class="copyright">TRSS-Plugin</div>
+  </div>
 </body>
+<script>
+  const container = document.querySelector(".container")
+  const img = new Image()
+  img.onload = function() {
+    container.style.backgroundImage = 'url("https://api.sretna.cn/layout/pe.php")'
+  }
+  img.src = "https://api.sretna.cn/layout/pe.php"
+</script>
 
 </html>

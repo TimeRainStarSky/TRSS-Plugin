@@ -17,7 +17,7 @@ body {
 }
 
 .container {
-  background: url("https://api.sretna.cn/layout/pe.php") #b5b5b5 center top no-repeat;
+  background: url("../../../miao-plugin/resources/admin/imgs/bg.png") #b5b5b5 center top no-repeat;
   padding: 10px 20px;
   background-size: cover;
   font-family: Inconsolata;
