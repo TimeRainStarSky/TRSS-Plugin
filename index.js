@@ -27,7 +27,9 @@ if (!Bot.String)
         if (data instanceof Error)
           return data.stack
         if (Buffer.isBuffer(data))
-          return Buffer.from(data, "utf8").toString()
+          return String(data)
+      case "function":
+        return String(data)
     }
     return JSON.stringify(data)
   }
