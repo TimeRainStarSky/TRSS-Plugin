@@ -23,15 +23,23 @@ if (!Bot.String)
     switch (typeof data) {
       case "string":
         return data
+      case "function":
+        return String(data)
       case "object":
         if (data instanceof Error)
           return data.stack
         if (Buffer.isBuffer(data))
           return String(data)
-      case "function":
-        return String(data)
     }
-    return JSON.stringify(data)
+
+    try {
+      return JSON.stringify(data)
+    } catch (err) {
+      if (typeof data.toString == "function")
+        return String(data)
+      else
+        return "[object null]"
+    }
   }
 
 if (!Bot.Loging)
@@ -40,9 +48,11 @@ if (!Bot.Loging)
 if (!Bot.exec) {
   const { exec } = await import("node:child_process")
   Bot.exec = (cmd, opts = {}) => new Promise(resolve => {
-    logger.mark(`[执行命令] ${logger.blue(cmd)}`)
+    if (!opts.quiet)
+      logger.mark(`[执行命令] ${logger.blue(cmd)}`)
     exec(cmd, opts, (error, stdout, stderr) => {
       resolve({ error, stdout, stderr })
+      if (opts.quiet) return
       logger.mark(`[执行命令完成] ${logger.blue(cmd)}${stdout?`\n${String(stdout).trim()}`:""}${stderr?logger.red(`\n${String(stderr).trim()}`):""}`)
       if (error) logger.error(`[执行命令错误] ${logger.blue(cmd)}\n${logger.red(Bot.String(error).trim())}`)
     })

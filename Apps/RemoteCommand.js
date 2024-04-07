@@ -13,14 +13,15 @@ let inspectCmd = (cmd, data) => data.replace("\n", `${cmd}\n`)
 let langCmd = "sh"
 
 if (process.platform == "win32") {
-  prompt = cmd => [`powershell -EncodedCommand ${Buffer.from(`$ProgressPreference="SilentlyContinue";[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;echo "$(prompt)";${cmd}`, "utf-16le").toString("base64")}`]
+  prompt = cmd => [`powershell -EncodedCommand ${Buffer.from(`$ProgressPreference="SilentlyContinue";[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;prompt;${cmd}`, "utf-16le").toString("base64")}`]
   inspectCmd = (cmd, data) => data.replace(/\r\n/g, "\n").replace("\n", `${cmd}\n`)
   hljs.registerLanguage("powershell", (await import("@highlightjs/cdn-assets/es/languages/powershell.min.js")).default)
   langCmd = "powershell"
 } else if (process.env.SHELL?.endsWith("/bash"))
-  prompt = cmd => [`"$0" -ic 'echo "\${PS1@P}"';${cmd}`,{
-    shell: process.env.SHELL,
-  }]
+  prompt = cmd => [
+    `"$0" -ic 'echo "\${PS1@P}"';${cmd}`,
+    { shell: process.env.SHELL },
+  ]
 
 export class RemoteCommand extends plugin {
   constructor() {
