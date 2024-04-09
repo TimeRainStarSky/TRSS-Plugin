@@ -1,3 +1,5 @@
+@import url(../common/common.css);
+
 @font-face {
   font-family: Inconsolata;
   src: url("../fonts/Inconsolata.ttf");
@@ -12,17 +14,12 @@
 }
 
 body {
-  transform: scale(1.4);
-  transform-origin: 0 0;
   width: 850px;
 }
 
 .container {
-  background: url("../../../miao-plugin/resources/admin/imgs/bg.png") #b5b5b5 center top no-repeat;
-  padding: 10px 20px;
-  background-size: cover;
-  font-family: Inconsolata;
   width: 850px;
+  font-family: Inconsolata, monospace;
 }
 
 .box {
@@ -36,20 +33,4 @@ body {
   white-space: pre-wrap;
   font-family: Inconsolata, monospace;
   color: #fff;
-}
-
-.title,
-.copyright {
-  text-align: center;
-  color: #000;
-}
-
-.title {
-  font-size: 40px;
-}
-
-.copyright {
-  font-size: 30px;
-  font-style: italic;
-  font-weight: bold;
 }
