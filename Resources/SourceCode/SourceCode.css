@@ -14,6 +14,7 @@
 body {
   transform: scale(1.4);
   transform-origin: 0 0;
+  width: 850px;
 }
 
 .container {
@@ -21,21 +22,31 @@ body {
   padding: 10px 20px;
   background-size: cover;
   font-family: Inconsolata;
+  width: 850px;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.hljs-ln-n {
+  white-space: nowrap;
 }
 
 .hljs {
   padding: 10px;
   font-family: Inconsolata;
-  background: rgba(40, 42, 54, 0.9);
+  background: #282C34;
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  /* backdrop-filter: blur(17px);
+  -webkit-backdrop-filter: blur(17px); */
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .hljs-ln-code {
-  color: #F8F8E5
+  color: #F8F8E5;
 }
 
 .hljs-ln-numbers {
@@ -55,6 +66,8 @@ body {
 .title {
   font-size: 40px;
 }
+
+
 
 .copyright {
   font-size: 30px;

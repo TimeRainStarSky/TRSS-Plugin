@@ -7,7 +7,7 @@
   <title>Document</title>
   <link rel="stylesheet" href="{{htmlDir}}../../node_modules/@highlightjs/cdn-assets/styles/monokai.min.css">
   <script src="{{htmlDir}}../../node_modules/@highlightjs/cdn-assets/highlight.min.js"></script>
-  <script src="{{htmlDir}}../../node_modules/highlightjs-line-numbers.js/highlightjs-line-numbers.min.js"></script>
+  <script src="{{htmlDir}}../../node_modules/highlightjs-line-numbers.js/dist/highlightjs-line-numbers.min.js"></script>
   <script>
     hljs.highlightAll()
     hljs.initLineNumbersOnLoad()
@@ -25,7 +25,7 @@
 <script>
   const container = document.querySelector(".container")
   const img = new Image()
-  img.onload = function() {
+  img.onload = function () {
     container.style.backgroundImage = 'url("https://api.sretna.cn/layout/pe.php")'
   }
   img.src = "https://api.sretna.cn/layout/pe.php"
