@@ -11,6 +11,15 @@
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
+code:not([data-highlighted=yes]) {
+  background: #282C34;
+  color: #F8F8E5;
+  font-size: 85%;
+  border-radius: 6px;
+  padding: .1em .4em;
+  margin: 0;
+  font-family: inherit;
+}
 
 table:not(code table) {
   border-collapse: collapse;
