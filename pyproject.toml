@@ -3,6 +3,7 @@ name = "TRSS-Plugin"
 version = "1.0.0"
 description = "TRSS Yunzai Plugin"
 authors = ["TimeRainStarSky <Time.Rain.Star.Sky@Gmail.com>"]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.12"
@@ -37,6 +38,6 @@ url = "https://mirrors.bfsu.edu.cn/pypi/web/simple"
 priority = "primary"
 
 [[tool.poetry.source]]
-name = "TUNA"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+name = "Aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple"
 priority = "supplemental"
