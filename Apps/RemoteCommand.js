@@ -63,18 +63,20 @@ export class RemoteCommand extends plugin {
     })
   }
 
-  async evalSync(cmd, func) {
+  async evalSync(cmd, func, isAsync) {
     const ret = {}
     try {
       ret.raw = await eval(cmd)
       if (func) ret.stdout = func(ret.raw)
     } catch (err) {
+      if (!isAsync && /SyntaxError: (await|Illegal return)/.test(err))
+        return this.evalSync(`(async function() {\n${cmd}\n}).apply(this)`, func, true)
       ret.error = err
     }
     return ret
   }
 
-  async JS(e) {
+  async JS() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const cmd = this.e.msg.replace("rcj", "").trim()
 
@@ -90,7 +92,7 @@ export class RemoteCommand extends plugin {
       await this.reply(`错误输出：\n${ret.error.stack}`, true)
   }
 
-  async JSPic(e) {
+  async JSPic() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const cmd = this.e.msg.replace("rcjp", "").trim()
 
@@ -112,7 +114,7 @@ export class RemoteCommand extends plugin {
     return this.reply(img, true)
   }
 
-  async Shell(e) {
+  async Shell() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const cmd = this.e.msg.replace("rc", "").trim()
     const ret = await Bot.exec(...prompt(cmd))
@@ -127,7 +129,7 @@ export class RemoteCommand extends plugin {
       await this.reply(`标准错误输出：\n${ret.stderr.trim()}`, true)
   }
 
-  async ShellPic(e) {
+  async ShellPic() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const cmd = this.e.msg.replace("rcp", "").trim()
     const ret = await Bot.exec(...prompt(cmd))
