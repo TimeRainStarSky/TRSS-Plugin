@@ -162,7 +162,10 @@ bash server.sh [端口]
 
 <details><summary>远程命令（权限：主人）</summary>
 
-- rc / rcp / rcj / rcjp / dm / mm / fm + `命令`
+- rc + `Shell 命令`
+- rj + `JavaScript 命令`
+- dm(单条消息) / mm(多条消息) / fm(转发消息) + `JavaScript 表达式`
+- rcp / rjp / dmp / mmp / fmp 以图片显示输出
 
 </details>
 
