@@ -32,11 +32,11 @@ export class RemoteCommand extends plugin {
       priority: 10,
       rule: [
         {
-          reg: "^rcjp.+",
+          reg: "^rjp.+",
           fnc: "JSPic"
         },
         {
-          reg: "^rcj.+",
+          reg: "^rj.+",
           fnc: "JS"
         },
         {
@@ -63,20 +63,22 @@ export class RemoteCommand extends plugin {
     })
   }
 
-  async evalSync(cmd, func) {
+  async evalSync(cmd, func, isValue, isAsync) {
     const ret = {}
     try {
-      ret.raw = await eval(cmd)
+      ret.raw = await eval(isValue ? `(${cmd})` : cmd)
       if (func) ret.stdout = func(ret.raw)
     } catch (err) {
+      if (!isAsync && /SyntaxError: (await|Illegal return|Unexpected)/.test(err))
+        return this.evalSync(`(async function() {\n${(isValue && !String(err).includes("SyntaxError: Unexpected")) ? `return (${cmd})` : cmd}\n}).apply(this)`, func, false, true)
       ret.error = err
     }
     return ret
   }
 
-  async JS(e) {
+  async JS() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
-    const cmd = this.e.msg.replace("rcj", "").trim()
+    const cmd = this.e.msg.replace("rj", "").trim()
 
     logger.mark(`[远程命令] 执行Js：${logger.blue(cmd)}`)
     const ret = await this.evalSync(cmd, data => Bot.String(data))
@@ -87,12 +89,12 @@ export class RemoteCommand extends plugin {
     if (ret.stdout)
       await this.reply(ret.stdout, true)
     if (ret.error)
-      await this.reply(`错误输出：\n${ret.error.stack}`, true)
+      await this.reply(`错误：\n${ret.error.stack}`, true)
   }
 
-  async JSPic(e) {
+  async JSPic() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
-    const cmd = this.e.msg.replace("rcjp", "").trim()
+    const cmd = this.e.msg.replace("rjp", "").trim()
 
     logger.mark(`[远程命令] 执行Js：${logger.blue(cmd)}`)
     const ret = await this.evalSync(cmd, data => Bot.Loging(data))
@@ -105,14 +107,14 @@ export class RemoteCommand extends plugin {
     if (ret.stdout)
       Code.push(ret.stdout.trim())
     if (ret.error)
-      Code.push(`错误输出：\n${Bot.Loging(ret.error)}`)
+      Code.push(`错误：\n${Bot.Loging(ret.error)}`)
 
     Code = await ansi_up.ansi_to_html(Code.join("\n\n"))
     const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
     return this.reply(img, true)
   }
 
-  async Shell(e) {
+  async Shell() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const cmd = this.e.msg.replace("rc", "").trim()
     const ret = await Bot.exec(...prompt(cmd))
@@ -127,7 +129,7 @@ export class RemoteCommand extends plugin {
       await this.reply(`标准错误输出：\n${ret.stderr.trim()}`, true)
   }
 
-  async ShellPic(e) {
+  async ShellPic() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const cmd = this.e.msg.replace("rcp", "").trim()
     const ret = await Bot.exec(...prompt(cmd))
@@ -149,58 +151,66 @@ export class RemoteCommand extends plugin {
     return this.reply(img, true)
   }
 
+  async CatchReply(msg) {
+    const rets = [], echo = /^[dmf]mp/.test(this.e.msg)
+    let Code = []
+    try { for (const i of msg) {
+      const ret = await this.reply(i)
+      rets.push(ret)
+
+      if (echo)
+        Code.push(`发送：${Bot.Loging(i)}\n返回：${Bot.Loging(ret)}`)
+      else if (ret?.error && (Array.isArray(ret.error) ? ret.error.length : true))
+        Code.push(`发送：${Bot.Loging(i)}\n错误：${Bot.Loging(ret.error)}`)
+    }} catch (err) {
+      Code.push(`发送：${Bot.Loging(msg)}\n错误：${Bot.Loging(err)}`)
+    }
+
+    if (Code.length) {
+      Code = await ansi_up.ansi_to_html(Code.join("\n\n"))
+      const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
+      this.reply(img, true)
+    }
+    return rets
+  }
+
   async DirectMsg() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
-    const ret = await this.evalSync(`(${this.e.msg.replace(/^#?[Dd][Mm]/, "")})`)
+    const ret = await this.evalSync(this.e.msg.replace(/^dmp?/, ""), false, true)
     if (ret.error)
       return this.reply(`错误输出：\n${ret.error.stack}`, true)
-    try {
-      const m = []
-      for (const i of Array.isArray(ret.raw) ? ret.raw : [ret.raw])
-        if (typeof i != "object" || i.type) m.push(i)
-        else m.push(segment.raw(i))
-      return await this.reply(m)
-    } catch (err) {
-      return this.reply(`错误输出：\n${error.stack}`, true)
-    }
+    const m = []
+    for (const i of Array.isArray(ret.raw) ? ret.raw : [ret.raw])
+      if (typeof i != "object" || i.type) m.push(i)
+      else m.push(segment.raw(i))
+    return this.CatchReply([m])
   }
 
   async MultiMsg() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
-    const ret = await this.evalSync(`(${this.e.msg.replace(/^#?[Mm][Mm]/, "")})`)
+    const ret = await this.evalSync(this.e.msg.replace(/^mmp?/, ""), false, true)
     if (ret.error)
       return this.reply(`错误输出：\n${ret.error.stack}`, true)
-    try {
-      const m = []
-      for (const i of Array.isArray(ret.raw) ? ret.raw : [ret.raw])
-        if (typeof i != "object" || i.type) m.push(i)
-        else m.push(segment.raw(i))
-      const r = []
-      for (const i of m)
-        r.push(await this.reply(i))
-      return r
-    } catch (err) {
-      return this.reply(`错误输出：\n${error.stack}`, true)
-    }
+    const m = []
+    for (const i of Array.isArray(ret.raw) ? ret.raw : [ret.raw])
+      if (typeof i != "object" || i.type) m.push(i)
+      else m.push(segment.raw(i))
+    return this.CatchReply(m)
   }
 
   async ForwardMsg() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
-    const ret = await this.evalSync(`(${this.e.msg.replace(/^#?[Ff][Mm]/, "")})`)
+    const ret = await this.evalSync(this.e.msg.replace(/^fmp?/, ""), false, true)
     if (ret.error)
       return this.reply(`错误输出：\n${ret.error.stack}`, true)
-    try {
-      const m = []
-      for (const a of Array.isArray(ret.raw) ? ret.raw : [ret.raw]) {
-        const n = []
-        for (const i of Array.isArray(a) ? a : [a])
-          if (typeof i != "object" || i.type) n.push(i)
-          else n.push(segment.raw(i))
-        m.push(n)
-      }
-      return await this.reply(await Bot.makeForwardArray(m))
-    } catch (err) {
-      return this.reply(`错误输出：\n${error.stack}`, true)
+    const m = []
+    for (const a of Array.isArray(ret.raw) ? ret.raw : [ret.raw]) {
+      const n = []
+      for (const i of Array.isArray(a) ? a : [a])
+        if (typeof i != "object" || i.type) n.push(i)
+        else n.push(segment.raw(i))
+      m.push(n)
     }
+    return await this.CatchReply([await Bot.makeForwardArray(m)])
   }
 }
