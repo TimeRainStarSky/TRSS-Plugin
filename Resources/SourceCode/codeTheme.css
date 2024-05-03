@@ -1,0 +1,54 @@
+.hljs-keyword,
+.hljs-doctag,
+.hljs-function {
+    color: #FF79C6;
+    font-style: normal;
+}
+
+.hljs-string {
+    color: #F1FA8C;
+}
+
+.hljs-title.function_ {
+    color: #4EF36C;
+    font-style: normal;
+}
+
+.hljs-number,
+.hljs-literal,
+.hljs-variable.constant_,
+.hljs-variable.language_,
+.hljs-section {
+    color: #BD93F9;
+    font-style: normal;
+}
+
+.hljs-params,
+.hljs-variable {
+    color: #FFB167;
+    font-style: italic;
+}
+
+.hljs-title.class_,
+.hljs-type,
+.hljs-attr,
+.hljs-link {
+    color: #8BE9FD;
+    font-style: normal;
+}
+
+.hljs-regexp {
+    color: #FF5555
+}
+
+.hljs-subst {
+    color: #fff
+}
+
+.hljs-section {
+    font-weight: bold;
+}
+
+.hljs-strong {
+    color: #FFB86C;
+}

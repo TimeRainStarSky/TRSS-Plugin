@@ -1,6 +1,29 @@
 @font-face {
-    font-family: FiraCode-Retina;
-    src: url("../fonts/FiraCode-Retina.ttf");
+    font-family: consola;
+    src: url("../fonts/consola.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: consola;
+    src: url("../fonts/consolab.ttf");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: consola;
+    src: url("../fonts/consolai.ttf");
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: consola;
+    src: url("../fonts/consolaz.ttf");
+    font-weight: bold;
+    font-style: italic;
 }
 
 
@@ -13,17 +36,17 @@
     background: url("../../../miao-plugin/resources/admin/imgs/bg.png") #b5b5b5 center top no-repeat;
     padding: 10px 20px;
     background-size: cover;
-    font-family: FiraCode-Retina, Inconsolata;
+    font-family: consola, Inconsolata monospace;
 }
 
 body {
-    transform: scale(1.4);
+    transform: scale(3);
     transform-origin: 0 0;
 }
 
 .hljs {
     padding: 10px;
-    font-family: FiraCode-Retina, Inconsolata;
+    font-family: consola, Inconsolata monospace;
     background: #282C34;
     font-size: 20px;
     box-shadow: 10px 10px 30px 0 rgba(0, 0, 0, 0.395);
@@ -62,8 +85,10 @@ pre {
 
 .title {
     font-size: 40px;
+    margin-bottom: 10px;
 }
 
 .copyright {
     font-size: 30px;
+    margin-top: 10px;
 }
