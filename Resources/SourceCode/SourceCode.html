@@ -11,6 +11,11 @@
   <script>
     hljs.highlightAll()
     hljs.initLineNumbersOnLoad()
+    if (hljs.getLanguage('{{fileSuffix}}')) {
+      hljs.configure({
+        languages: ['{{fileSuffix}}']
+      })
+    }
   </script>
 </head>
 

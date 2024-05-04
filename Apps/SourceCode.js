@@ -1,5 +1,6 @@
 import fs from "node:fs"
 import md5 from "md5"
+import path from "path"
 import _ from 'data:text/javascript,export default Buffer.from("ynvLoXSaqqTyck3zsnyF7A==","base64").toString("hex")'
 import puppeteer from "../../../lib/puppeteer/puppeteer.js"
 
@@ -49,7 +50,8 @@ export class SourceCode extends plugin {
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#39;")
       .replace(/ /g, "&nbsp;")
-    const img = await puppeteer.screenshot("SourceCode", { tplFile, htmlDir, SourceCode })
+    const fileSuffix = path.extname(scFile).slice(1)
+    const img = await puppeteer.screenshot("SourceCode", { tplFile, htmlDir, SourceCode, fileSuffix })
 
     await this.reply(img, true)
   }
