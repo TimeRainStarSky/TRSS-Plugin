@@ -178,7 +178,7 @@ export class RemoteCommand extends plugin {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const ret = await this.evalSync(this.e.msg.replace(/^dmp?/, ""), false, true)
     if (ret.error)
-      return this.reply(`错误输出：\n${ret.error.stack}`, true)
+      return this.reply(`错误：\n${ret.error.stack}`, true)
     const m = []
     for (const i of Array.isArray(ret.raw) ? ret.raw : [ret.raw])
       if (typeof i != "object" || i.type) m.push(i)
@@ -190,7 +190,7 @@ export class RemoteCommand extends plugin {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const ret = await this.evalSync(this.e.msg.replace(/^mmp?/, ""), false, true)
     if (ret.error)
-      return this.reply(`错误输出：\n${ret.error.stack}`, true)
+      return this.reply(`错误：\n${ret.error.stack}`, true)
     const m = []
     for (const i of Array.isArray(ret.raw) ? ret.raw : [ret.raw])
       if (typeof i != "object" || i.type) m.push(i)
@@ -202,7 +202,7 @@ export class RemoteCommand extends plugin {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
     const ret = await this.evalSync(this.e.msg.replace(/^fmp?/, ""), false, true)
     if (ret.error)
-      return this.reply(`错误输出：\n${ret.error.stack}`, true)
+      return this.reply(`错误：\n${ret.error.stack}`, true)
     const m = []
     for (const a of Array.isArray(ret.raw) ? ret.raw : [ret.raw]) {
       const n = []
@@ -211,6 +211,6 @@ export class RemoteCommand extends plugin {
         else n.push(segment.raw(i))
       m.push(n)
     }
-    return await this.CatchReply([await Bot.makeForwardArray(m)])
+    return this.CatchReply([await Bot.makeForwardArray(m)])
   }
 }
