@@ -16,8 +16,8 @@ if (process.platform == "win32") {
   cmd = `bash -c "${cmd} --stdout"`
   benchcmd = `bash -c "${benchcmd}"`
 } else {
-  cmd = `${cmd} --pipe`
-  cmds = `${cmd} false`
+  cmds = `${cmd} --pipe false`
+  cmd = `${cmd} --pipe -l none`
 }
 
 export class SystemInfo extends plugin {
