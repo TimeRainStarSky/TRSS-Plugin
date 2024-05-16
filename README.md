@@ -66,7 +66,6 @@ xz -dv u2net.onnx.xz isnetis.onnx.xz
 - 语音合成：
 
 ```
-poetry run pip install monotonic-align
 git clone --depth 1 https://gitee.com/TimeRainStarSky/ChatWaifu
 git clone --depth 1 https://gitee.com/TimeRainStarSky/GenshinVoice
 ```
