@@ -1,4 +1,3 @@
-import fs from "node:fs"
 import config from "../Model/config.js"
 
 let Character
@@ -25,7 +24,8 @@ export class Voice extends plugin {
       rule: [
         {
           reg: ".+说.+",
-          fnc: "Voice"
+          fnc: "Voice",
+          log: false
         },
         {
           reg: "#?语音(合成)?(角色)?列表$",
@@ -58,7 +58,7 @@ export class Voice extends plugin {
         }
 
         if (GenshinVoiceSpeakers.indexOf(speaker) == -1) {
-          logger.warn(`[语音合成] 不存在该角色：${logger.yellow(speaker)}`)
+          logger.debug(`[语音合成] 不存在该角色：${logger.yellow(speaker)}`)
           return false
         }
       }
@@ -72,7 +72,7 @@ export class Voice extends plugin {
     }
 
     logger.mark(`[语音合成] ${logger.blue(`${speaker}(${speakerid})`)} 说 ${logger.cyan(text)}`)
-    if (path && !fs.existsSync(path)) {
+    if (path && !await Bot.fsStat(path)) {
       logger.warn(`[语音合成] ${path} 不存在，请检查是否正确安装`)
       return false
     }

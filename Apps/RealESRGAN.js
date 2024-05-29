@@ -1,4 +1,3 @@
-import fs from "node:fs"
 import config from "../Model/config.js"
 
 const path = `${process.cwd()}/plugins/TRSS-Plugin/Real-ESRGAN/`
@@ -23,7 +22,7 @@ export class RealESRGAN extends plugin {
   }
 
   async DetectImage(e) {
-    if (!fs.existsSync(path) && !config.RealESRGAN.api) {
+    if (!await Bot.fsStat(path) && !config.RealESRGAN.api) {
       logger.warn(`[图片修复] ${path} 不存在，请检查是否正确安装`)
       return false
     }

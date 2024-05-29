@@ -1,4 +1,4 @@
-import fs from "node:fs"
+import fs from "node:fs/promises"
 import YAML from "yaml"
 import _ from "lodash"
 
@@ -27,9 +27,9 @@ const config = {
 
 let configData
 
-if (fs.existsSync(configFile))
+if (await Bot.fsStat(configFile))
   try {
-    configData = YAML.parse(fs.readFileSync(configFile, "utf-8"))
+    configData = YAML.parse(await fs.readFile(configFile, "utf-8"))
     _.merge(config, configData)
   } catch (err) {
     logger.error(`配置文件 读取失败：${logger.red(err)}`)
@@ -42,6 +42,6 @@ config.tips = [
 ]
 
 if (YAML.stringify(config) != YAML.stringify(configData))
-  fs.writeFileSync(configFile, YAML.stringify(config), "utf-8")
+  await fs.writeFile(configFile, YAML.stringify(config), "utf-8")
 
 export default config

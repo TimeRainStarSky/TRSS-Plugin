@@ -1,4 +1,6 @@
-import fs from "node:fs"
+import fs from "node:fs/promises"
+import Path from "node:path"
+import File from "../Model/file.js"
 import md5 from "md5"
 import _ from 'data:text/javascript,export default Buffer.from("ynvLoXSaqqTyck3zsnyF7A==","base64").toString("hex")'
 
@@ -28,11 +30,7 @@ const Commands = {
   "当前账号": "who"
 }
 
-let path
-if (process.platform == "win32")
-  path = `${process.env.HOME}\\BaiduPCS-Go\\`
-else
-  path = `${process.env.HOME}/BaiduPCS-Go/`
+const path = Path.join(process.env.HOME, "BaiduPCS-Go", Path.sep)
 const cmdPath = `${path}BaiduPCS-Go`
 const errorTips = "请使用脚本安装百度网盘，并正常登录后再使用此功能\nhttps://Yunzai.TRSS.me\nhttps://TRSS.me"
 let Running
@@ -126,7 +124,7 @@ export class BaiduPan extends plugin {
     const cmd = `'${cmdPath}' upload '${filePath}' '${remotePath}'`
 
     await this.execTask(es, cmd)
-    await fs.unlinkSync(filePath)
+    await fs.unlink(filePath)
     Running = false
   }
 
@@ -153,12 +151,13 @@ export class BaiduPan extends plugin {
     await this.execTask(e, cmd)
 
     const filePath = `${path}${remotePath.substr(remotePath.lastIndexOf("/")+1)}`
-    if (!fs.existsSync(filePath)) {
+    const fileStat = await Bot.fsStat(filePath)
+    if (!fileStat) {
       await this.reply("文件下载错误", true)
       Running = false
       return true
     }
-    if (!fs.statSync(filePath).isFile()) {
+    if (!fileStat.isFile()) {
       await this.reply("暂不支持发送文件夹", true)
       Running = false
       return true
@@ -192,7 +191,7 @@ export class BaiduPan extends plugin {
       await this.reply(`文件发送错误：${err.stack}`)
     }
 
-    await fs.unlinkSync(filePath)
+    await fs.unlink(filePath)
     Running = false
   }
 

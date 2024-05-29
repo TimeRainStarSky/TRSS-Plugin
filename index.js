@@ -2,65 +2,91 @@ logger.info(logger.yellow("- 正在加载 TRSS 插件"))
 
 if (process.version < "v18")
   throw Error(`Node.js ${process.version} < v18`)
-import fs from "node:fs"
+import fs from "node:fs/promises"
 
-if (!global.segment)
-  global.segment = (await import("oicq")).segment
+global.segment ??= (await import("oicq")).segment
 
 if (!Bot.makeForwardArray) {
   const { makeForwardMsg } = (await import("../../lib/common/common.js")).default
   Bot.makeForwardArray = msg => makeForwardMsg({}, msg)
 }
 
-if (!Bot.sleep)
-  Bot.sleep = time => new Promise(resolve => setTimeout(resolve, time))
+Bot.sleep ??= (time, promise) => {
+  if (promise) return Promise.race([promise, Bot.sleep(time)])
+  return new Promise(resolve => setTimeout(resolve, time))
+}
 
-if (!Bot.download)
-  Bot.download = (await import("../../lib/common/common.js")).default.downFile
+Bot.download ??= (await import("../../lib/common/common.js")).default.downFile
 
-if (!Bot.String)
-  Bot.String = data => {
-    switch (typeof data) {
-      case "string":
-        return data
-      case "function":
+Bot.String ??= (data, opts) => {
+  switch (typeof data) {
+    case "string":
+      return data
+    case "function":
+      return String(data)
+    case "object":
+      if (data instanceof Error)
+        return data.stack
+      if (Buffer.isBuffer(data))
         return String(data)
-      case "object":
-        if (data instanceof Error)
-          return data.stack
-        if (Buffer.isBuffer(data))
-          return String(data)
-    }
-
-    try {
-      return JSON.stringify(data)
-    } catch (err) {
-      if (typeof data.toString == "function")
-        return String(data)
-      else
-        return "[object null]"
-    }
   }
 
-if (!Bot.Loging)
-  Bot.Loging = Bot.String
+  try {
+    return JSON.stringify(data, undefined, opts)
+  } catch (err) {
+    if (typeof data.toString == "function")
+      return String(data)
+    else
+      return "[object null]"
+  }
+}
+
+Bot.Loging ??= Bot.String
 
 if (!Bot.exec) {
-  const { exec } = await import("node:child_process")
+  const { exec, execFile } = await import("node:child_process")
   Bot.exec = (cmd, opts = {}) => new Promise(resolve => {
-    if (!opts.quiet)
-      logger.mark(`[执行命令] ${logger.blue(cmd)}`)
-    exec(cmd, opts, (error, stdout, stderr) => {
-      resolve({ error, stdout, stderr })
-      if (opts.quiet) return
-      logger.mark(`[执行命令完成] ${logger.blue(cmd)}${stdout?`\n${String(stdout).trim()}`:""}${stderr?logger.red(`\n${String(stderr).trim()}`):""}`)
-      if (error) logger.error(`[执行命令错误] ${logger.blue(cmd)}\n${logger.red(Bot.String(error).trim())}`)
-    })
+    const name = logger.cyan(Bot.String(cmd))
+    logger[opts.quiet ? "debug" : "mark"]("[执行命令]", name)
+    opts.encoding ??= "buffer"
+    const callback = (error, stdout, stderr) => {
+      const raw = { stdout, stderr }
+      stdout = String(stdout).trim()
+      stderr = String(stderr).trim()
+      resolve({ error, stdout, stderr, raw })
+      logger[opts.quiet ? "debug" : "mark"](`[执行命令] ${name} ${logger.green(`[完成${Date.now()-start_time}ms]`)} ${stdout?`\n${stdout}`:""}${stderr?logger.red(`\n${stderr}`):""}`)
+      if (error) logger[opts.quiet ? "debug" : "error"]("[执行命令]", error)
+    }
+    const start_time = Date.now()
+    if (Array.isArray(cmd))
+      execFile(cmd.shift(), cmd, opts, callback)
+    else
+      exec(cmd, opts, callback)
   })
 }
 
-const files = fs
-  .readdirSync("plugins/TRSS-Plugin/Apps")
+Bot.fsStat ??= async path => { try {
+  return await fs.stat(path)
+} catch (err) {
+  logger.trace("获取", path, "状态错误", err)
+  return false
+}}
+
+Bot.glob ??= async (path, opts = {}) => {
+  if (!opts.force && await Bot.fsStat(path))
+    return [path]
+  if (!fs.glob) return []
+  const array = []
+  try {
+    for await (const i of fs.glob(path, opts))
+      array.push(i)
+  } catch (err) {
+    logger.error("匹配", path, "错误", err)
+  }
+  return array
+}
+
+const files = (await fs.readdir("plugins/TRSS-Plugin/Apps"))
   .filter(file => file.endsWith(".js"))
 
 let ret = []

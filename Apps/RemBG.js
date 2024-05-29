@@ -1,4 +1,3 @@
-import fs from "node:fs"
 import config from "../Model/config.js"
 
 const path = `${process.cwd()}/plugins/TRSS-Plugin/RemBG/`
@@ -23,7 +22,7 @@ export class RemBG extends plugin {
   }
 
   async DetectImage(e) {
-    if (!fs.existsSync(path) && !config.RemBG.api) {
+    if (!await Bot.fsStat(path) && !config.RemBG.api) {
       logger.warn(`[图片背景去除] ${path} 不存在，请检查是否正确安装`)
       return false
     }

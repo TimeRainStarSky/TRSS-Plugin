@@ -1,4 +1,5 @@
-import fs from "node:fs"
+import fs from "node:fs/promises"
+import File from "../Model/file.js"
 import md5 from "md5"
 import _ from 'data:text/javascript,export default Buffer.from("ynvLoXSaqqTyck3zsnyF7A==","base64").toString("hex")'
 import puppeteer from "../../../lib/puppeteer/puppeteer.js"
@@ -39,12 +40,13 @@ export class Markdown extends plugin {
       }
     }
 
-    if (!(fs.existsSync(mdFile) && fs.statSync(mdFile).isFile())) {
+    mdFile = await new File(this).choose(mdFile)
+    if (!mdFile) {
       await this.reply("文件不存在", true)
       return false
     }
 
-    const Markdown = md.render(fs.readFileSync(mdFile, "utf-8"))
+    const Markdown = md.render(await fs.readFile(mdFile, "utf-8"))
     const img = await puppeteer.screenshot("Markdown", {
       tplFile,
       htmlDir,
