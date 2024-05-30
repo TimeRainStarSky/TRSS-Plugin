@@ -30,7 +30,7 @@ const Commands = {
   "当前账号": "who"
 }
 
-const path = Path.join(process.env.HOME, "aliyunpan", Path.sep)
+const path = Path.join(process.env.HOME || process.env.USERPROFILE || "", "aliyunpan", Path.sep)
 const cmdPath = `${path}aliyunpan`
 const errorTips = "请使用脚本安装阿里云盘，并正常登录后再使用此功能\nhttps://Yunzai.TRSS.me\nhttps://TRSS.me"
 let Running
