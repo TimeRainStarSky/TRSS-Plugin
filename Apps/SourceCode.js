@@ -17,7 +17,7 @@ export class SourceCode extends plugin {
       priority: -Infinity,
       rule: [
         {
-          reg: "^sc.+",
+          reg: "^sc(\\d+~\\d+)?.+",
           fnc: "SourceCode"
         }
       ]
@@ -26,7 +26,7 @@ export class SourceCode extends plugin {
 
   async SourceCode() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
-    const msg = this.e.msg.replace("sc", "").trim()
+    const msg = this.e.msg.replace(/sc(\d+~\d+)?/, "").trim()
     logger.mark(`[SourceCode] 查看：${logger.blue(msg)}`)
 
     let scFile = msg
@@ -44,8 +44,13 @@ export class SourceCode extends plugin {
       await this.reply("文件不存在", true)
       return false
     }
-
-    const SourceCode = (await fs.readFile(scFile, "utf-8"))
+    let fData = await fs.readFile(scFile, "utf-8")
+    const rows = this.e.msg.match(/sc(\d+~\d+)/)?.[1]?.split("~")
+    if (rows) {
+      fData = fData.split("\n").slice(rows[0] - 1, rows[1]).join("\n")
+    }
+    console.log(fData);
+    const SourceCode = fData
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
