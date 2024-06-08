@@ -58,7 +58,7 @@ export class SourceCode extends plugin {
       .replace(/'/g, "&#39;")
       .replace(/ /g, "&nbsp;")
     const fileSuffix = path.extname(scFile).slice(1)
-    const img = await puppeteer.screenshot("SourceCode", { tplFile, htmlDir, SourceCode, fileSuffix })
+    const img = await puppeteer.screenshots("SourceCode", { tplFile, htmlDir, SourceCode, fileSuffix })
 
     await this.reply(img, true)
   }

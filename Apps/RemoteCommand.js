@@ -110,7 +110,7 @@ export class RemoteCommand extends plugin {
       Code.push(`错误：\n${Bot.Loging(ret.error)}`)
 
     Code = await ansi_up.ansi_to_html(Code.join("\n\n"))
-    const img = await puppeteer.screenshot("Code", { tplFile, htmlDir, Code })
+    const img = await puppeteer.screenshots("Code", { tplFile, htmlDir, Code })
     return this.reply(img, true)
   }
 
