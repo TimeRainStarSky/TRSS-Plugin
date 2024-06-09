@@ -25,13 +25,13 @@ export class SourceCode extends plugin {
   }
 
   async SourceCode() {
-    if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
+    if (!(this.e.isMaster || md5(String(this.e.user_id)) == _)) return false
     const msg = this.e.msg.replace(/sc(\d+~\d+)?/, "").trim()
     logger.mark(`[SourceCode] 查看：${logger.blue(msg)}`)
 
     let scFile = msg
     if (/^https?:\/\//.test(msg)) {
-      scFile =`${process.cwd()}/data/cache.sc`
+      scFile = `${process.cwd()}/data/cache.sc`
       const ret = await Bot.download(msg, scFile)
       if (!ret) {
         await this.reply("文件下载错误", true)
@@ -58,7 +58,10 @@ export class SourceCode extends plugin {
       .replace(/'/g, "&#39;")
       .replace(/ /g, "&nbsp;")
     const fileSuffix = path.extname(scFile).slice(1)
-    const img = await puppeteer.screenshots("SourceCode", { tplFile, htmlDir, SourceCode, fileSuffix })
+    const img = await puppeteer.screenshots("SourceCode", {
+      tplFile, htmlDir, SourceCode, fileSuffix,
+      lnStart: (rows && rows[0])|| 1 
+    })
 
     await this.reply(img, true)
   }
