@@ -60,7 +60,8 @@ export class SourceCode extends plugin {
     const fileSuffix = path.extname(scFile).slice(1)
     const img = await puppeteer.screenshots("SourceCode", {
       tplFile, htmlDir, SourceCode, fileSuffix,
-      lnStart: (rows && rows[0])|| 1 
+      lnStart: (rows && rows[0]) || 1,
+      multiPageHeight: 20000
     })
 
     await this.reply(img, true)
