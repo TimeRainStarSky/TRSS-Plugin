@@ -16,7 +16,7 @@ export default class {
     if (files.length < 2)
       return files[0]
 
-    await this.p.reply(`检测到${files.length}个文件，请选择\n${files.map((i, n) => `${n+1}. ${i}`).join("\n")}`, true)
+    await this.p.reply(`检测到${files.length}个文件，请选择\n${files.map((i, n) => `${n+1}. ${i}`).join("\n")}`, true, { recallMsg: 10 })
     const { msg } = await this.p.awaitContext()
     if (files[msg-1])
       return files[msg-1]

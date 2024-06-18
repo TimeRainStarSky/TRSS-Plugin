@@ -263,15 +263,16 @@ export class miHoYoLogin extends plugin {
   }
 
   makeMessage(msg) {
-    Bot.emit("message", {
+    Bot.em("message.private.friend", {
       self_id: this.e.self_id,
       message_id: this.e.message_id,
       user_id: this.e.user_id,
       sender: this.e.sender,
       friend: this.e.friend,
-      reply: (...args) => this.reply(...args),
+      reply: this.reply.bind(this),
       post_type: "message",
       message_type: "private",
+      sub_type: "friend",
       message: [{ type: "text", text: msg }],
       raw_message: msg,
     })
