@@ -9,12 +9,14 @@ const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 const tplFile = `${htmlDir}Code.html`
 
 let prompt = cmd => [`echo "[$USER@$HOSTNAME $PWD]$([ "$UID" = 0 ]&&echo "#"||echo "$") ";${cmd}`]
-let inspectCmd = (cmd, data) => data.replace("\n", `${cmd}\n`)
+let inspectCmd = (cmd, data) => data.includes("\n") ?
+  data.replace(/ ?\n/, ` ${cmd}\n`) : `${data} ${cmd}`
 let langCmd = "sh"
 
 if (process.platform == "win32") {
   prompt = cmd => [`powershell -EncodedCommand ${Buffer.from(`$ProgressPreference="SilentlyContinue";[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;prompt;${cmd}`, "utf-16le").toString("base64")}`]
-  inspectCmd = (cmd, data) => data.replace(/\r\n/g, "\n").replace("\n", `${cmd}\n`)
+  inspectCmd = (cmd, data) => data.includes("\n") ?
+    data.replace(/\r\n/g, "\n").replace(/ ?\n/, ` ${cmd}\n`) : `${data} ${cmd}`
   hljs.registerLanguage("powershell", (await import("@highlightjs/cdn-assets/es/languages/powershell.min.js")).default)
   langCmd = "powershell"
 } else if (process.env.SHELL?.endsWith("/bash"))
@@ -105,7 +107,7 @@ export class RemoteCommand extends plugin {
 
     let Code = []
     if (ret.stdout)
-      Code.push(ret.stdout.trim())
+      Code.push(ret.stdout)
     if (ret.error)
       Code.push(`错误：\n${Bot.Loging(ret.error)}`)
 
@@ -122,11 +124,11 @@ export class RemoteCommand extends plugin {
     if (!ret.stdout && !ret.stderr && !ret.error)
       return this.reply("命令执行完成，没有返回值", true)
     if (ret.stdout)
-      await this.reply(inspectCmd(cmd, ret.stdout).trim(), true)
+      await this.reply(inspectCmd(cmd, ret.stdout), true)
     if (ret.error)
       return this.reply(`远程命令错误：${ret.error.stack}`, true)
     if (ret.stderr)
-      await this.reply(`标准错误输出：\n${ret.stderr.trim()}`, true)
+      await this.reply(`标准错误输出：\n${ret.stderr}`, true)
   }
 
   async ShellPic() {
@@ -139,11 +141,11 @@ export class RemoteCommand extends plugin {
 
     let Code = []
     if (ret.stdout)
-      Code.push(ret.stdout.trim())
+      Code.push(ret.stdout)
     if (ret.error)
       Code.push(`远程命令错误：\n${Bot.Loging(ret.error)}`)
     else if (ret.stderr)
-      Code.push(`标准错误输出：\n${ret.stderr.trim()}`)
+      Code.push(`标准错误输出：\n${ret.stderr}`)
 
     Code = await ansi_up.ansi_to_html(Code.join("\n\n"))
     Code = inspectCmd(hljs.highlight(cmd, { language: langCmd }).value, Code)
