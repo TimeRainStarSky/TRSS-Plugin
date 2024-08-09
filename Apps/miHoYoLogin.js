@@ -177,7 +177,7 @@ export class miHoYoLogin extends plugin {
   }
 
   async miHoYoLoginQRCode() {
-    const app_id = Number(this.e.msg.replace(new RegExp(`(${regex}|^#(扫码|二维码|辅助)(登录|绑定|登陆))`), "") || [1, 2][Math.floor(Math.random()*2)])
+    const app_id = Number(this.e.msg.replace(new RegExp(`(${regex}|^#(扫码|二维码|辅助)(登录|绑定|登陆))`), "") || [2, 7][Math.floor(Math.random()*2)])
     if (app_id === 0 && this.e.isMaster)
       return Running[this.e.user_id] = false
 
