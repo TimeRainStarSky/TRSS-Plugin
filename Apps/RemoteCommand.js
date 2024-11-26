@@ -80,7 +80,7 @@ export class RemoteCommand extends plugin {
 
   async JS() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
-    const cmd = this.e.msg.replace("rj", "").trim()
+    const cmd = this.e.msg.replace(/rjp?/, "").trim()
 
     logger.mark(`[远程命令] 执行Js：${logger.blue(cmd)}`)
     const ret = await this.evalSync(cmd, data => Bot.String(data))
@@ -118,7 +118,7 @@ export class RemoteCommand extends plugin {
 
   async Shell() {
     if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
-    const cmd = this.e.msg.replace("rc", "").trim()
+    const cmd = this.e.msg.replace(/rcp?/, "").trim()
     const ret = await Bot.exec(...prompt(cmd))
 
     if (!ret.stdout && !ret.stderr && !ret.error)

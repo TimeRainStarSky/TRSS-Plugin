@@ -89,12 +89,11 @@ Bot.glob ??= async (path, opts = {}) => {
 const files = (await fs.readdir("plugins/TRSS-Plugin/Apps"))
   .filter(file => file.endsWith(".js"))
 
-let ret = []
-for (const i of files)
-  ret.push(import(`./Apps/${i}`))
-ret = await Promise.allSettled(ret)
+const ret = await Promise.allSettled(
+  files.map(i => import(`./Apps/${i}`))
+)
 
-const apps = {}
+export const apps = {}
 for (const i in files) {
   const name = files[i].replace(".js", "")
   if (ret[i].status != "fulfilled") {
@@ -104,6 +103,5 @@ for (const i in files) {
   }
   apps[name] = ret[i].value[name]
 }
-export { apps }
 
 logger.info(logger.green("- TRSS 插件 加载完成"))
