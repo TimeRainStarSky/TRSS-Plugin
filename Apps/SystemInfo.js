@@ -2,23 +2,16 @@ import puppeteer from "../../../lib/puppeteer/puppeteer.js"
 import { AnsiUp } from "ansi_up"
 const ansi_up = new AnsiUp
 
-const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
-const tplFile = `${htmlDir}Code.html`
-const errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://TRSS.me"
+const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`,
+  tplFile = `${htmlDir}Code.html`,
+  errorTips = "未使用脚本安装，此功能出错属于正常情况\nhttps://TRSS.me",
+  cmds = `fastfetch --pipe false`,
+  cmd = `fastfetch --pipe -l none`
 
-let cmd = "fastfetch"
-let cmds
-let benchcmd = "bash <(curl -L bench.sh)"
-let Running
+let benchcmd = "bash <(curl -L bench.sh)", Running
 
-if (process.platform == "win32") {
-  cmds = `bash -c "${cmd}"`
-  cmd = `bash -c "${cmd} --stdout"`
+if (process.platform == "win32")
   benchcmd = `bash -c "${benchcmd}"`
-} else {
-  cmds = `${cmd} --pipe false`
-  cmd = `${cmd} --pipe -l none`
-}
 
 export class SystemInfo extends plugin {
   constructor() {
