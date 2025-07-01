@@ -18,9 +18,9 @@ export class SourceCode extends plugin {
       rule: [
         {
           reg: "^sc(\\d+~\\d+)?.+",
-          fnc: "SourceCode"
-        }
-      ]
+          fnc: "SourceCode",
+        },
+      ],
     })
   }
 
@@ -47,9 +47,12 @@ export class SourceCode extends plugin {
     let fData = await fs.readFile(scFile, "utf-8")
     const rows = this.e.msg.match(/sc(\d+~\d+)/)?.[1]?.split("~")
     if (rows) {
-      fData = fData.split("\n").slice(rows[0] - 1, rows[1]).join("\n")
+      fData = fData
+        .split("\n")
+        .slice(rows[0] - 1, rows[1])
+        .join("\n")
     }
-    console.log(fData);
+    console.log(fData)
     const SourceCode = fData
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
@@ -59,9 +62,12 @@ export class SourceCode extends plugin {
       .replace(/ /g, "&nbsp;")
     const fileSuffix = path.extname(scFile).slice(1)
     const img = await puppeteer.screenshots("SourceCode", {
-      tplFile, htmlDir, SourceCode, fileSuffix,
+      tplFile,
+      htmlDir,
+      SourceCode,
+      fileSuffix,
       lnStart: (rows && rows[0]) || 1,
-      multiPageHeight: 20000
+      multiPageHeight: 20000,
     })
 
     await this.reply(img, true)

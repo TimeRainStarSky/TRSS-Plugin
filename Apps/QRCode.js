@@ -10,9 +10,9 @@ export class QRCode extends plugin {
       rule: [
         {
           reg: "^二维码.+",
-          fnc: "QRCode"
-        }
-      ]
+          fnc: "QRCode",
+        },
+      ],
     })
   }
 

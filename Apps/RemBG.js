@@ -1,6 +1,6 @@
 import config from "../Model/config.js"
 
-const path = `${process.cwd()}/plugins/TRSS-Plugin/RemBG/`
+const path = `plugins/TRSS-Plugin/RemBG/`
 const errorTips = "请查看安装使用教程：\nhttps://Yunzai.TRSS.me\n并将报错通过联系方式反馈给开发者"
 let model
 let Running
@@ -15,14 +15,14 @@ export class RemBG extends plugin {
       rule: [
         {
           reg: "^#?(动漫)?(图片)?(去除?背景|背景去除?)$",
-          fnc: "DetectImage"
-        }
-      ]
+          fnc: "DetectImage",
+        },
+      ],
     })
   }
 
   async DetectImage(e) {
-    if (!await Bot.fsStat(path) && !config.RemBG.api) {
+    if (!(await Bot.fsStat(path)) && !config.RemBG.api) {
       logger.warn(`[图片背景去除] ${path} 不存在，请检查是否正确安装`)
       return false
     }
@@ -42,11 +42,12 @@ export class RemBG extends plugin {
       else if (this.e.friend?.getChatHistory)
         reply = (await this.e.friend.getChatHistory(this.e.source.time, 1)).pop()
     }
-    if (reply?.message) for (const i of reply.message)
-      if (i.type == "image" || i.type == "file") {
-        this.e.img = [i.url]
-        break
-      }
+    if (reply?.message)
+      for (const i of reply.message)
+        if (i.type == "image" || i.type == "file") {
+          this.e.img = [i.url]
+          break
+        }
 
     if (!this.e.img) {
       this.setContext("RemBG")

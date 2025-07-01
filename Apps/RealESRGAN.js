@@ -1,6 +1,6 @@
 import config from "../Model/config.js"
 
-const path = `${process.cwd()}/plugins/TRSS-Plugin/Real-ESRGAN/`
+const path = `plugins/TRSS-Plugin/Real-ESRGAN/`
 const errorTips = "请查看安装使用教程：\nhttps://Yunzai.TRSS.me\n并将报错通过联系方式反馈给开发者"
 let model
 let Running
@@ -15,14 +15,14 @@ export class RealESRGAN extends plugin {
       rule: [
         {
           reg: "^#?(动漫)?图片修复$",
-          fnc: "DetectImage"
-        }
-      ]
+          fnc: "DetectImage",
+        },
+      ],
     })
   }
 
   async DetectImage(e) {
-    if (!await Bot.fsStat(path) && !config.RealESRGAN.api) {
+    if (!(await Bot.fsStat(path)) && !config.RealESRGAN.api) {
       logger.warn(`[图片修复] ${path} 不存在，请检查是否正确安装`)
       return false
     }
@@ -42,11 +42,12 @@ export class RealESRGAN extends plugin {
       else if (this.e.friend?.getChatHistory)
         reply = (await this.e.friend.getChatHistory(this.e.source.time, 1)).pop()
     }
-    if (reply?.message) for (const i of reply.message)
-      if (i.type == "image" || i.type == "file") {
-        this.e.img = [i.url]
-        break
-      }
+    if (reply?.message)
+      for (const i of reply.message)
+        if (i.type == "image" || i.type == "file") {
+          this.e.img = [i.url]
+          break
+        }
 
     if (!this.e.img) {
       this.setContext("RealESRGAN")
@@ -83,8 +84,8 @@ export class RealESRGAN extends plugin {
 
       logger.mark(`[图片修复] 图片保存成功：${logger.blue(this.e.img[0])}`)
 
-      const cmd = `bash '${path}main.sh' --fp32 --tile 100 -n ${model} -i input.${config.RealESRGAN.format}`
-      ret = await Bot.exec(cmd)
+      const cmd = `poetry run python inference_realesrgan.py --fp32 --tile 100 -n ${model} -i input.${config.RealESRGAN.format}`
+      ret = await Bot.exec(cmd, { cwd: path })
 
       if (ret.error) {
         logger.error(`图片修复错误：${logger.red(ret.error)}`)

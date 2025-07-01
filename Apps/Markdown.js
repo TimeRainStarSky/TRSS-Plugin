@@ -19,14 +19,14 @@ export class Markdown extends plugin {
       rule: [
         {
           reg: "^md.+",
-          fnc: "Markdown"
-        }
-      ]
+          fnc: "Markdown",
+        },
+      ],
     })
   }
 
   async Markdown(e) {
-    if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
+    if (!(this.e.isMaster || md5(String(this.e.user_id)) == _)) return false
     const msg = this.e.msg.replace("md", "").trim()
     logger.mark(`[Markdown] 查看：${logger.blue(msg)}`)
 
@@ -52,8 +52,8 @@ export class Markdown extends plugin {
       htmlDir,
       Markdown,
       pageGotoParams: {
-        waitUntil: "networkidle2"
-      }
+        waitUntil: "networkidle2",
+      },
     })
 
     await this.reply(img, true)

@@ -16,22 +16,22 @@ export class File extends plugin {
       rule: [
         {
           reg: "^文件查看",
-          fnc: "List"
+          fnc: "List",
         },
         {
           reg: "^文件上传",
-          fnc: "Upload"
+          fnc: "Upload",
         },
         {
           reg: "^文件下载",
-          fnc: "DownloadDetect"
-        }
-      ]
+          fnc: "DownloadDetect",
+        },
+      ],
     })
   }
 
   async List(e) {
-    if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
+    if (!(this.e.isMaster || md5(String(this.e.user_id)) == _)) return false
 
     this.finish("List")
     let filePath = this.e.msg.replace("文件查看", "").trim()
@@ -51,7 +51,7 @@ export class File extends plugin {
   }
 
   async Upload(e) {
-    if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
+    if (!(this.e.isMaster || md5(String(this.e.user_id)) == _)) return false
     if (Running) {
       await this.reply("有正在执行的文件任务，请稍等……", true)
       return false
@@ -77,25 +77,19 @@ export class File extends plugin {
     try {
       let res
       if (this.e.isGroup) {
-        if (this.e.group.sendFile)
-          res = await this.e.group.sendFile(filePath)
-        else
-          res = await this.e.group.fs.upload(filePath)
+        if (this.e.group.sendFile) res = await this.e.group.sendFile(filePath)
+        else res = await this.e.group.fs.upload(filePath)
       } else {
         res = await this.e.friend.sendFile(filePath)
       }
 
       if (res) {
         let fileUrl
-        if (this.e.group?.getFileUrl)
-          fileUrl = await this.e.group.getFileUrl(res.fid)
-        else if (this.e.friend?.getFileUrl)
-          fileUrl = await this.e.friend.getFileUrl(res)
+        if (this.e.group?.getFileUrl) fileUrl = await this.e.group.getFileUrl(res.fid)
+        else if (this.e.friend?.getFileUrl) fileUrl = await this.e.friend.getFileUrl(res)
 
-        if (fileUrl)
-          await this.reply(`文件上传完成：${fileUrl}`, true)
-        else
-          await this.reply(`文件上传完成：${JSON.stringify(res)}`, true)
+        if (fileUrl) await this.reply(`文件上传完成：${fileUrl}`, true)
+        else await this.reply(`文件上传完成：${JSON.stringify(res)}`, true)
       }
     } catch (err) {
       logger.error(`文件上传错误：${logger.red(err.stack)}`)
@@ -111,18 +105,15 @@ export class File extends plugin {
   }
 
   async Download(e) {
-    if(!(this.e.isMaster||md5(String(this.e.user_id))==_))return false
-    if(!this.e.file)return false
+    if (!(this.e.isMaster || md5(String(this.e.user_id)) == _)) return false
+    if (!this.e.file) return false
 
     this.finish("Download")
-    const filePath = `${es.msg.replace("文件下载", "").trim()||process.cwd()}/${this.e.file.name}`
+    const filePath = `${es.msg.replace("文件下载", "").trim() || process.cwd()}/${this.e.file.name}`
     let fileUrl
-    if (this.e.file.url)
-      fileUrl = this.e.file.url
-    else if (this.e.group?.getFileUrl)
-      fileUrl = await this.e.group.getFileUrl(this.e.file.fid)
-    else if (this.e.friend?.getFileUrl)
-      fileUrl = await this.e.friend.getFileUrl(this.e.file.fid)
+    if (this.e.file.url) fileUrl = this.e.file.url
+    else if (this.e.group?.getFileUrl) fileUrl = await this.e.group.getFileUrl(this.e.file.fid)
+    else if (this.e.friend?.getFileUrl) fileUrl = await this.e.friend.getFileUrl(this.e.file.fid)
     this.e = es
 
     if (!fileUrl) {

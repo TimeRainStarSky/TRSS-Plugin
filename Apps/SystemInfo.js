@@ -1,6 +1,6 @@
 import puppeteer from "../../../lib/puppeteer/puppeteer.js"
 import { AnsiUp } from "ansi_up"
-const ansi_up = new AnsiUp
+const ansi_up = new AnsiUp()
 
 const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`,
   tplFile = `${htmlDir}Code.html`,
@@ -8,10 +8,10 @@ const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`,
   cmds = `fastfetch --pipe false`,
   cmd = `fastfetch --pipe -l none`
 
-let benchcmd = "bash <(curl -L bench.sh)", Running
+let benchcmd = "bash <(curl -L bench.sh)",
+  Running
 
-if (process.platform == "win32")
-  benchcmd = `bash -c "${benchcmd}"`
+if (process.platform == "win32") benchcmd = `bash -c "${benchcmd}"`
 
 export class SystemInfo extends plugin {
   constructor() {
@@ -23,17 +23,17 @@ export class SystemInfo extends plugin {
       rule: [
         {
           reg: "^#?系统信息$",
-          fnc: "SystemInfo"
+          fnc: "SystemInfo",
         },
         {
           reg: "^#?系统信息图片$",
-          fnc: "SystemInfoPic"
+          fnc: "SystemInfoPic",
         },
         {
           reg: "^#?系统测试$",
-          fnc: "SystemBench"
-        }
-      ]
+          fnc: "SystemBench",
+        },
+      ],
     })
   }
 
