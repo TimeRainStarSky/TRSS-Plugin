@@ -43,7 +43,7 @@ async function request(url, data, aigis) {
     method: "post",
     body: data,
     headers: {
-      "x-rpc-app_version": "2.41.0",
+      "x-rpc-app_version": "2.104.0",
       DS: ds(data),
       "x-rpc-aigis": aigis,
       "Content-Type": "application/json",
@@ -56,7 +56,7 @@ async function request(url, data, aigis) {
       "x-rpc-device_model": random_string(16),
       "x-rpc-app_id": "bll8iq97cem8",
       "x-rpc-client_type": "2",
-      "User-Agent": "okhttp/4.8.0",
+      "User-Agent": "Hyperion/550 CFNetwork/3860.500.112 Darwin/25.4.0",
     },
   })
 }
@@ -286,7 +286,26 @@ export class miHoYoLogin extends plugin {
     logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
 
     let cookie = await fetch(
-      `https://api-takumi.mihoyo.com/auth/api/getCookieAccountInfoByGameToken?account_id=${data.uid}&game_token=${data.token}`,
+      `https://passport-api.mihoyo.com/account/auth/api/getCookieAccountInfoBySToken?stoken=${res.data.token.token}&uid=${res.data.user_info.aid}`,
+      {
+        headers: {
+          "x-rpc-app_version": "2.104.0",
+          DS: ds(""),
+          "x-rpc-aigis": "",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          "x-rpc-game_biz": "bbs_cn",
+          "x-rpc-sys_version": "12",
+          "x-rpc-device_id": random_string(16),
+          "x-rpc-device_fp": random_string(13),
+          "x-rpc-device_name": random_string(16),
+          "x-rpc-device_model": random_string(16),
+          "x-rpc-app_id": "bll8iq97cem8",
+          "x-rpc-client_type": "2",
+          "User-Agent": "Hyperion/550 CFNetwork/3860.500.112 Darwin/25.4.0",
+          Cookie: `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`,
+        },
+      }
     )
     cookie = await cookie.json()
     logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(cookie))}`)
