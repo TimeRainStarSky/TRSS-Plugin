@@ -38,13 +38,12 @@ function ds(data) {
   return `${t},${r},${h}`
 }
 
-async function request(url, data, aigis) {
+async function request(url, { data, aigis, cookie } = {}) {
   return await fetch(url, {
-    method: "post",
-    body: data,
+    ...(data && { method: "post", body: data }),
     headers: {
       "x-rpc-app_version": "2.104.0",
-      DS: ds(data),
+      DS: ds(data ?? ""),
       "x-rpc-aigis": aigis,
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -57,6 +56,7 @@ async function request(url, data, aigis) {
       "x-rpc-app_id": "bll8iq97cem8",
       "x-rpc-client_type": "2",
       "User-Agent": "Hyperion/550 CFNetwork/3860.500.112 Darwin/25.4.0",
+      Cookie: cookie,
     },
   })
 }
@@ -135,7 +135,7 @@ export class miHoYoLogin extends plugin {
     })
 
     const url = "https://passport-api.mihoyo.com/account/ma-cn-passport/app/loginByPassword"
-    let res = await request(url, data, "")
+    let res = await request(url, { data, aigis: "" })
     const aigis_data = JSON.parse(res.headers.get("x-rpc-aigis"))
     res = await res.json()
     logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
@@ -164,7 +164,7 @@ export class miHoYoLogin extends plugin {
           }),
         ).toString("base64")
 
-      res = await request(url, data, aigis)
+      res = await request(url, { data, aigis })
       res = await res.json()
       logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
     }
@@ -174,15 +174,17 @@ export class miHoYoLogin extends plugin {
       Running[this.e.user_id] = false
       return false
     }
+    const stoken = `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`
 
-    let cookie = await fetch(
-      `https://api-takumi.mihoyo.com/auth/api/getCookieAccountInfoBySToken?stoken=${res.data.token.token}&mid=${res.data.user_info.mid}`,
+    let cookie = await request(
+      `https://passport-api.mihoyo.com/account/auth/api/getCookieAccountInfoBySToken?stoken=${res.data.token.token}&uid=${res.data.user_info.aid}`,
+      { cookie: stoken },
     )
     cookie = await cookie.json()
     logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(cookie))}`)
     cookie = [
       `ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token};login_ticket=${res.data.login_ticket}`,
-      `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`,
+      stoken,
     ]
     for (const i of cookie) this.makeMessage(i)
     if (this.e.isPrivate)
@@ -279,40 +281,22 @@ export class miHoYoLogin extends plugin {
 
     res = await request(
       "https://passport-api.mihoyo.com/account/ma-cn-session/app/getTokenByGameToken",
-      JSON.stringify({ account_id: parseInt(data.uid), game_token: data.token }),
-      "",
+      { data: JSON.stringify({ account_id: parseInt(data.uid), game_token: data.token }) },
     )
     res = await res.json()
     logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
+    const stoken = `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`
 
-    let cookie = await fetch(
+    let cookie = await request(
       `https://passport-api.mihoyo.com/account/auth/api/getCookieAccountInfoBySToken?stoken=${res.data.token.token}&uid=${res.data.user_info.aid}`,
-      {
-        headers: {
-          "x-rpc-app_version": "2.104.0",
-          DS: ds(""),
-          "x-rpc-aigis": "",
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          "x-rpc-game_biz": "bbs_cn",
-          "x-rpc-sys_version": "12",
-          "x-rpc-device_id": random_string(16),
-          "x-rpc-device_fp": random_string(13),
-          "x-rpc-device_name": random_string(16),
-          "x-rpc-device_model": random_string(16),
-          "x-rpc-app_id": "bll8iq97cem8",
-          "x-rpc-client_type": "2",
-          "User-Agent": "Hyperion/550 CFNetwork/3860.500.112 Darwin/25.4.0",
-          Cookie: `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`,
-        },
-      }
+      { cookie: stoken },
     )
     cookie = await cookie.json()
     logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(cookie))}`)
 
     cookie = [
       `ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token}`,
-      `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`,
+      stoken,
     ]
     for (const i of cookie) this.makeMessage(i)
     if (this.e.isPrivate)

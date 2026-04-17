@@ -3,10 +3,13 @@
   "type": "module",
   "author": "TimeRainStarSky",
   "dependencies": {
-    "@highlightjs/cdn-assets": "^11.10.0",
-    "ansi_up": "^6.0.2",
-    "highlightjs-line-numbers.js": "^2.8.0",
-    "markdown-it": "^14.1.0",
+    "@highlightjs/cdn-assets": "^11.11.1",
+    "ansi_up": "^6.0.6",
+    "highlightjs-line-numbers.js": "^2.9.1",
+    "markdown-it": "^14.1.1",
     "qrcode": "^1.5.4"
+  },
+  "scripts": {
+    "lint": "git ls-files '*.js'|xargs prettier --write --list-different"
   }
 }
