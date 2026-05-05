@@ -11,29 +11,32 @@
 
 云崽机器人插件
 
-[![访问量](https://visitor-badge.glitch.me/badge?page_id=TimeRainStarSky.TRSS-Plugin&right_color=red&left_text=访%20问%20量)](https://github.com/TimeRainStarSky/TRSS-Plugin)
 [![Stars](https://img.shields.io/github/stars/TimeRainStarSky/TRSS-Plugin?color=yellow&label=收藏)](../../stargazers)
 [![Downloads](https://img.shields.io/github/downloads/TimeRainStarSky/TRSS-Plugin/total?color=blue&label=下载)](Install.sh)
 [![Releases](https://img.shields.io/github/v/release/TimeRainStarSky/TRSS-Plugin?color=green&label=发行版)](../../releases/latest)
-
-[![访问量](https://profile-counter.glitch.me/TimeRainStarSky-TRSS-Plugin/count.svg)](https://github.com/TimeRainStarSky/TRSS-Plugin)
 
 </div>
 
 ## 安装教程
 
-- 推荐使用 [TRSS Yunzai 管理脚本](https://TRSS.me) 安装
+1. 准备：[Yunzai](../../../Yunzai)
 
-[![TRSS Yunzai 管理脚本](https://github-readme-stats.vercel.app/api/pin/?username=TimeRainStarSky&repo=TRSS_Yunzai&show_owner=true)](../../../TRSS_Yunzai)
-
-1. 准备：[Yunzai-Bot](https://github.com/Le-niao/Yunzai-Bot)
-
-2. 安装：[GitHub](https://github.com/TimeRainStarSky/TRSS-Plugin) 或 [Gitee](https://gitee.com/TimeRainStarSky/TRSS-Plugin)
+2. 安装
 
 ```
-git clone --depth 1 https://Yunzai.TRSS.me plugins/TRSS-Plugin
+git clone --depth 1 https://git.trss.me/TRSS-Plugin plugins/TRSS-Plugin
 pnpm i
 ```
+
+<details><summary>若无法访问，请根据网络情况选择镜像源</summary>
+
+```sh
+git clone --depth 1 https://github.com/TimeRainStarSky/TRSS-Plugin
+git clone --depth 1 https://gitee.com/TimeRainStarSky/TRSS-Plugin
+git clone --depth 1 https://gitcode.com/TimeRainStarSky/TRSS-Plugin
+```
+
+</details>
 
 3. 安装 `图片修复` | `图片背景去除` | `语音合成`，不用可忽略
 
