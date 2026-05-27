@@ -489,7 +489,7 @@ export class miHoYoLogin extends plugin {
       user_id: this.e.user_id,
       sender: this.e.sender,
       friend: this.e.friend,
-      reply: this.reply.bind(this),
+      reply: (msg, quote, opts) => this.reply(msg, quote, { ...opts, recallMsg: 60 }),
       post_type: "message",
       message_type: "private",
       sub_type: "friend",
