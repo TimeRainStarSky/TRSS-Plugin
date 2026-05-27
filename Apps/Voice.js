@@ -7,7 +7,8 @@ try {
 
 const GenshinVoicePath = "plugins/TRSS-Plugin/GenshinVoice/"
 const ChatWaifuPath = "plugins/TRSS-Plugin/ChatWaifu/"
-const errorTips = "请查看安装使用教程：\nhttps://Yunzai.TRSS.me\n并将报错通过联系方式反馈给开发者"
+const errorTips =
+  "请查看安装使用教程：\nhttps://git.trss.me/TRSS-Plugin\n并将报错通过联系方式反馈给开发者"
 
 const GenshinVoiceSpeakers = [
   "派蒙",
@@ -177,7 +178,7 @@ export class Voice extends plugin {
     await this.reply(
       await Bot.makeForwardArray([
         "TRSS-Plugin 语音合成角色列表",
-        "https://Yunzai.TRSS.me",
+        "https://git.trss.me/TRSS-Plugin",
         GenshinVoiceSpeakers.join("\n"),
         ChatWaifuSpeakers.join("\n"),
       ]),

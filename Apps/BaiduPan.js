@@ -33,7 +33,7 @@ const Commands = {
 const path = Path.join(process.env.HOME || process.env.USERPROFILE || "", "BaiduPCS-Go", Path.sep)
 const cmdPath = `${path}BaiduPCS-Go`
 const errorTips =
-  "请使用脚本安装百度网盘，并正常登录后再使用此功能\nhttps://Yunzai.TRSS.me\nhttps://TRSS.me"
+  "请使用脚本安装百度网盘，并正常登录后再使用此功能\nhttps://git.trss.me/TRSS-Plugin"
 let Running
 let es
 

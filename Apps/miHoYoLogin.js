@@ -38,30 +38,46 @@ function ds(data) {
   return `${t},${r},${h}`
 }
 
-async function request(url, { data, aigis, cookie } = {}) {
-  return await fetch(url, {
-    ...(data && { method: "post", body: data }),
-    headers: {
-      "x-rpc-app_version": "2.104.0",
-      DS: ds(data ?? ""),
-      "x-rpc-aigis": aigis,
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      "x-rpc-game_biz": "bbs_cn",
-      "x-rpc-sys_version": "12",
-      "x-rpc-device_id": random_string(16),
-      "x-rpc-device_fp": random_string(13),
-      "x-rpc-device_name": random_string(16),
-      "x-rpc-device_model": random_string(16),
-      "x-rpc-app_id": "bll8iq97cem8",
-      "x-rpc-client_type": "2",
-      "User-Agent": "Hyperion/550 CFNetwork/3860.500.112 Darwin/25.4.0",
-      Cookie: cookie,
-    },
-  })
+function request(url, { data, aigis, cookie } = {}) {
+  const opts = {}
+  if (data) {
+    opts.method = "post"
+    opts.body = JSON.stringify(data)
+  }
+  opts.headers = {
+    "x-rpc-app_version": "2.104.0",
+    DS: ds(opts.body ?? ""),
+    "x-rpc-aigis": aigis,
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    "x-rpc-game_biz": "bbs_cn",
+    "x-rpc-sys_version": "12",
+    "x-rpc-device_id": random_string(16),
+    "x-rpc-device_fp": random_string(13),
+    "x-rpc-device_name": random_string(16),
+    "x-rpc-device_model": random_string(16),
+    "x-rpc-app_id": "bll8iq97cem8",
+    "x-rpc-client_type": "2",
+    "User-Agent": "Hyperion/550 CFNetwork/3860.500.112 Darwin/25.4.0",
+    Cookie: cookie,
+  }
+  return fetch(url, opts)
 }
 
-const errorTips = "登录失败，请检查日志\nhttps://Yunzai.TRSS.me"
+const web_headers = {
+  "User-Agent":
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
+  "x-rpc-app_id": "bll8iq97cem8",
+  "x-rpc-device_id": random_string(16),
+}
+
+const errorTips = [
+  "登录失败，请检查日志\n如果【米哈游登录】无法使用，请尝试【米游社登录】\nhttps://git.trss.me/TRSS-Plugin",
+  segment.button([
+    { text: "米哈游登录", callback: "米哈游登录" },
+    { text: "米游社登录", callback: "米游社登录" },
+  ]),
+]
 const accounts = {}
 const Running = {}
 
@@ -92,7 +108,7 @@ export class miHoYoLogin extends plugin {
   miHoYoLoginDetect() {
     accounts[this.e.user_id] = this.e
     this.setContext("miHoYoLogin")
-    this.reply("请发送密码", true, { at: true, recallMsg: 60 })
+    this.reply("请发送密码", true, { recallMsg: 60 })
   }
 
   async crack_geetest(gt, challenge) {
@@ -100,19 +116,19 @@ export class miHoYoLogin extends plugin {
     this.reply(
       `请完成验证：https://challenge.minigg.cn/manual/index.html?gt=${gt}&challenge=${challenge}`,
       true,
-      { at: true, recallMsg: 60 },
+      { recallMsg: 60 },
     )
     for (let n = 1; n < 60; n++) {
       await Bot.sleep(5000)
       try {
         res = await fetch(`https://challenge.minigg.cn/manual/?callback=${challenge}`)
         res = await res.json()
-        if (res.retcode == 200) return res.data
+        if (res.retcode === 200) return res.data
       } catch (err) {
         logger.error(this.e.logFnc, err)
       }
     }
-    this.reply("验证超时", true, { at: true })
+    this.reply("验证超时", true, { recallMsg: 60 })
     return false
   }
 
@@ -120,7 +136,7 @@ export class miHoYoLogin extends plugin {
     if (!this.e.msg) return false
     this.finish("miHoYoLogin")
     if (Running[this.e.user_id]) {
-      this.reply("有正在进行的登录操作，请完成后再试……", true, { at: true, recallMsg: 60 })
+      this.reply("有正在进行的登录操作，请完成后再试……", true, { recallMsg: 60 })
       return false
     }
     Running[this.e.user_id] = true
@@ -129,10 +145,10 @@ export class miHoYoLogin extends plugin {
     this.e = accounts[this.e.user_id]
     const account = this.e.msg.replace(new RegExp(regex), "").trim()
 
-    const data = JSON.stringify({
+    const data = {
       account: encrypt_data(account),
       password: encrypt_data(password),
-    })
+    }
 
     const url = "https://passport-api.mihoyo.com/account/ma-cn-passport/app/loginByPassword"
     let res = await request(url, { data, aigis: "" })
@@ -140,7 +156,7 @@ export class miHoYoLogin extends plugin {
     res = await res.json()
     logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
 
-    if (res.retcode == -3101) {
+    if (res.retcode === -3101) {
       logger.mark("${this.e.logFnc} 正在验证")
       const aigis_captcha_data = JSON.parse(aigis_data.data)
       const challenge = aigis_captcha_data.challenge
@@ -169,8 +185,8 @@ export class miHoYoLogin extends plugin {
       logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
     }
 
-    if (res.retcode != 0) {
-      this.reply(`错误：${JSON.stringify(res)}`, true, { at: true })
+    if (res.retcode !== 0) {
+      this.reply(`错误：${JSON.stringify(res)}`, true, { recallMsg: 60 })
       Running[this.e.user_id] = false
       return false
     }
@@ -203,14 +219,26 @@ export class miHoYoLogin extends plugin {
       this.e.msg.replace(new RegExp(`(${regex}|^#(扫码|二维码|辅助)(登录|绑定|登陆))`), "") ||
         [2, 7][Math.floor(Math.random() * 2)],
     )
-    if (app_id === 0 && this.e.isMaster) return (Running[this.e.user_id] = false)
+    if (app_id === 0) {
+      Running[this.e.user_id] = false
+      return true
+    }
 
     if (Running[this.e.user_id])
-      return this.reply(["请使用米游社扫码登录", Running[this.e.user_id]], true, {
-        at: true,
-        recallMsg: 60,
-      })
+      return this.reply(
+        [
+          "请使用米游社扫码登录",
+          Running[this.e.user_id],
+          segment.button([{ text: "终止登录", callback: "米哈游登录0" }]),
+        ],
+        true,
+        {
+          recallMsg: 60,
+        },
+      )
     Running[this.e.user_id] = true
+
+    if (this.e.msg.includes("米游社")) return this.HyperionLogin()
 
     const device = random_string(64)
     let res, ticket
@@ -228,17 +256,35 @@ export class miHoYoLogin extends plugin {
         (await QR.toDataURL(url)).replace("data:image/png;base64,", "base64://"),
       )
       Running[this.e.user_id] = img
-      this.reply(["请使用米游社扫码登录", img], true, { at: true, recallMsg: 60 })
+      this.reply(
+        [
+          "请使用米游社扫码登录",
+          img,
+          segment.button([{ text: "终止登录", callback: "米哈游登录0" }]),
+        ],
+        true,
+        { recallMsg: 60 },
+      )
     } catch (err) {
       Running[this.e.user_id] = false
       return logger.error(this.e.logFnc, err)
     }
 
-    let data
-    let Scanned
+    let data, Scanned
     for (let n = 1; n < 60; n++) {
       await Bot.sleep(5000)
-      if (Running[this.e.user_id] === false) return this.reply("扫码登录已终止")
+      if (Running[this.e.user_id] === false)
+        return this.reply(
+          [
+            "米哈游登录已终止",
+            segment.button([
+              { text: "米哈游登录", callback: "米哈游登录" },
+              { text: "米游社登录", callback: "米游社登录" },
+            ]),
+          ],
+          true,
+          { recallMsg: 60 },
+        )
       try {
         res = await fetch("https://hk4e-sdk.mihoyo.com/hk4e_cn/combo/panda/qrcode/query", {
           method: "post",
@@ -246,25 +292,35 @@ export class miHoYoLogin extends plugin {
         })
         res = await res.json()
 
-        if (res.retcode != 0) {
+        if (res.retcode !== 0) {
           Running[this.e.user_id] = false
           return this.reply(
             [
               "二维码已过期，请重新登录",
-              segment.button([{ text: "米哈游登录", callback: "米哈游登录" }]),
+              segment.button([
+                { text: "米哈游登录", callback: "米哈游登录" },
+                { text: "米游社登录", callback: "米游社登录" },
+              ]),
             ],
             true,
-            { at: true, recallMsg: 60 },
+            { recallMsg: 60 },
           )
         }
 
-        if (res.data.stat == "Scanned" && !Scanned) {
+        if (res.data.stat === "Scanned" && !Scanned) {
           logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
           Scanned = true
-          this.reply("二维码已扫描，请确认登录", true, { at: true, recallMsg: 60 })
+          this.reply(
+            [
+              "二维码已扫描，请确认登录\n如果无法确认登录，请发送【米哈游登录0】终止登录后，再使用【米游社登录】",
+              segment.button([{ text: "终止登录", callback: "米哈游登录0" }]),
+            ],
+            true,
+            { recallMsg: 60 },
+          )
         }
 
-        if (res.data.stat == "Confirmed") {
+        if (res.data.stat === "Confirmed") {
           logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
           data = JSON.parse(res.data.payload.raw)
           break
@@ -273,31 +329,38 @@ export class miHoYoLogin extends plugin {
         logger.error(this.e.logFnc, err)
       }
     }
+    Running[this.e.user_id] = false
 
-    if (!(data.uid && data.token)) {
-      this.reply(errorTips, true, { at: true })
-      return (Running[this.e.user_id] = false)
+    if (!(data.uid && data.token)) return this.reply(errorTips, true, { recallMsg: 60 })
+
+    try {
+      res = await request(
+        "https://passport-api.mihoyo.com/account/ma-cn-session/app/getTokenByGameToken",
+        { data: { account_id: parseInt(data.uid), game_token: data.token } },
+      )
+      res = await res.json()
+      logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
+
+      if (!res.data?.token?.token) return this.reply(errorTips, true, { recallMsg: 60 })
+      const stoken = `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`
+
+      let cookie = await request(
+        `https://passport-api.mihoyo.com/account/auth/api/getCookieAccountInfoBySToken?stoken=${res.data.token.token}&uid=${res.data.user_info.aid}`,
+        { cookie: stoken },
+      )
+      cookie = await cookie.json()
+      logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(cookie))}`)
+
+      if (!cookie.data?.cookie_token) return this.reply(errorTips, true, { recallMsg: 60 })
+      cookie = [
+        `ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token}`,
+        stoken,
+      ]
+    } catch (err) {
+      logger.error(this.e.logFnc, err)
+      return this.reply(errorTips, true, { recallMsg: 60 })
     }
 
-    res = await request(
-      "https://passport-api.mihoyo.com/account/ma-cn-session/app/getTokenByGameToken",
-      { data: JSON.stringify({ account_id: parseInt(data.uid), game_token: data.token }) },
-    )
-    res = await res.json()
-    logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
-    const stoken = `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`
-
-    let cookie = await request(
-      `https://passport-api.mihoyo.com/account/auth/api/getCookieAccountInfoBySToken?stoken=${res.data.token.token}&uid=${res.data.user_info.aid}`,
-      { cookie: stoken },
-    )
-    cookie = await cookie.json()
-    logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(cookie))}`)
-
-    cookie = [
-      `ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token}`,
-      stoken,
-    ]
     for (const i of cookie) this.makeMessage(i)
     if (this.e.isPrivate)
       this.reply(
@@ -306,8 +369,108 @@ export class miHoYoLogin extends plugin {
           ...cookie,
         ]),
       )
+  }
 
+  async HyperionLogin() {
+    let res, ticket
+    try {
+      res = await fetch(
+        "https://passport-api.mihoyo.com/account/ma-cn-passport/web/createQRLogin",
+        { headers: web_headers, method: "post", body: "{}" },
+      )
+      res = await res.json()
+      logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
+
+      const url = res.data.url
+      ticket = res.data.ticket
+      const img = segment.image(
+        (await QR.toDataURL(url)).replace("data:image/png;base64,", "base64://"),
+      )
+      Running[this.e.user_id] = img
+      this.reply(
+        [
+          "请使用米游社扫码登录",
+          img,
+          segment.button([{ text: "终止登录", callback: "米游社登录0" }]),
+        ],
+        true,
+        { recallMsg: 60 },
+      )
+    } catch (err) {
+      Running[this.e.user_id] = false
+      logger.error(this.e.logFnc, err)
+      return this.reply(errorTips, true, { recallMsg: 60 })
+    }
+
+    let cookie, Scanned
+    for (let n = 1; n < 60; n++) {
+      await Bot.sleep(5000)
+      if (Running[this.e.user_id] === false)
+        return this.reply(
+          [
+            "米游社登录已终止",
+            segment.button([
+              { text: "米哈游登录", callback: "米哈游登录" },
+              { text: "米游社登录", callback: "米游社登录" },
+            ]),
+          ],
+          true,
+          { recallMsg: 60 },
+        )
+      try {
+        res = await fetch(
+          "https://passport-api.mihoyo.com/account/ma-cn-passport/web/queryQRLoginStatus",
+          { headers: web_headers, method: "post", body: JSON.stringify({ ticket }) },
+        )
+        cookie = res.headers.getSetCookie()
+        res = await res.json()
+
+        if (res.retcode !== 0) {
+          Running[this.e.user_id] = false
+          return this.reply(
+            [
+              "二维码已过期，请重新登录",
+              segment.button([
+                { text: "米哈游登录", callback: "米哈游登录" },
+                { text: "米游社登录", callback: "米游社登录" },
+              ]),
+            ],
+            true,
+            { recallMsg: 60 },
+          )
+        }
+
+        if (res.data.status === "Scanned" && !Scanned) {
+          logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
+          Scanned = true
+          this.reply(
+            [
+              "二维码已扫描，请确认登录",
+              segment.button([{ text: "终止登录", callback: "米游社登录0" }]),
+            ],
+            true,
+            { recallMsg: 60 },
+          )
+        }
+
+        if (res.data.status === "Confirmed") {
+          logger.mark(
+            `${this.e.logFnc} ${logger.blue(JSON.stringify(res))} ${logger.green(JSON.stringify(cookie))}`,
+          )
+          break
+        }
+      } catch (err) {
+        logger.error(this.e.logFnc, err)
+      }
+    }
     Running[this.e.user_id] = false
+
+    if (!cookie?.length) return this.reply(errorTips, true, { recallMsg: 60 })
+
+    cookie = cookie.map(i => i.split(";")[0]).join(";")
+    this.makeMessage(cookie)
+    if (this.e.isPrivate)
+      this.reply(await Bot.makeForwardArray(["登录完成，以下是 Cookie，将会自动绑定", cookie]))
   }
 
   makeMessage(msg) {
@@ -329,9 +492,14 @@ export class miHoYoLogin extends plugin {
   miHoYoLoginHelp() {
     if (!config.miHoYoLogin.help) return false
     this.reply(
-      ["发送【米哈游登录】", segment.button([{ text: "米哈游登录", callback: "米哈游登录" }])],
+      [
+        "优先发送【米哈游登录】\n如果无法登录发送【米游社登录】",
+        segment.button([
+          { text: "米哈游登录", callback: "米哈游登录" },
+          { text: "米游社登录", callback: "米游社登录" },
+        ]),
+      ],
       true,
-      { at: true },
     )
   }
 }

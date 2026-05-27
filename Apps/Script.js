@@ -8,7 +8,7 @@ const htmlDir = `${process.cwd()}/plugins/TRSS-Plugin/Resources/Code/`
 const tplFile = `${htmlDir}Code.html`
 const path = `${process.env.HOME}/../`
 const cmdPath = `${path}Main.sh`
-const errorTips = "请使用脚本安装，再使用此功能\nhttps://Yunzai.TRSS.me\nhttps://TRSS.me"
+const errorTips = "请使用脚本安装，再使用此功能\nhttps://git.trss.me/TRSS-Plugin"
 
 export class Script extends plugin {
   constructor() {

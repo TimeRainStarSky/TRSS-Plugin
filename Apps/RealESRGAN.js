@@ -1,7 +1,8 @@
 import config from "../Model/config.js"
 
 const path = `plugins/TRSS-Plugin/Real-ESRGAN/`
-const errorTips = "请查看安装使用教程：\nhttps://Yunzai.TRSS.me\n并将报错通过联系方式反馈给开发者"
+const errorTips =
+  "请查看安装使用教程：\nhttps://git.trss.me/TRSS-Plugin\n并将报错通过联系方式反馈给开发者"
 let model
 let Running
 
