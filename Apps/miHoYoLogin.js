@@ -4,7 +4,7 @@ import _ from "lodash"
 import crypto from "crypto"
 import fetch from "node-fetch"
 
-const regex = "^#?(米哈?游社?登(录|陆|入)|登(录|陆|入)米哈?游社?)"
+const regex = "^#(米哈?游社?登(录|陆|入)|登(录|陆|入)米哈?游社?)"
 const publicKey = `-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDvekdPMHN3AYhm/vktJT+YJr7cI5DcsNKqdsx5DZX0gDuWFuIjzdwButrIYPNmRJ1G8ybDIF7oDW2eEpm5sMbL9zs
 9ExXCdvqrn51qELbqj0XxtMTIpaCHFSI50PfPpTFV9Xt/hmyVwokoOXFlAEgCn+Q
@@ -31,14 +31,22 @@ function md5(data) {
   return crypto.createHash("md5").update(data).digest("hex")
 }
 
-function ds(data) {
+// 不同 x-rpc-client_type 使用不同 DS 盐：
+// 2 = passport / CookieToken 换票，5 = record 系 / LToken 换票
+const DS_SALT = {
+  2: "JwYDpKvLj6MrMqqYU6jTKF17KNO2PXoS",
+  5: "xV8v4Qu54lUKrEYFZkJhB8cuOh9Asafs",
+}
+
+function ds(data, clientType = 2) {
   const t = Math.floor(Date.now() / 1000)
   const r = random_string(6)
-  const h = md5(`salt=JwYDpKvLj6MrMqqYU6jTKF17KNO2PXoS&t=${t}&r=${r}&b=${data}&q=`)
+  const salt = DS_SALT[clientType] ?? DS_SALT[2]
+  const h = md5(`salt=${salt}&t=${t}&r=${r}&b=${data}&q=`)
   return `${t},${r},${h}`
 }
 
-function request(url, { data, aigis, cookie } = {}) {
+function request(url, { data, aigis, cookie, clientType = 2, deviceId } = {}) {
   const opts = {}
   if (data) {
     opts.method = "post"
@@ -46,22 +54,84 @@ function request(url, { data, aigis, cookie } = {}) {
   }
   opts.headers = {
     "x-rpc-app_version": "2.104.0",
-    DS: ds(opts.body ?? ""),
+    DS: ds(opts.body ?? "", clientType),
     "x-rpc-aigis": aigis,
     "Content-Type": "application/json",
     Accept: "application/json",
     "x-rpc-game_biz": "bbs_cn",
     "x-rpc-sys_version": "12",
-    "x-rpc-device_id": random_string(16),
+    "x-rpc-device_id": deviceId ?? random_string(16),
     "x-rpc-device_fp": random_string(13),
     "x-rpc-device_name": random_string(16),
     "x-rpc-device_model": random_string(16),
     "x-rpc-app_id": "bll8iq97cem8",
-    "x-rpc-client_type": "2",
+    "x-rpc-client_type": String(clientType),
     "User-Agent": "Hyperion/550 CFNetwork/3860.500.112 Darwin/25.4.0",
     Cookie: cookie,
   }
   return fetch(url, opts)
+}
+
+/**
+ * 用 stoken 换取 LToken（x-rpc-client_type: 5）。
+ * 米游社社区/BBS 接口需要 v2 票据（v2_ 前缀），旧版代码把 stoken 直接当 ltoken 写入，会导致 -100 登录失效。
+ */
+async function getLTokenBySToken(uid, stoken, mid, deviceId) {
+  try {
+    const res = await request(
+      `https://passport-api.mihoyo.com/account/auth/api/getLTokenBySToken?stoken=${stoken}&stuid=${uid}`,
+      {
+        cookie: `stuid=${uid};stoken=${stoken};${mid ? `mid=${mid};` : ""}`,
+        clientType: 5,
+        deviceId,
+      },
+    )
+    return await res.json()
+  } catch (err) {
+    logger.error("[米哈游登录][getLTokenBySToken] 请求异常", err)
+    return null
+  }
+}
+
+/**
+ * 用 stoken 换取 CookieToken（x-rpc-client_type: 2）。
+ * 返回值可能是 v1（cookie_token）或 v2（v2_ 前缀）票据，由调用方按前缀落字段。
+ */
+async function getCookieTokenBySToken(uid, stoken, mid, deviceId) {
+  try {
+    const res = await request(
+      `https://passport-api.mihoyo.com/account/auth/api/getCookieAccountInfoBySToken?stoken=${stoken}&uid=${uid}&mid=${mid}`,
+      {
+        cookie: `stuid=${uid};stoken=${stoken};${mid ? `mid=${mid};` : ""}`,
+        clientType: 2,
+        deviceId,
+      },
+    )
+    return await res.json()
+  } catch (err) {
+    logger.error("[米哈游登录][getCookieAccountInfoBySToken] 请求异常", err)
+    return null
+  }
+}
+
+/**
+ * 按票据前缀组装 Cookie：
+ * - ltoken 以 v2_ 开头：ltoken_v2 / ltuid_v2 / ltmid_v2
+ * - cookie_token 以 v2_ 开头：cookie_token_v2 / account_id_v2 / account_mid_v2
+ * 参考 gsuid_core（GenshinUID Core）的票据归一化规则。
+ */
+function buildMysCookie({ uid, mid, ltoken, cookieToken, extras = [] }) {
+  const parts = []
+  if (ltoken) {
+    if (ltoken.startsWith("v2_")) parts.push(`ltoken_v2=${ltoken}`, `ltuid_v2=${uid}`, `ltmid_v2=${mid}`)
+    else parts.push(`ltoken=${ltoken}`, `ltuid=${uid}`)
+  }
+  if (cookieToken) {
+    if (cookieToken.startsWith("v2_"))
+      parts.push(`cookie_token_v2=${cookieToken}`, `account_id_v2=${uid}`, `account_mid_v2=${mid}`)
+    else parts.push(`cookie_token=${cookieToken}`)
+  }
+  return [...parts, ...extras].join(";")
 }
 
 function app_request(url, { data, device_id }) {
@@ -111,7 +181,7 @@ export class miHoYoLogin extends plugin {
           fnc: "miHoYoLoginDetect",
         },
         {
-          reg: "^#?(体力|(c|C)(oo)?k(ie)?|(s|S)(to)?k(en)?)(帮助|教程)$",
+          reg: "^#(体力|(c|C)(oo)?k(ie)?|(s|S)(to)?k(en)?)(帮助|教程)$",
           fnc: "miHoYoLoginHelp",
         },
       ],
@@ -203,17 +273,45 @@ export class miHoYoLogin extends plugin {
       Running[this.e.user_id] = false
       return false
     }
-    const stoken = `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid}`
 
-    let cookie = await request(
-      `https://passport-api.mihoyo.com/account/auth/api/getCookieAccountInfoBySToken?stoken=${res.data.token.token}&uid=${res.data.user_info.aid}`,
-      { cookie: stoken },
-    )
-    cookie = await cookie.json()
-    logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(cookie))}`)
-    cookie = [
-      `ltoken=${res.data.token.token};ltuid=${res.data.user_info.aid};cookie_token=${cookie.data.cookie_token};login_ticket=${res.data.login_ticket}`,
-      stoken,
+    const uid = res.data.user_info.aid
+    const mid = res.data.user_info.mid
+    const stoken = res.data.token.token
+    const deviceId = random_string(16)
+
+    if (stoken.startsWith("v2_") && !mid) {
+      this.reply(errorTips, true, { recallMsg: 60 })
+      Running[this.e.user_id] = false
+      return false
+    }
+
+    const ltRes = await getLTokenBySToken(uid, stoken, mid, deviceId)
+    logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(ltRes))}`)
+    if (Number(ltRes?.retcode) !== 0 || !ltRes?.data?.ltoken) {
+      logger.error("[米哈游登录] LToken 换票失败，无法生成社区 Cookie")
+      this.reply(errorTips, true, { recallMsg: 60 })
+      Running[this.e.user_id] = false
+      return false
+    }
+
+    const ctRes = await getCookieTokenBySToken(uid, stoken, mid, deviceId)
+    logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(ctRes))}`)
+    if (Number(ctRes?.retcode) !== 0 || !ctRes?.data?.cookie_token) {
+      logger.error("[米哈游登录] CookieToken 换票失败")
+      this.reply(errorTips, true, { recallMsg: 60 })
+      Running[this.e.user_id] = false
+      return false
+    }
+
+    const cookie = [
+      buildMysCookie({
+        uid,
+        mid,
+        ltoken: ltRes.data.ltoken,
+        cookieToken: ctRes.data.cookie_token,
+        extras: res.data.login_ticket ? [`login_ticket=${res.data.login_ticket}`] : [],
+      }),
+      `stoken=${stoken};stuid=${uid};mid=${mid}`,
     ]
     for (const i of cookie) this.makeMessage(i)
     if (this.e.isPrivate)
@@ -354,17 +452,34 @@ export class miHoYoLogin extends plugin {
         )?.token,
         mid = res.data.user_info.mid
       if (!(uid && token && mid)) return this.reply(errorTips, true, { recallMsg: 60 })
+      // v2 类型 stoken 必须携带 mid，否则换票接口无法校验
+      if (String(token).startsWith("v2_") && !mid) return this.reply(errorTips, true, { recallMsg: 60 })
 
+      const deviceId = random_string(16)
       cookie.push(`stoken=${token};stuid=${uid};mid=${mid}`)
-      res = await request(
-        `https://passport-api.mihoyo.com/account/auth/api/getCookieAccountInfoBySToken?stoken=${token}&uid=${uid}&mid=${mid}`,
-        { cookie: cookie[0] },
-      )
-      res = await res.json()
-      logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(res))}`)
 
-      if (!res.data?.cookie_token) return this.reply(errorTips, true, { recallMsg: 60 })
-      cookie.push(`ltoken=${token};ltuid=${uid};cookie_token=${res.data.cookie_token}`)
+      const ltRes = await getLTokenBySToken(uid, token, mid, deviceId)
+      logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(ltRes))}`)
+      if (Number(ltRes?.retcode) !== 0 || !ltRes?.data?.ltoken) {
+        logger.error("[米哈游登录] LToken 换票失败，无法生成社区 Cookie")
+        return this.reply(errorTips, true, { recallMsg: 60 })
+      }
+
+      const ctRes = await getCookieTokenBySToken(uid, token, mid, deviceId)
+      logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(ctRes))}`)
+      if (Number(ctRes?.retcode) !== 0 || !ctRes?.data?.cookie_token) {
+        logger.error("[米哈游登录] CookieToken 换票失败")
+        return this.reply(errorTips, true, { recallMsg: 60 })
+      }
+
+      cookie.push(
+        buildMysCookie({
+          uid,
+          mid,
+          ltoken: ltRes.data.ltoken,
+          cookieToken: ctRes.data.cookie_token,
+        }),
+      )
     } catch (err) {
       logger.error(this.e.logFnc, err)
       return this.reply(errorTips, true, { recallMsg: 60 })
