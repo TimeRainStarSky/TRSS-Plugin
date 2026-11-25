@@ -46,6 +46,12 @@ function ds(data, clientType = 2) {
   return `${t},${r},${h}`
 }
 
+// 新版换票接口（dst_token_type: 2=ltoken_v2 / 4=cookie_token_v2）
+const EXCHANGE_APP_VERSION = "2.106.2"
+const EXCHANGE_PASSPORT_VERSION = "2.44.0"
+const EXCHANGE_DEVICE_ID = random_string(32).toUpperCase()
+const EXCHANGE_LIFECYCLE_ID = crypto.randomBytes(5).toString("hex")
+
 function request(url, { data, aigis, cookie, clientType = 2, deviceId } = {}) {
   const opts = {}
   if (data) {
@@ -73,43 +79,42 @@ function request(url, { data, aigis, cookie, clientType = 2, deviceId } = {}) {
 }
 
 /**
- * 用 stoken 换取 LToken（x-rpc-client_type: 5）。
- * 米游社社区/BBS 接口需要 v2 票据（v2_ 前缀），旧版代码把 stoken 直接当 ltoken 写入，会导致 -100 登录失效。
+ * 用 v2 stoken 换取 ltoken_v2 / cookie_token_v2。
+ * 老的 getLTokenBySToken / getCookieAccountInfoBySToken 已废弃（-464）。
+ *
+ * @param {string} stoken v2_ 开头的 stoken
+ * @param {string} mid 账号 mid
+ * @param {2|4} dstTokenType 2=ltoken_v2，4=cookie_token_v2
  */
-async function getLTokenBySToken(uid, stoken, mid, deviceId) {
+async function exchangeToken(stoken, mid, dstTokenType) {
+  const body = JSON.stringify({
+    dst_token_type: dstTokenType,
+    src_token: { token: stoken, token_type: 1 },
+    mid,
+  })
   try {
-    const res = await request(
-      `https://passport-api.mihoyo.com/account/auth/api/getLTokenBySToken?stoken=${stoken}&stuid=${uid}`,
-      {
-        cookie: `stuid=${uid};stoken=${stoken};${mid ? `mid=${mid};` : ""}`,
-        clientType: 5,
-        deviceId,
+    const res = await fetch("https://passport-api.mihoyo.com/account/ma-cn-session/app/exchange", {
+      method: "post",
+      body,
+      headers: {
+        "content-type": "application/json",
+        DS: ds(body, 2),
+        "User-Agent": `Mozilla/5.0 (Linux; Android 12; Unspecified Device) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/103.0.5060.129 Mobile Safari/537.36 miHoYoBBS/${EXCHANGE_APP_VERSION}`,
+        "x-rpc-app_version": EXCHANGE_APP_VERSION,
+        "x-rpc-client_type": "2",
+        "x-rpc-app_id": "bll8iq97cem8",
+        "x-rpc-device_id": EXCHANGE_DEVICE_ID,
+        "x-rpc-device_name": "Mihoyo Capture",
+        "x-rpc-device_model": "Mi 14",
+        "x-rpc-game_biz": "bbs_cn",
+        "x-rpc-sdk_version": EXCHANGE_PASSPORT_VERSION,
+        "x-rpc-account_version": EXCHANGE_PASSPORT_VERSION,
+        "x-rpc-lifecycle_id": EXCHANGE_LIFECYCLE_ID,
       },
-    )
+    })
     return await res.json()
   } catch (err) {
-    logger.error("[米哈游登录][getLTokenBySToken] 请求异常", err)
-    return null
-  }
-}
-
-/**
- * 用 stoken 换取 CookieToken（x-rpc-client_type: 2）。
- * 返回值可能是 v1（cookie_token）或 v2（v2_ 前缀）票据，由调用方按前缀落字段。
- */
-async function getCookieTokenBySToken(uid, stoken, mid, deviceId) {
-  try {
-    const res = await request(
-      `https://passport-api.mihoyo.com/account/auth/api/getCookieAccountInfoBySToken?stoken=${stoken}&uid=${uid}&mid=${mid}`,
-      {
-        cookie: `stuid=${uid};stoken=${stoken};${mid ? `mid=${mid};` : ""}`,
-        clientType: 2,
-        deviceId,
-      },
-    )
-    return await res.json()
-  } catch (err) {
-    logger.error("[米哈游登录][getCookieAccountInfoBySToken] 请求异常", err)
+    logger.error("[米游社登录][exchange] 请求异常", err)
     return null
   }
 }
@@ -277,27 +282,27 @@ export class miHoYoLogin extends plugin {
     const uid = res.data.user_info.aid
     const mid = res.data.user_info.mid
     const stoken = res.data.token.token
-    const deviceId = random_string(16)
-
     if (stoken.startsWith("v2_") && !mid) {
       this.reply(errorTips, true, { recallMsg: 60 })
       Running[this.e.user_id] = false
       return false
     }
 
-    const ltRes = await getLTokenBySToken(uid, stoken, mid, deviceId)
+    const ltRes = await exchangeToken(stoken, mid, 2)
     logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(ltRes))}`)
-    if (Number(ltRes?.retcode) !== 0 || !ltRes?.data?.ltoken) {
-      logger.error("[米哈游登录] LToken 换票失败，无法生成社区 Cookie")
+    const ltoken = ltRes?.data?.token?.token
+    if (Number(ltRes?.retcode) !== 0 || !ltoken) {
+      logger.error("[米哈游登录] ltoken_v2 换票失败")
       this.reply(errorTips, true, { recallMsg: 60 })
       Running[this.e.user_id] = false
       return false
     }
 
-    const ctRes = await getCookieTokenBySToken(uid, stoken, mid, deviceId)
+    const ctRes = await exchangeToken(stoken, mid, 4)
     logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(ctRes))}`)
-    if (Number(ctRes?.retcode) !== 0 || !ctRes?.data?.cookie_token) {
-      logger.error("[米哈游登录] CookieToken 换票失败")
+    const cookieToken = ctRes?.data?.token?.token
+    if (Number(ctRes?.retcode) !== 0 || !cookieToken) {
+      logger.error("[米哈游登录] cookie_token_v2 换票失败")
       this.reply(errorTips, true, { recallMsg: 60 })
       Running[this.e.user_id] = false
       return false
@@ -307,8 +312,8 @@ export class miHoYoLogin extends plugin {
       buildMysCookie({
         uid,
         mid,
-        ltoken: ltRes.data.ltoken,
-        cookieToken: ctRes.data.cookie_token,
+        ltoken,
+        cookieToken,
         extras: res.data.login_ticket ? [`login_ticket=${res.data.login_ticket}`] : [],
       }),
       `stoken=${stoken};stuid=${uid};mid=${mid}`,
@@ -455,20 +460,21 @@ export class miHoYoLogin extends plugin {
       // v2 类型 stoken 必须携带 mid，否则换票接口无法校验
       if (String(token).startsWith("v2_") && !mid) return this.reply(errorTips, true, { recallMsg: 60 })
 
-      const deviceId = random_string(16)
       cookie.push(`stoken=${token};stuid=${uid};mid=${mid}`)
 
-      const ltRes = await getLTokenBySToken(uid, token, mid, deviceId)
+      const ltRes = await exchangeToken(token, mid, 2)
       logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(ltRes))}`)
-      if (Number(ltRes?.retcode) !== 0 || !ltRes?.data?.ltoken) {
-        logger.error("[米哈游登录] LToken 换票失败，无法生成社区 Cookie")
+      const ltoken = ltRes?.data?.token?.token
+      if (Number(ltRes?.retcode) !== 0 || !ltoken) {
+        logger.error("[米哈游登录] ltoken_v2 换票失败")
         return this.reply(errorTips, true, { recallMsg: 60 })
       }
 
-      const ctRes = await getCookieTokenBySToken(uid, token, mid, deviceId)
+      const ctRes = await exchangeToken(token, mid, 4)
       logger.mark(`${this.e.logFnc} ${logger.blue(JSON.stringify(ctRes))}`)
-      if (Number(ctRes?.retcode) !== 0 || !ctRes?.data?.cookie_token) {
-        logger.error("[米哈游登录] CookieToken 换票失败")
+      const cookieToken = ctRes?.data?.token?.token
+      if (Number(ctRes?.retcode) !== 0 || !cookieToken) {
+        logger.error("[米哈游登录] cookie_token_v2 换票失败")
         return this.reply(errorTips, true, { recallMsg: 60 })
       }
 
@@ -476,8 +482,8 @@ export class miHoYoLogin extends plugin {
         buildMysCookie({
           uid,
           mid,
-          ltoken: ltRes.data.ltoken,
-          cookieToken: ctRes.data.cookie_token,
+          ltoken,
+          cookieToken,
         }),
       )
     } catch (err) {
